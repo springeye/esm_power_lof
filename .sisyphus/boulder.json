@@ -1,0 +1,32 @@
+{
+  "active_plan": "C:\\Users\\develop\\Desktop\\workspaces\\esm_power_lof\\.sisyphus\\plans\\init-esp32-fan-controller.md",
+  "started_at": "2026-04-21T13:58:29.352Z",
+  "session_ids": [
+    "ses_2500587a0ffe4un7BzV24J9Wbj"
+  ],
+  "session_origins": {
+    "ses_2500587a0ffe4un7BzV24J9Wbj": "direct"
+  },
+  "plan_name": "init-esp32-fan-controller",
+  "agent": "atlas",
+  "task_sessions": {
+    "todo:5": {
+      "task_key": "todo:5",
+      "task_label": "5",
+      "task_title": "**T05 创建 include/app_config.h 全局常量**",
+      "session_id": "ses_24fa6e68dffeYg2jPCugGxN9Iu",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "updated_at": "2026-04-21T14:04:37.230Z"
+    },
+    "todo:8": {
+      "task_key": "todo:8",
+      "task_label": "8",
+      "task_title": "**T08 platformio.ini 追加 lib_deps**",
+      "session_id": "ses_24f9fbdbcffeoCkjwbeozdnGIS",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-high",
+      "updated_at": "2026-04-21T14:13:22.571Z"
+    }
+  }
+}

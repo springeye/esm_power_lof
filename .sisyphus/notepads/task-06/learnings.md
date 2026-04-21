@@ -1,0 +1,1 @@
+- 已按要求创建 src 目录骨架与 test/native 目录，并为每个目录添加 .gitkeep。

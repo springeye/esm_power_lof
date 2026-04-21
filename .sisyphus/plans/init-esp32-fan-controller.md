@@ -268,7 +268,7 @@ Wave Final (依赖 Wave 5 — 4 并行审核):
 
 ### Wave 1 — 工程骨架与配置基线
 
-- [ ] **T01. 创建 platformio.ini 骨架（双 env）** — `quick`
+- [x] **T01. 创建 platformio.ini 骨架（双 env）** — `quick`
   **Depends on**: 无
   **Files**: `platformio.ini`
   **What to do**:
@@ -296,7 +296,7 @@ Wave Final (依赖 Wave 5 — 4 并行审核):
     Evidence: .sisyphus/evidence/task-01-config.json
   ```
 
-- [ ] **T02. 创建 partitions/default_8MB.csv** — `quick`
+- [x] **T02. 创建 partitions/default_8MB.csv** — `quick`
   **Depends on**: 无
   **Files**: `partitions/default_8MB.csv`
   **What to do**:
@@ -318,7 +318,7 @@ Wave Final (依赖 Wave 5 — 4 并行审核):
     Evidence: .sisyphus/evidence/task-02-parts.txt
   ```
 
-- [ ] **T03. 创建 .gitignore 与 .editorconfig** — `quick`
+- [x] **T03. 创建 .gitignore 与 .editorconfig** — `quick`
   **Depends on**: 无
   **Files**: `.gitignore`, `.editorconfig`
   **What to do**:
@@ -337,7 +337,7 @@ Wave Final (依赖 Wave 5 — 4 并行审核):
     Evidence: .sisyphus/evidence/task-03-check.txt（输出 "OK"）
   ```
 
-- [ ] **T04. 创建 include/pins.h（D2 引脚表单点定义）** — `quick`
+- [x] **T04. 创建 include/pins.h（D2 引脚表单点定义）** — `quick`
   **Depends on**: 无
   **Files**: `include/pins.h`
   **What to do**:
@@ -368,7 +368,7 @@ Wave Final (依赖 Wave 5 — 4 并行审核):
     Evidence: .sisyphus/evidence/task-04-count.txt
   ```
 
-- [ ] 5. **T05 创建 include/app_config.h 全局常量**
+- [x] 5. **T05 创建 include/app_config.h 全局常量**
 
   **Depends on**: None（可并行）
   **Files**: `include/app_config.h`（新建）
@@ -412,7 +412,7 @@ Wave Final (依赖 Wave 5 — 4 并行审核):
     Evidence: .sisyphus/evidence/task-05-include-check.txt
   ```
 
-- [ ] 6. **T06 创建 src/ 目录骨架（占位 .gitkeep）**
+- [x] 6. **T06 创建 src/ 目录骨架（占位 .gitkeep）**
 
   **Depends on**: None（可并行）
   **Files**: `src/hal/.gitkeep`、`src/display/.gitkeep`、`src/ui/.gitkeep`、`src/sensors/ntc/.gitkeep`、`src/sensors/ina226/.gitkeep`、`src/fan/.gitkeep`、`src/power/.gitkeep`、`src/input/.gitkeep`、`src/app/.gitkeep`、`test/native/.gitkeep`
@@ -448,7 +448,7 @@ Wave Final (依赖 Wave 5 — 4 并行审核):
     Evidence: .sisyphus/evidence/task-06-tree.txt
   ```
 
-- [ ] 7. **T07 创建占位 src/main.cpp**
+- [x] 7. **T07 创建占位 src/main.cpp**
 
   **Depends on**: T06（目录存在）
   **Files**: `src/main.cpp`（新建占位，**注意：spec 规定入口在 src/ 根目录，不是 src/app/**）
