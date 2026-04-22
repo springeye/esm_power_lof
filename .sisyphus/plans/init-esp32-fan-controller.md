@@ -486,7 +486,7 @@ Wave Final (依赖 Wave 5 — 4 并行审核):
 
 ### Wave 2 — 依赖 & 库配置 & RED 测试（12 任务，依赖 Wave 1）
 
-- [ ] 8. **T08 platformio.ini 追加 lib_deps**
+- [x] 8. **T08 platformio.ini 追加 lib_deps**
 
   **Depends on**: T01
   **Files**: `platformio.ini`（修改）
@@ -520,7 +520,7 @@ Wave Final (依赖 Wave 5 — 4 并行审核):
     Evidence: .sisyphus/evidence/task-08-lib-install.log
   ```
 
-- [ ] 9. **T09 platformio.ini TFT_eSPI build_flags**
+- [x] 9. **T09 platformio.ini TFT_eSPI build_flags**
 
   **Depends on**: T01, T04（用 pins.h 中 TFT_* 宏）
   **Files**: `platformio.ini`（修改）
@@ -552,7 +552,7 @@ Wave Final (依赖 Wave 5 — 4 并行审核):
     Evidence: .sisyphus/evidence/task-09-tft-flags.txt
   ```
 
-- [ ] 10. **T10 platformio.ini LVGL build_flags**
+- [x] 10. **T10 platformio.ini LVGL build_flags**
 
   **Depends on**: T01
   **Files**: `platformio.ini`（修改）
@@ -583,7 +583,7 @@ Wave Final (依赖 Wave 5 — 4 并行审核):
     Evidence: .sisyphus/evidence/task-10-lvgl-flags.txt
   ```
 
-- [ ] 11. **T11 创建 include/lv_conf.h（LVGL 9.x 完整配置）**
+- [x] 11. **T11 创建 include/lv_conf.h（LVGL 9.x 完整配置）**
 
   **Depends on**: T08（lvgl 库已安装可参考 lv_conf_template.h）、T10
   **Files**: `include/lv_conf.h`（新建，约 900 行）
