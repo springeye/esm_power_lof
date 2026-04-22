@@ -12,12 +12,12 @@ typedef struct {
 } Ina226Data;
 
 /**
- * Rail index mapping to INA226_ADDR_RAIL[]
+ * Channel index mapping to INA226_ADDR_CH[]
  */
 typedef enum {
-    INA_RAIL_LOAD = 0,  // 0x40
-    INA_RAIL_12V  = 1,  // 0x41
-    INA_RAIL_5V   = 2   // 0x44
+    INA_CH1 = 0,  // 0x40
+    INA_CH2 = 1,  // 0x41
+    INA_CH3 = 2   // 0x44
 } Ina226Rail;
 
 /**
@@ -31,7 +31,7 @@ void ina226_init_all(void);
 /**
  * @brief Read power data from one INA226 rail.
  *
- * @param rail   Rail index (INA_RAIL_LOAD/12V/5V)
+ * @param rail   Channel index (INA_CH1/CH2/CH3)
  * @param out    Output data struct
  * @return true on success, false on I2C error
  */

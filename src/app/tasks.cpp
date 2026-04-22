@@ -46,9 +46,9 @@ void lvgl_task(void* /*param*/) {
         // 刷新 UI 数据
         ui_main::update_temperature(app_state::get_temp_c());
         ui_main::update_fan_rpm(app_state::get_rpm());
-        ui_main::update_current(app_state::get_load_a(),
-                                app_state::get_v12_a(),
-                                app_state::get_v5_a());
+        ui_main::update_current(app_state::get_ch1_a(),
+                                app_state::get_ch2_a(),
+                                app_state::get_ch3_a());
 
         esp_task_wdt_reset();
         vTaskDelay(pdMS_TO_TICKS(5));
@@ -66,16 +66,16 @@ void sensor_task(void* /*param*/) {
 
         // INA226 三路电流采样（轮询，每路 250ms）
         Ina226Data d;
-        if (ina226_read(INA_RAIL_LOAD, &d)) {
-            app_state::set_load_ma(static_cast<int32_t>(d.current_a * 1000.0f));
+        if (ina226_read(INA_CH1, &d)) {
+            app_state::set_ch1_ma(static_cast<int32_t>(d.current_a * 1000.0f));
         }
         vTaskDelay(pdMS_TO_TICKS(250));
-        if (ina226_read(INA_RAIL_12V, &d)) {
-            app_state::set_v12_ma(static_cast<int32_t>(d.current_a * 1000.0f));
+        if (ina226_read(INA_CH2, &d)) {
+            app_state::set_ch2_ma(static_cast<int32_t>(d.current_a * 1000.0f));
         }
         vTaskDelay(pdMS_TO_TICKS(250));
-        if (ina226_read(INA_RAIL_5V, &d)) {
-            app_state::set_v5_ma(static_cast<int32_t>(d.current_a * 1000.0f));
+        if (ina226_read(INA_CH3, &d)) {
+            app_state::set_ch3_ma(static_cast<int32_t>(d.current_a * 1000.0f));
         }
 
         esp_task_wdt_reset();
@@ -106,9 +106,9 @@ void ctrl_task(void* /*param*/) {
         // 堵转检测
         fault_guard::check_stall(duty, rpm);
         // 过流检测
-        fault_guard::check_overcurrent(app_state::get_load_a() * 1000.0f,
-                                       app_state::get_v12_a() * 1000.0f,
-                                       app_state::get_v5_a() * 1000.0f);
+        fault_guard::check_overcurrent(app_state::get_ch1_a() * 1000.0f,
+                                       app_state::get_ch2_a() * 1000.0f,
+                                       app_state::get_ch3_a() * 1000.0f);
 
         esp_task_wdt_reset();
         vTaskDelay(pdMS_TO_TICKS(500));
@@ -119,7 +119,7 @@ void ctrl_task(void* /*param*/) {
 void input_task(void* /*param*/) {
     esp_task_wdt_add(nullptr);
     static KeyState s_keys[3] = {};
-    static const uint8_t key_pins[3] = {KEY_UP, KEY_ENTER, KEY_DOWN};
+    static const uint8_t key_pins[3] = {KEY_K1, KEY_K2, KEY_K3};
     for (;;) {
         uint32_t now = millis();
         for (uint8_t k = 0; k < 3; ++k) {

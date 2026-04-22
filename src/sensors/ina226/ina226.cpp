@@ -22,9 +22,9 @@ static const uint16_t INA226_CAL = 64u;
 static const float CURRENT_LSB_A = 40.0f / 32768.0f;
 
 static const uint8_t s_addrs[3] = {
-    INA226_ADDR_RAIL[0],  // 0x40 LOAD
-    INA226_ADDR_RAIL[1],  // 0x41 12V
-    INA226_ADDR_RAIL[2]   // 0x44 5V
+    INA226_ADDR_CH[0],  // 0x40 CH1
+    INA226_ADDR_CH[1],  // 0x41 CH2
+    INA226_ADDR_CH[2]   // 0x44 CH3
 };
 
 static bool ina226_write_reg(uint8_t addr, uint8_t reg, uint16_t val) {
@@ -54,7 +54,7 @@ void ina226_init_all(void) {
 }
 
 bool ina226_read(Ina226Rail rail, Ina226Data *out) {
-    if (out == nullptr || rail > INA_RAIL_5V) return false;
+    if (out == nullptr || rail > INA_CH3) return false;
 
     uint8_t addr = s_addrs[static_cast<uint8_t>(rail)];
     int16_t raw_bus = 0, raw_cur = 0;

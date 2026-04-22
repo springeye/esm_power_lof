@@ -25,7 +25,7 @@ void init();
  * @brief 处理按键事件
  *
  * 由 inputTask 在检测到按键状态变化时调用。
- * @param key   按键 ID（KEY_UP / KEY_ENTER / KEY_DOWN）
+ * @param key   按键 ID（KEY_K1 / KEY_K2 / KEY_K3）
  * @param state 按键状态（KEY_SHORT / KEY_LONG）
  */
 void handle_key(uint8_t key, KeyState state);
