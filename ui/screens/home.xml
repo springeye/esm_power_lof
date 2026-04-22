@@ -1,0 +1,364 @@
+<screen>
+	<styles>
+		<style name="style_main" bg_color="0x101214" text_color="0xFFFFFF" />
+		<style
+			name="no_padding"
+			pad_all="0"
+			pad_row="0"
+			pad_column="0"
+			margin_all="0"
+			border_width="0"
+			outline_pad="0"
+			radius="0"
+		/>
+	</styles>
+
+	<view
+		style_layout="flex"
+		flex_flow="column"
+		style_pad_all="0"
+		style_pad_row="0"
+		style_pad_column="0"
+		height="100%"
+		width="100%"
+	>
+		<style name="style_main" />
+		<style name="no_padding" />
+
+		<lv_obj
+			height="10%"
+			width="100%"
+			style_layout="flex"
+			flex_flow="row"
+			style_flex_main_place="space_between"
+			style_flex_cross_place="center"
+			style_border_width="0"
+			style_bg_opa="0"
+			style_pad_all="0"
+			style_pad_row="0"
+			style_pad_column="0"
+			style_flex_track_place="center"
+		>
+			<style name="no_padding" />
+			<lv_label text="LOF SYSTEM" style_text_color="0xFF9900" />
+			<lv_label text="F" style_text_color="0xFFFFFF" />
+			<lv_label text="CAL" style_text_color="0x0097fa" />
+			<lv_label text="RDY" style_text_color="0x0097fa" />
+		</lv_obj>
+
+		<lv_obj
+			height="10%"
+			width="100%"
+			style_layout="flex"
+			flex_flow="row"
+			style_flex_main_place="space_between"
+			style_bg_color="0x2C3E50"
+			style_bg_opa="255"
+			style_border_width="0"
+			style_pad_all="0"
+			style_pad_row="0"
+			style_pad_column="0"
+			style_pad_left="4"
+			style_pad_right="4"
+			style_pad_top="0"
+			style_pad_bottom="0"
+			style_flex_cross_place="center"
+			style_flex_track_place="center"
+		>
+			<style name="no_padding" />
+			<lv_label text="POWER PANEL" style_text_color="0xFFFFFF" />
+			<lv_label text="+30.6 ℃" style_text_color="0xFFFFFF" />
+		</lv_obj>
+
+		<lv_obj
+			height="20%"
+			width="100%"
+			style_layout="flex"
+			style_flex_main_place="center"
+			style_flex_cross_place="center"
+			style_border_width="0"
+			style_bg_opa="0"
+			style_pad_all="0"
+			style_pad_row="0"
+			style_pad_column="0"
+			style_flex_track_place="center"
+		>
+			<style name="no_padding" />
+			<lv_label text="Pt 000.00 w" style_text_color="0xFFFFFF" style_text_font="font_medium" />
+		</lv_obj>
+
+		<lv_obj
+			height="10%"
+			width="100%"
+			style_layout="flex"
+			flex_flow="row"
+			style_flex_main_place="space_between"
+			style_flex_cross_place="center"
+			style_border_width="0"
+			style_bg_opa="0"
+			style_pad_all="0"
+			style_pad_row="0"
+			style_pad_column="0"
+		>
+			<style name="no_padding" />
+			<lv_obj
+				width="49%"
+				height="100%"
+				style_border_color="0x659595"
+				style_bg_opa="0"
+				style_radius="0"
+				style_border_width="2"
+				style_layout="flex"
+				style_flex_main_place="center"
+				style_flex_cross_place="center"
+				style_pad_all="0"
+				style_pad_row="0"
+				style_pad_column="0"
+				style_flex_track_place="center"
+			>
+				<lv_label text="H 02:33:57" style_text_color="0xFFFFFF" />
+			</lv_obj>
+			<lv_obj
+				width="49%"
+				height="100%"
+				style_border_color="0x659595"
+				style_border_width="2"
+				style_bg_opa="0"
+				style_radius="0"
+				style_layout="flex"
+				style_flex_main_place="center"
+				style_flex_cross_place="center"
+				style_pad_all="0"
+				style_pad_row="0"
+				style_pad_column="0"
+				style_flex_track_place="center"
+			>
+				<lv_label text="0.0000 Wh" style_text_color="0xFFFFFF" />
+			</lv_obj>
+		</lv_obj>
+
+		<lv_obj
+			height="12%"
+			width="100%"
+			style_layout="flex"
+			flex_flow="row"
+			style_flex_main_place="space_between"
+			style_flex_cross_place="center"
+			style_border_width="0"
+			style_bg_opa="0"
+			style_pad_all="0"
+			style_pad_row="0"
+			style_pad_column="0"
+			style_pad_top="5"
+			style_margin_top="1"
+		>
+			<style name="no_padding" />
+			<lv_obj
+				width="25%"
+				height="100%"
+				style_border_color="0x659595"
+				style_border_width="2"
+				style_bg_opa="0"
+				style_layout="flex"
+				style_flex_main_place="center"
+				style_flex_cross_place="center"
+				style_pad_all="0"
+				style_pad_row="0"
+				style_pad_column="0"
+				style_flex_track_place="center"
+				style_radius="0"
+			>
+				<lv_label text="750" style_text_color="0xffd208" />
+			</lv_obj>
+			<lv_obj
+				width="73%"
+				height="100%"
+				style_border_color="0x659595"
+				style_border_width="2"
+				style_bg_opa="0"
+				style_layout="flex"
+				flex_flow="row"
+				style_flex_main_place="space_between"
+				style_flex_cross_place="center"
+				style_pad_all="0"
+				style_pad_row="0"
+				style_pad_column="0"
+				style_pad_left="8"
+				style_pad_right="8"
+				style_flex_track_place="center"
+				style_radius="0"
+			>
+				<lv_bar width="75%" height="40%" value="0" />
+				<lv_label text="0%" style_text_color="0xFFFFFF" />
+			</lv_obj>
+		</lv_obj>
+
+		<lv_obj
+			style_flex_grow="1"
+			width="100%"
+			style_layout="flex"
+			flex_flow="row"
+			style_flex_main_place="space_between"
+			style_flex_cross_place="center"
+			style_border_width="0"
+			style_bg_opa="0"
+			style_pad_all="0"
+			style_pad_row="0"
+			style_pad_column="0"
+			style_pad_top="5"
+			height="0%"
+		>
+			<style name="no_padding" />
+
+			<lv_obj
+				width="32%"
+				height="100%"
+				style_border_color="0x00FF00"
+				style_border_width="1"
+				style_radius="5"
+				style_layout="flex"
+				flex_flow="column"
+				style_pad_all="0"
+				style_pad_row="0"
+				style_pad_column="0"
+				style_bg_opa="0"
+			>
+				<lv_obj
+					height="25%"
+					width="100%"
+					style_bg_color="0x333333"
+					style_bg_opa="255"
+					style_border_width="0"
+					style_layout="flex"
+					style_flex_main_place="center"
+					style_flex_cross_place="center"
+					style_pad_all="0"
+					style_pad_row="0"
+					style_pad_column="0"
+					style_flex_track_place="center"
+					style_radius="1"
+				>
+					<lv_label text="CH1" style_text_color="0xFFFFFF" />
+				</lv_obj>
+				<lv_obj
+					style_flex_grow="1"
+					width="100%"
+					style_layout="flex"
+					flex_flow="column"
+					style_flex_main_place="space_evenly"
+					style_flex_cross_place="center"
+					style_border_width="0"
+					style_bg_opa="0"
+					style_pad_all="0"
+					style_pad_row="0"
+					style_pad_column="0"
+					style_flex_track_place="center"
+				>
+					<lv_label text="0.000" style_text_color="0xFFFFFF" />
+					<lv_label text="0.000" style_text_color="0xFFFFFF" />
+					<lv_label text="0.000" style_text_color="0xFFFFFF" />
+				</lv_obj>
+			</lv_obj>
+
+			<lv_obj
+				width="32%"
+				height="100%"
+				style_border_color="0x00FFFF"
+				style_border_width="1"
+				style_radius="5"
+				style_layout="flex"
+				flex_flow="column"
+				style_pad_all="0"
+				style_pad_row="0"
+				style_pad_column="0"
+				style_bg_opa="0"
+			>
+				<lv_obj
+					height="25%"
+					width="100%"
+					style_bg_color="0x333333"
+					style_bg_opa="255"
+					style_border_width="0"
+					style_layout="flex"
+					style_flex_main_place="center"
+					style_flex_cross_place="center"
+					style_pad_all="0"
+					style_pad_row="0"
+					style_pad_column="0"
+					style_flex_track_place="center"
+					style_radius="1"
+				>
+					<lv_label text="CH2" style_text_color="0xFFFFFF" />
+				</lv_obj>
+				<lv_obj
+					style_flex_grow="1"
+					width="100%"
+					style_layout="flex"
+					flex_flow="column"
+					style_flex_main_place="space_evenly"
+					style_flex_cross_place="center"
+					style_border_width="0"
+					style_bg_opa="0"
+					style_pad_all="0"
+					style_pad_row="0"
+					style_pad_column="0"
+					style_flex_track_place="center"
+				>
+					<lv_label text="0.000" style_text_color="0xFFFFFF" />
+					<lv_label text="0.000" style_text_color="0xFFFFFF" />
+					<lv_label text="0.000" style_text_color="0xFFFFFF" />
+				</lv_obj>
+			</lv_obj>
+
+			<lv_obj
+				width="32%"
+				height="100%"
+				style_border_color="0xFFA500"
+				style_border_width="1"
+				style_radius="5"
+				style_layout="flex"
+				flex_flow="column"
+				style_pad_all="0"
+				style_pad_row="0"
+				style_pad_column="0"
+				style_bg_opa="0"
+				style_flex_track_place="center"
+			>
+				<lv_obj
+					height="25%"
+					width="100%"
+					style_bg_color="0x333333"
+					style_bg_opa="255"
+					style_border_width="0"
+					style_layout="flex"
+					style_flex_main_place="center"
+					style_flex_cross_place="center"
+					style_pad_all="0"
+					style_pad_row="0"
+					style_pad_column="0"
+					style_radius="1"
+				>
+					<lv_label text="CH3" style_text_color="0xFFFFFF" />
+				</lv_obj>
+				<lv_obj
+					style_flex_grow="1"
+					width="100%"
+					style_layout="flex"
+					flex_flow="column"
+					style_flex_main_place="space_evenly"
+					style_flex_cross_place="center"
+					style_border_width="0"
+					style_bg_opa="0"
+					style_pad_all="0"
+					style_pad_row="0"
+					style_pad_column="0"
+					style_flex_track_place="center"
+				>
+					<lv_label text="0.000" style_text_color="0xFFFFFF" />
+					<lv_label text="0.000" style_text_color="0xFFFFFF" />
+					<lv_label text="0.000" style_text_color="0xFFFFFF" />
+				</lv_obj>
+			</lv_obj>
+		</lv_obj>
+	</view>
+</screen>
