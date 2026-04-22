@@ -1,0 +1,2 @@
+- 本地 LSP 对 `.ini` 无可用服务，且 `clangd` 未安装，无法提供 changed files 的 LSP 诊断；本次以实际 `pio run -e esp32dev` 成功作为主要验证依据。
+- 构建仍存在既有 warning：`TFT_eSPI` 的 `TOUCH_CS pin not defined` 预警，以及 LVGL 9.2.2 `lv_scale.c` 的若干 implicit declaration warning；它们未阻塞本次目标构建。
