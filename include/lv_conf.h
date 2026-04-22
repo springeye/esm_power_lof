@@ -9,7 +9,9 @@
 
 #if 1  /* Set this to "1" to enable content */
 
+#ifndef __ASSEMBLY__
 #include <stdint.h>
+#endif
 
 /*====================
    COLOR SETTINGS

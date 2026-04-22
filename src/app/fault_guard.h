@@ -32,9 +32,9 @@ void check_stall(uint16_t duty, uint32_t rpm);
 
 /**
  * @brief 检测过流
- * @param load_ma 负载电流（mA）
- * @param v12_ma  12V 电流（mA）
- * @param v5_ma   5V 电流（mA）
+ * @param load_ma CH1 电流（mA）
+ * @param v12_ma  CH2 电流（mA）
+ * @param v5_ma   CH3 电流（mA）
  */
 void check_overcurrent(int32_t load_ma, int32_t v12_ma, int32_t v5_ma);
 

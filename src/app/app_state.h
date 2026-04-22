@@ -36,9 +36,9 @@ namespace app_state {
 extern std::atomic<int32_t>  temp_cdeg;    // 温度 × 100（°C × 100，避免浮点）
 extern std::atomic<uint32_t> fan_rpm;      // 风扇转速（RPM）
 extern std::atomic<uint16_t> fan_duty;     // 风扇 PWM duty（0-1023）
-extern std::atomic<int32_t>  load_ma;      // 负载电流（mA）
-extern std::atomic<int32_t>  v12_ma;       // 12V 电流（mA）
-extern std::atomic<int32_t>  v5_ma;        // 5V 电流（mA）
+extern std::atomic<int32_t>  ch1_ma;       // CH1 电流（mA）
+extern std::atomic<int32_t>  ch2_ma;       // CH2 电流（mA）
+extern std::atomic<int32_t>  ch3_ma;       // CH3 电流（mA）
 extern std::atomic<uint8_t>  psu_state_id; // PsuState 枚举值（uint8_t）
 extern std::atomic<bool>      fault_active; // 故障标志
 
@@ -46,18 +46,18 @@ extern std::atomic<bool>      fault_active; // 故障标志
 inline float get_temp_c()    { return temp_cdeg.load() / 100.0f; }
 inline uint32_t get_rpm()    { return fan_rpm.load(); }
 inline uint16_t get_duty()   { return fan_duty.load(); }
-inline float get_load_a()    { return load_ma.load() / 1000.0f; }
-inline float get_v12_a()     { return v12_ma.load() / 1000.0f; }
-inline float get_v5_a()      { return v5_ma.load() / 1000.0f; }
+inline float get_ch1_a()     { return ch1_ma.load() / 1000.0f; }
+inline float get_ch2_a()     { return ch2_ma.load() / 1000.0f; }
+inline float get_ch3_a()     { return ch3_ma.load() / 1000.0f; }
 inline bool  is_fault()      { return fault_active.load(); }
 
 // ── 便捷 setter（内联）──────────────────────────────────────────────────────
 inline void set_temp_c(float t)      { temp_cdeg.store(static_cast<int32_t>(t * 100)); }
 inline void set_rpm(uint32_t r)      { fan_rpm.store(r); }
 inline void set_duty(uint16_t d)     { fan_duty.store(d); }
-inline void set_load_ma(int32_t ma)  { load_ma.store(ma); }
-inline void set_v12_ma(int32_t ma)   { v12_ma.store(ma); }
-inline void set_v5_ma(int32_t ma)    { v5_ma.store(ma); }
+inline void set_ch1_ma(int32_t ma)  { ch1_ma.store(ma); }
+inline void set_ch2_ma(int32_t ma)  { ch2_ma.store(ma); }
+inline void set_ch3_ma(int32_t ma)  { ch3_ma.store(ma); }
 inline void set_fault(bool f)        { fault_active.store(f); }
 inline void set_psu_state(uint8_t s) { psu_state_id.store(s); }
 

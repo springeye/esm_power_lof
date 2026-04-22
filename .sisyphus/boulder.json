@@ -6,10 +6,24 @@
     "ses_24f5d63eaffehjGpTJwsCp4Jli",
     "ses_24f46a48fffeQlP6q7ypPN0rX5",
     "ses_24f3f1284ffe5x01fFzILd0OOl",
-    "ses_24f3e1df9ffeThfAQKb6eE1Bks"
+    "ses_24f3e1df9ffeThfAQKb6eE1Bks",
+    "ses_24d13c7d3ffeKnY2A975kNi4aU",
+    "ses_24cf546adffe3yMgTIl7SsqXRM",
+    "ses_24cf50528ffem5TULo2WKdKt6Z",
+    "ses_24cf4d028ffehKZgFW2rXN71KA",
+    "ses_24cf4928bffeAq1uDDKIqLvgQD",
+    "ses_24ceb1107ffe1YbJ3vRRBYMH8R",
+    "ses_24ce9d0ecffeVukh27YfDxZ0Aw"
   ],
   "session_origins": {
-    "ses_2500587a0ffe4un7BzV24J9Wbj": "direct"
+    "ses_2500587a0ffe4un7BzV24J9Wbj": "direct",
+    "ses_24d13c7d3ffeKnY2A975kNi4aU": "direct",
+    "ses_24cf546adffe3yMgTIl7SsqXRM": "appended",
+    "ses_24cf50528ffem5TULo2WKdKt6Z": "appended",
+    "ses_24cf4d028ffehKZgFW2rXN71KA": "appended",
+    "ses_24cf4928bffeAq1uDDKIqLvgQD": "appended",
+    "ses_24ceb1107ffe1YbJ3vRRBYMH8R": "appended",
+    "ses_24ce9d0ecffeVukh27YfDxZ0Aw": "appended"
   },
   "plan_name": "init-esp32-fan-controller",
   "agent": "atlas",

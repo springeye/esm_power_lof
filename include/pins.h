@@ -13,9 +13,10 @@
 #define I2C_SCL   22
 
 // INA226 I2C Addresses (design.md D2)
-#define INA_LOAD_ADDR  0x40
-#define INA_12V_ADDR   0x41
-#define INA_5V_ADDR    0x44
+// 7-bit addr / 8-bit write / 8-bit read
+#define INA_CH1_ADDR  0x40  // 0x40 / 0x80 / 0x81
+#define INA_CH2_ADDR  0x41  // 0x41 / 0x82 / 0x83
+#define INA_CH3_ADDR  0x44  // 0x44 / 0x88 / 0x89
 
 // Fan PWM & Tach (design.md D2)
 #define FAN_PWM   25
@@ -29,8 +30,8 @@
 #define PWOK_PIN  34  // input only, no internal pullup
 
 // Keys (design.md D2)
-#define KEY_UP     32
-#define KEY_ENTER  33
-#define KEY_DOWN   26
+#define KEY_K1  32
+#define KEY_K2  33
+#define KEY_K3  26
 
 // Note: GPIO6-11 reserved for flash, GPIO34-39 input-only

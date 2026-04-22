@@ -29,7 +29,8 @@ static constexpr uint32_t FAN_FAULT_SHUTDOWN_MS = 5000; // 5s fan fault → PSU 
 
 // ── INA226 Power Rail Monitoring (specs/power-rail-monitoring, design.md D6) ──
 static constexpr uint32_t I2C_FREQ_HZ          = 400000; // 400kHz Fast Mode
-static constexpr uint8_t  INA226_ADDR_RAIL[3]  = {0x40, 0x41, 0x44};
+// 7-bit: {0x40, 0x41, 0x44}  8-bit write: {0x80, 0x82, 0x88}  8-bit read: {0x81, 0x83, 0x89}
+static constexpr uint8_t  INA226_ADDR_CH[3]  = {0x40, 0x41, 0x44};
 static constexpr float    INA226_SHUNT_OHMS     = 0.002f; // 2mΩ shunt
 static constexpr float    INA226_MAX_CURRENT_A  = 40.0f;  // 40A max
 static constexpr uint32_t INA226_POLL_PERIOD_MS = 750;    // 3 rails × 250ms

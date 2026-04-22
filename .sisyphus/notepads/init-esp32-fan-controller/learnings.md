@@ -1,0 +1,1 @@
+- LVGL 9.2.2 的 `lv_blend_neon.S` / `lv_blend_helium.S` 虽然主体用 `#if LV_USE_DRAW_SW_ASM ...` 包裹，但仍会在汇编阶段先包含 `lv_conf.h`；如果 `lv_conf.h` 无 `__ASSEMBLY__` 防护，`#include <stdint.h>` 会让 xtensa 汇编器把 typedef 解析成指令并失败。

@@ -1,0 +1,1 @@
+- 为保持 `platformio.ini` 修改最小化，仅将错误宏 `LV_DRAW_SW_ASM` 更正为 LVGL 9.x 实际读取的 `LV_USE_DRAW_SW_ASM`，并在 `include/lv_conf.h` 中为 `<stdint.h>` 增加 `#ifndef __ASSEMBLY__` 防护；未降级 LVGL，也未排除库源码目录。
