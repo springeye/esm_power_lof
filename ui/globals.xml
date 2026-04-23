@@ -21,6 +21,13 @@
 
 	<fonts>
 		<!-- Add <bin> , <tiny_ttf>, <freetype> tags here -->
-		<bin name="font_medium" as_file="false" src_path="fonts/Montserrat_Medium.ttf" size="32" bpp="4" />
+		<bin name="hos_black" as_file="false" src_path="fonts/HarmonyOS_Sans_Black.ttf" size="16" bpp="4" />
+		<bin name="hos_bold" as_file="false" src_path="fonts/HarmonyOS_Sans_SC_Bold.ttf" size="16" bpp="4" />
+		<bin name="hos_bold_big" as_file="false" src_path="fonts/HarmonyOS_Sans_Bold.ttf" size="32" bpp="4" />
+		<bin name="hos_light" as_file="false" src_path="fonts/HarmonyOS_Sans_Light.ttf" size="16" bpp="4" />
+		<bin name="hos_medium" as_file="false" src_path="fonts/HarmonyOS_Sans_Medium.ttf" size="16" bpp="4" />
+		<bin name="hos_regular" as_file="false" src_path="fonts/HarmonyOS_Sans_Regular.ttf" size="16" bpp="4" />
+		<bin name="hos_14" as_file="false" src_path="fonts/HarmonyOS_Sans_Regular.ttf" size="14" bpp="4" />
+		<bin name="hos_thin" as_file="false" src_path="fonts/HarmonyOS_Sans_Thin.ttf" size="16" bpp="4" />
 	</fonts>
 </globals>

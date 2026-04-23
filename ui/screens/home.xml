@@ -40,10 +40,10 @@
 			style_flex_track_place="center"
 		>
 			<style name="no_padding" />
-			<lv_label text="LOF SYSTEM" style_text_color="0xFF9900" />
-			<lv_label text="F" style_text_color="0xFFFFFF" />
-			<lv_label text="CAL" style_text_color="0x0097fa" />
-			<lv_label text="RDY" style_text_color="0x0097fa" />
+			<lv_label text="LOF SYSTEM" style_text_color="0xFF9900" style_text_font="hos_regular" />
+			<lv_label text="F" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
+			<lv_label text="CAL" style_text_color="0x0097fa" style_text_font="hos_regular" />
+			<lv_label text="RDY" style_text_color="0x0097fa" style_text_font="hos_regular" />
 		</lv_obj>
 
 		<lv_obj
@@ -66,8 +66,8 @@
 			style_flex_track_place="center"
 		>
 			<style name="no_padding" />
-			<lv_label text="POWER PANEL" style_text_color="0xFFFFFF" />
-			<lv_label text="+30.6 ℃" style_text_color="0xFFFFFF" />
+			<lv_label text="POWER PANEL" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
+			<lv_label text="+30.6 ℃" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 		</lv_obj>
 
 		<lv_obj
@@ -84,7 +84,7 @@
 			style_flex_track_place="center"
 		>
 			<style name="no_padding" />
-			<lv_label text="Pt 000.00 w" style_text_color="0xFFFFFF" style_text_font="font_medium" />
+			<lv_label text="Pt 000.00 w" style_text_color="0xFFFFFF" style_text_font="hos_bold_big" />
 		</lv_obj>
 
 		<lv_obj
@@ -116,7 +116,7 @@
 				style_pad_column="0"
 				style_flex_track_place="center"
 			>
-				<lv_label text="H 02:33:57" style_text_color="0xFFFFFF" />
+				<lv_label text="H 02:33:57" style_text_color="0xFFFFFF" style_text_font="hos_14" />
 			</lv_obj>
 			<lv_obj
 				width="49%"
@@ -133,7 +133,7 @@
 				style_pad_column="0"
 				style_flex_track_place="center"
 			>
-				<lv_label text="0.0000 Wh" style_text_color="0xFFFFFF" />
+				<lv_label text="0.0000 Wh" style_text_color="0xFFFFFF" style_text_font="hos_14" />
 			</lv_obj>
 		</lv_obj>
 

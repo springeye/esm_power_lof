@@ -1,6 +1,13 @@
 list(
   APPEND
   LV_EDITOR_PROJECT_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/fonts/hos_black_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/fonts/hos_bold_big_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/fonts/hos_bold_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/fonts/hos_light_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/fonts/hos_medium_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/fonts/hos_regular_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/fonts/hos_thin_data.c
   ${CMAKE_CURRENT_LIST_DIR}/lof_power_system_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/lof_power_system.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/home_gen.c
