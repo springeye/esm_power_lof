@@ -3,6 +3,7 @@
 #include "hal/i2c_bus.h"
 #include "hal/spi_bus.h"
 #include "display/tft_driver.h"
+#include "display/tft_demo.h"
 #include "display/lvgl_port.h"
 #include "ui_bridge/screen_manager.h"
 #include "ui_bridge/data_bridge.h"
@@ -22,12 +23,20 @@ void setup() {
     Serial.begin(115200);
     Serial.println("[FanCtrl] Booting...");
 
-    // HAL layer
-    i2c_bus_init();
+    // ─── 显示驱动（demo / 正式 共用） ───
     spi_bus_init();
-
-    // Display
     tft_driver::init();
+
+    // ─── DEMO 分支：仅跑屏幕测试图案，跳过其余初始化 ───
+    if constexpr (USE_DISPLAY_DEMO) {
+        Serial.println("[FanCtrl] >>> DISPLAY DEMO MODE <<<");
+        Serial.println("[FanCtrl] Set USE_DISPLAY_DEMO=false in app_config.h to run normal UI.");
+        tft_demo::run();   // 永不返回
+    }
+
+    // ─── 正式 UI 分支 ───
+    i2c_bus_init();
+
     lvgl_port::init();
 
     lof_power_system_init(NULL);

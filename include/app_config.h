@@ -55,3 +55,9 @@ static constexpr uint32_t TASK_STACK_POWER  = 3072;  // 电源状态机任务栈
 
 // ── 看门狗（design.md D9） ──
 static constexpr uint32_t TASK_WDT_TIMEOUT_S = 5;    // 任务看门狗超时时间（秒），超时未喂狗则复位
+
+// ── 显示调试开关 ──
+// true  : 仅运行 TFT 底层测试图案（彩条 / 文本 / 闪烁），不初始化 LVGL、UI、任务
+//         用于排查屏幕接线、SPI 时序、引脚配置等底层问题
+// false : 正常运行业务 UI（LVGL + 风扇控制 + 电源管理 + 传感器）
+static constexpr bool USE_DISPLAY_DEMO = true;

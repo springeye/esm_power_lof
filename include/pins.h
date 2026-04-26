@@ -2,25 +2,26 @@
 
 // =============================================================================
 // ESP32-S3 引脚分配
-// 目标模组：ESP32-S3-WROOM-1（无 PSRAM）或 ESP32-S3-WROOM-2（Octal PSRAM）
+// 目标模组：ESP32-S3-WROOM-1-N8R8（8MB Quad Flash + 8MB Octal PSRAM）
 //
 // 保留 / 禁用引脚：
 //   GPIO0        - Strapping（BOOT），需外部上拉
 //   GPIO3        - Strapping（JTAG）
 //   GPIO19/20    - USB-OTG D-/D+，保留用于固件烧录
-//   GPIO26-32    - SPI0/1 内部 Flash & PSRAM，禁止使用
-//   GPIO33-37    - Octal Flash 专用，禁止使用
+//   GPIO26-32    - SPI0/1 内部 Flash，禁止使用
+//   GPIO33-37    - **Octal PSRAM 专用，N8R8 模组禁止使用**
+//                  （厂商在丝印上不引出 33-37）
 // =============================================================================
 
 // -----------------------------------------------------------------------------
 // TFT SPI 显示屏（ST7789 240×280）
-// 使用 FSPI（SPI2）硬件引脚，刷屏性能最佳
-// 注意：GPIO34-36 仅在 WROOM-1（非 Octal Flash）模组上可用
-//       若使用 WROOM-2，请改用 GPIO4/5/6/7/8
+// 使用 FSPI（SPI2）IO_MUX 默认引脚，刷屏性能最佳
+// 注意：N8R8 因 Octal PSRAM 占用 33-37，必须使用 11/12/9 等低位 GPIO
 // -----------------------------------------------------------------------------
-#define TFT_MOSI  35   // FSPI MOSI，数据输出
-#define TFT_SCLK  36   // FSPI SCLK，时钟
-#define TFT_CS    10   // FSPI CS，片选（低有效）— 改用 GPIO10，开发板未引出 GPIO34
+#define TFT_MOSI  11   // FSPI MOSI（IO_MUX 默认 D），数据输出
+#define TFT_SCLK  12   // FSPI SCLK（IO_MUX 默认 CLK），时钟
+#define TFT_MISO   9   // FSPI MISO（IO_MUX 默认 Q），单向 SPI 实际不用，占空闲脚
+#define TFT_CS    10   // FSPI CS，片选（低有效）
 #define TFT_DC    13   // 数据/命令选择（高=数据，低=命令）
 #define TFT_RST   14   // 硬件复位（低有效）
 #define TFT_BL    21   // 背光 PWM（LEDC），避开 GPIO19/20 USB 引脚
@@ -70,7 +71,10 @@
 // GPIO 使用汇总
 // =============================================================================
 // GPIO1  - NTC 温度 ADC（ADC1_CH0）
+// GPIO9  - TFT MISO（FSPI Q，占位脚）
 // GPIO10 - TFT 片选（FSPI CS）
+// GPIO11 - TFT 数据（FSPI MOSI）
+// GPIO12 - TFT 时钟（FSPI SCLK）
 // GPIO13 - TFT 数据/命令
 // GPIO14 - TFT 复位
 // GPIO15 - 电源开关输出（PSON）
@@ -80,8 +84,7 @@
 // GPIO19 - [保留] USB D-
 // GPIO20 - [保留] USB D+
 // GPIO21 - TFT 背光 PWM（LEDC）
-// GPIO35 - TFT 数据（FSPI MOSI）
-// GPIO36 - TFT 时钟（FSPI SCLK）
+// GPIO33-37 - [禁用] N8R8 Octal PSRAM 占用
 // GPIO38 - 上键
 // GPIO39 - 确认键
 // GPIO40 - 下键
