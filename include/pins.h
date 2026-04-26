@@ -33,10 +33,11 @@
 #define I2C_SCL   42   // I2C 时钟线
 
 // INA226 I2C 地址（7位）
-// 通过 A0/A1 引脚接 GND 或 VS 配置
-#define INA_CH1_ADDR  0x40  // A0=GND, A1=GND → 12V 轨道
-#define INA_CH2_ADDR  0x41  // A0=VS,  A1=GND → 5V 轨道
-#define INA_CH3_ADDR  0x44  // A0=GND, A1=VS  → 负载轨道
+// 三路并联同一直流输出电压轨，通过 A0/A1 引脚接 GND 或 VS 区分地址
+// 各路独立计量电流，汇总后得到总输出电流
+#define INA_CH1_ADDR  0x40  // A0=GND, A1=GND → 输出接口 1
+#define INA_CH2_ADDR  0x41  // A0=VS,  A1=GND → 输出接口 2
+#define INA_CH3_ADDR  0x44  // A0=GND, A1=VS  → 输出接口 3
 
 // -----------------------------------------------------------------------------
 // 风扇控制

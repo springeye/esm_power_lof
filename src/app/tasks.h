@@ -1,7 +1,7 @@
 #pragma once
 /**
  * @file tasks.h
- * @brief FreeRTOS 任务声明 — 5个应用任务
+ * @brief FreeRTOS 任务声明 — 5 个应用任务
  *
  * 任务列表：
  *  - lvglTask   : LVGL 渲染 + tick（Core 1，优先级 5，栈 8192）
@@ -21,9 +21,9 @@
 namespace tasks {
 
 /**
- * @brief 创建并启动所有 FreeRTOS 任务
+ * @brief 创建并启动全部 FreeRTOS 任务
  *
- * 在 main.cpp setup() 末尾调用，所有模块初始化完成后。
+ * 在 main.cpp 的 setup() 末尾调用，且需确保所有模块初始化完成。
  */
 void start_all();
 

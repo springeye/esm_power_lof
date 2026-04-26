@@ -4,9 +4,9 @@
  * @brief LVGL 9.x 移植层 — 双缓冲 flush_cb + tick 驱动
  *
  * 职责：
- *  - 初始化 LVGL，注册 display driver 和 flush_cb
+ *  - 初始化 LVGL，注册显示驱动和 flush_cb
  *  - 双缓冲（各 240×28 像素，静态分配，不使用堆）
- *  - 提供 tick_increment() 供 FreeRTOS timer 每 1ms 调用
+ *  - 提供 tick_increment() 供 FreeRTOS 定时器每 1ms 调用
  *  - 提供 task_handler() 供 lvglTask 调用（每 5ms）
  *
  * 约束：

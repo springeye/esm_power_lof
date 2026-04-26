@@ -19,7 +19,8 @@
     "ses_2386c7a9cffeR4hY9we3t0pAOP",
     "ses_2386b4cffffedE6g7593FR6fuy",
     "ses_2386b6b73ffeHBDgn5L0wBJSw7",
-    "ses_237ab2245ffeuAluh6e0KRqib2"
+    "ses_237ab2245ffeuAluh6e0KRqib2",
+    "ses_237317e76ffeOkXwYxZ6Nr6fq2"
   ],
   "plan_name": "ui-integration",
   "agent": "atlas",
@@ -63,9 +64,10 @@
       "task_key": "todo:8",
       "task_label": "8",
       "task_title": "[DELETED — Momus 修订] 不再需要 sensor API 调研",
-      "session_id": "ses_237ab2245ffeuAluh6e0KRqib2",
-      "agent": "oracle",
-      "updated_at": "2026-04-26T05:48:54.964Z"
+      "session_id": "ses_2372730beffeC3R0UmneJC3NoC",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "updated_at": "2026-04-26T08:15:09.367Z"
     }
   }
 }

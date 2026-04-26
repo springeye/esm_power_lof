@@ -2,19 +2,19 @@
 #include <cstdint>
 
 /**
- * @brief Initialize fan tachometer using ESP32 PCNT (legacy driver).
+ * @brief 使用 ESP32 PCNT（旧版驱动）初始化风扇测速计。
  *
- * Uses driver/pcnt.h (legacy API) on FAN_TACH pin.
- * Counts rising edges per measurement window.
+ * 在 FAN_TACH 引脚上使用 driver/pcnt.h（旧版 API）。
+ * 按测量窗口统计上升沿脉冲数。
  */
 void fan_tach_init(void);
 
 /**
- * @brief Get fan speed in RPM.
+ * @brief 获取风扇转速（RPM）。
  *
- * Reads PCNT counter, calculates RPM based on pulse count and elapsed time.
- * 4-wire fans: 2 pulses per revolution.
+ * 读取 PCNT 计数器，并根据脉冲数与经过时间计算转速。
+ * 4 线风扇：每转 2 个脉冲。
  *
- * @return Fan speed in RPM (0 if stalled)
+ * @return 风扇转速（RPM），堵转时返回 0
  */
 uint32_t fan_tach_get_rpm(void);
