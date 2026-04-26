@@ -1,10 +1,10 @@
 #pragma once
 /**
  * @file i2c_bus.h
- * @brief I2C HAL abstraction for ESP32 Fan Controller
+ * @brief ESP32 风扇控制器的 I2C 硬件抽象层
  *
- * Wraps Wire library with mutex protection for multi-task access.
- * Provides init, scan, and mutex lock/unlock API.
+ * 对 Wire 库进行封装，并通过互斥锁保护多任务访问。
+ * 提供初始化、扫描以及互斥锁加解锁接口。
  */
 
 #include <Arduino.h>
@@ -17,44 +17,44 @@ extern "C" {
 #endif
 
 /**
- * @brief Initialize I2C bus with pins and frequency from app_config.h
+ * @brief 使用 app_config.h 中配置的引脚和频率初始化 I2C 总线
  *
- * Calls Wire.begin(I2C_SDA, I2C_SCL, I2C_FREQ_HZ).
- * Creates FreeRTOS mutex for thread-safe access.
- * Must be called before any I2C device init.
+ * 调用 Wire.begin(I2C_SDA, I2C_SCL, I2C_FREQ_HZ)。
+ * 创建 FreeRTOS 互斥锁，用于线程安全访问。
+ * 必须在任何 I2C 设备初始化之前调用。
  */
 void i2c_bus_init(void);
 
 /**
- * @brief Scan I2C bus and print found device addresses to Serial
+ * @brief 扫描 I2C 总线并把发现的设备地址输出到串口
  *
- * Debug utility. Prints addresses of all responding devices.
- * Not thread-safe by itself; call only during init phase.
+ * 调试工具。打印所有响应设备的地址。
+ * 该函数本身不具备线程安全性，仅应在初始化阶段调用。
  */
 void i2c_scan(void);
 
 /**
- * @brief Take I2C bus mutex (blocking)
+ * @brief 获取 I2C 总线互斥锁（阻塞等待）
  *
- * Must be called before any direct Wire transaction.
- * Always pair with i2c_bus_give().
+ * 在任何直接 Wire 事务前必须调用。
+ * 使用后必须与 i2c_bus_give() 配对释放。
  *
- * @param timeout_ms Maximum wait time in milliseconds
- * @return true if mutex acquired, false on timeout
+ * @param timeout_ms 最大等待时间，单位毫秒
+ * @return 成功获取互斥锁返回 true，超时返回 false
  */
 bool i2c_bus_take(uint32_t timeout_ms);
 
 /**
- * @brief Release I2C bus mutex
+ * @brief 释放 I2C 总线互斥锁
  *
- * Must be called after i2c_bus_take() when transaction is complete.
+ * 在 i2c_bus_take() 后完成一次传输时必须调用。
  */
 void i2c_bus_give(void);
 
 /**
- * @brief Get the Wire instance (use only while holding mutex)
+ * @brief 获取 Wire 实例（仅在持有互斥锁时使用）
  *
- * @return Reference to the Wire TwoWire instance
+ * @return 返回 Wire 的 TwoWire 实例引用
  */
 TwoWire& i2c_get_wire(void);
 
