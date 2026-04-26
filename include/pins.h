@@ -1,37 +1,89 @@
 #pragma once
 
-// TFT SPI Display (design.md D2)
-#define TFT_MOSI  23
-#define TFT_SCLK  18
-#define TFT_CS     5
-#define TFT_DC     2
-#define TFT_RST    4
-#define TFT_BL    16
+// =============================================================================
+// ESP32-S3 引脚分配
+// 目标模组：ESP32-S3-WROOM-1（无 PSRAM）或 ESP32-S3-WROOM-2（Octal PSRAM）
+//
+// 保留 / 禁用引脚：
+//   GPIO0        - Strapping（BOOT），需外部上拉
+//   GPIO3        - Strapping（JTAG）
+//   GPIO19/20    - USB-OTG D-/D+，保留用于固件烧录
+//   GPIO26-32    - SPI0/1 内部 Flash & PSRAM，禁止使用
+//   GPIO33-37    - Octal Flash 专用，禁止使用
+// =============================================================================
 
-// I2C Bus (design.md D2)
-#define I2C_SDA   21
-#define I2C_SCL   22
+// -----------------------------------------------------------------------------
+// TFT SPI 显示屏（ST7789 240×280）
+// 使用 FSPI（SPI2）硬件引脚，刷屏性能最佳
+// 注意：GPIO34-36 仅在 WROOM-1（非 Octal Flash）模组上可用
+//       若使用 WROOM-2，请改用 GPIO4/5/6/7/8
+// -----------------------------------------------------------------------------
+#define TFT_MOSI  35   // FSPI MOSI，数据输出
+#define TFT_SCLK  36   // FSPI SCLK，时钟
+#define TFT_CS    34   // FSPI CS，片选（低有效）
+#define TFT_DC    13   // 数据/命令选择（高=数据，低=命令）
+#define TFT_RST   14   // 硬件复位（低有效）
+#define TFT_BL    21   // 背光 PWM（LEDC），避开 GPIO19/20 USB 引脚
 
-// INA226 I2C Addresses (design.md D2)
-// 7-bit addr / 8-bit write / 8-bit read
-#define INA_CH1_ADDR  0x40  // 0x40 / 0x80 / 0x81
-#define INA_CH2_ADDR  0x41  // 0x41 / 0x82 / 0x83
-#define INA_CH3_ADDR  0x44  // 0x44 / 0x88 / 0x89
+// -----------------------------------------------------------------------------
+// I2C 总线 — INA226 电流传感器 ×3（400kHz）
+// GPIO41/42 为 S3 专属引脚，远离 Flash/PSRAM 区域，布线干净
+// -----------------------------------------------------------------------------
+#define I2C_SDA   41   // I2C 数据线
+#define I2C_SCL   42   // I2C 时钟线
 
-// Fan PWM & Tach (design.md D2)
-#define FAN_PWM   25
-#define FAN_TACH  35  // input only, ADC1_CH7
+// INA226 I2C 地址（7位）
+// 通过 A0/A1 引脚接 GND 或 VS 配置
+#define INA_CH1_ADDR  0x40  // A0=GND, A1=GND → 12V 轨道
+#define INA_CH2_ADDR  0x41  // A0=VS,  A1=GND → 5V 轨道
+#define INA_CH3_ADDR  0x44  // A0=GND, A1=VS  → 负载轨道
 
-// NTC Temperature Sensor (design.md D2)
-#define NTC_ADC_CH  36  // SENSOR_VP, input only
+// -----------------------------------------------------------------------------
+// 风扇控制
+// PWM：LEDC 通道，25kHz，10-bit 分辨率
+// 测速：PCNT 硬件计数器，4线风扇每转2个脉冲
+// -----------------------------------------------------------------------------
+#define FAN_PWM   16   // 风扇 PWM 输出（LEDC）
+#define FAN_TACH  17   // 风扇转速输入（PCNT），启用内部上拉
 
-// PSU Control (design.md D2)
-#define PSON_PIN  27  // output: LOW=on, HIGH=off
-#define PWOK_PIN  34  // input only, no internal pullup
+// -----------------------------------------------------------------------------
+// NTC 温度传感器（10kΩ，B=3950）
+// 使用 ADC1，不受 WiFi 影响，比 ADC2 更稳定
+// -----------------------------------------------------------------------------
+#define NTC_ADC_CH  1   // GPIO1 = ADC1_CH0
 
-// Keys (design.md D2)
-#define KEY_K1  32
-#define KEY_K2  33
-#define KEY_K3  26
+// -----------------------------------------------------------------------------
+// ATX 电源控制
+// -----------------------------------------------------------------------------
+#define PSON_PIN  15   // 电源开关输出：低电平=开机，高电平=关机（建议开漏+上拉）
+#define PWOK_PIN  18   // 电源就绪输入：高电平=电源正常（外部下拉 10kΩ）
 
-// Note: GPIO6-11 reserved for flash, GPIO34-39 input-only
+// -----------------------------------------------------------------------------
+// 按键（低电平有效，启用内部上拉）
+// -----------------------------------------------------------------------------
+#define KEY_K1  38   // 上键
+#define KEY_K2  39   // 确认键
+#define KEY_K3  40   // 下键
+
+// =============================================================================
+// GPIO 使用汇总
+// =============================================================================
+// GPIO1  - NTC 温度 ADC（ADC1_CH0）
+// GPIO13 - TFT 数据/命令
+// GPIO14 - TFT 复位
+// GPIO15 - 电源开关输出（PSON）
+// GPIO16 - 风扇 PWM（LEDC）
+// GPIO17 - 风扇测速（PCNT）
+// GPIO18 - 电源就绪输入（PWOK）
+// GPIO19 - [保留] USB D-
+// GPIO20 - [保留] USB D+
+// GPIO21 - TFT 背光 PWM（LEDC）
+// GPIO34 - TFT 片选（FSPI CS）
+// GPIO35 - TFT 数据（FSPI MOSI）
+// GPIO36 - TFT 时钟（FSPI SCLK）
+// GPIO38 - 上键
+// GPIO39 - 确认键
+// GPIO40 - 下键
+// GPIO41 - I2C 数据（SDA）
+// GPIO42 - I2C 时钟（SCL）
+// =============================================================================
