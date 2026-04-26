@@ -20,7 +20,7 @@
 // -----------------------------------------------------------------------------
 #define TFT_MOSI  35   // FSPI MOSI，数据输出
 #define TFT_SCLK  36   // FSPI SCLK，时钟
-#define TFT_CS    34   // FSPI CS，片选（低有效）
+#define TFT_CS    10   // FSPI CS，片选（低有效）— 改用 GPIO10，开发板未引出 GPIO34
 #define TFT_DC    13   // 数据/命令选择（高=数据，低=命令）
 #define TFT_RST   14   // 硬件复位（低有效）
 #define TFT_BL    21   // 背光 PWM（LEDC），避开 GPIO19/20 USB 引脚
@@ -70,6 +70,7 @@
 // GPIO 使用汇总
 // =============================================================================
 // GPIO1  - NTC 温度 ADC（ADC1_CH0）
+// GPIO10 - TFT 片选（FSPI CS）
 // GPIO13 - TFT 数据/命令
 // GPIO14 - TFT 复位
 // GPIO15 - 电源开关输出（PSON）
@@ -79,7 +80,6 @@
 // GPIO19 - [保留] USB D-
 // GPIO20 - [保留] USB D+
 // GPIO21 - TFT 背光 PWM（LEDC）
-// GPIO34 - TFT 片选（FSPI CS）
 // GPIO35 - TFT 数据（FSPI MOSI）
 // GPIO36 - TFT 时钟（FSPI SCLK）
 // GPIO38 - 上键
