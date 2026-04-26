@@ -24,9 +24,8 @@
 #include "../power/psu_fsm.h"
 #include "../power/ps_on.h"
 #include "../input/keys.h"
+#include "../ui_bridge/input_bridge.h"
 #include "../display/lvgl_port.h"
-#include "../ui/ui_main.h"
-#include "../ui/ui_events.h"
 #include "app_config.h"
 #include "pins.h"
 #include <Arduino.h>
@@ -42,13 +41,6 @@ void lvgl_task(void* /*param*/) {
     for (;;) {
         lvgl_port::tick_increment();
         lvgl_port::task_handler();
-
-        // 刷新 UI 数据
-        ui_main::update_temperature(app_state::get_temp_c());
-        ui_main::update_fan_rpm(app_state::get_rpm());
-        ui_main::update_current(app_state::get_ch1_a(),
-                                app_state::get_ch2_a(),
-                                app_state::get_ch3_a());
 
         esp_task_wdt_reset();
         vTaskDelay(pdMS_TO_TICKS(5));
@@ -126,7 +118,7 @@ void input_task(void* /*param*/) {
             bool raw = (digitalRead(key_pins[k]) == LOW);
             key_debounce_update(&s_keys[k], raw, now);
             if (s_keys[k].event != KEY_IDLE) {
-                ui_events::handle_key(k, s_keys[k]);
+                ui_bridge::input_handle_key(k, s_keys[k]);
                 s_keys[k].event = KEY_IDLE;  // 消费事件
             }
         }
@@ -159,18 +151,6 @@ void power_task(void* /*param*/) {
 
         // 更新 PSU 状态到 app_state
         app_state::set_psu_state(static_cast<uint8_t>(psu_st));
-
-        // 更新 UI 状态字符串
-        const char* state_str = "---";
-        switch (psu_st) {
-            case PSU_OFF:      state_str = "OFF";      break;
-            case PSU_STANDBY:  state_str = "STANDBY";  break;
-            case PSU_STARTING: state_str = "STARTING"; break;
-            case PSU_ON:       state_str = "ON";       break;
-            case PSU_STOPPING: state_str = "STOPPING"; break;
-            case PSU_FAULT:    state_str = "FAULT";    break;
-        }
-        ui_main::update_psu_state(state_str);
 
         esp_task_wdt_reset();
         vTaskDelay(pdMS_TO_TICKS(10));

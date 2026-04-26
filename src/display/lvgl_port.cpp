@@ -56,7 +56,7 @@ void init() {
 }
 
 void tick_increment() {
-    lv_tick_inc(1);  // 每 1ms 调用一次
+    lv_tick_inc(5);  // 每 5ms 调用一次
 }
 
 void task_handler() {

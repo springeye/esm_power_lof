@@ -145,7 +145,7 @@ lv_obj_t * home_create(void)
     lv_obj_set_style_flex_track_place(lv_obj_3, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_add_style(lv_obj_3, &no_padding, 0);
     lv_obj_t * lv_label_6 = lv_label_create(lv_obj_3);
-    lv_label_set_text(lv_label_6, "功率 000.00 w");
+    lv_label_set_text(lv_label_6, "Pt 000.00 w");
     lv_obj_set_style_text_color(lv_label_6, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(lv_label_6, hos_bold_big, 0);
     
@@ -179,6 +179,7 @@ lv_obj_t * home_create(void)
     lv_obj_t * lv_label_7 = lv_label_create(lv_obj_5);
     lv_label_set_text(lv_label_7, "H 02:33:57");
     lv_obj_set_style_text_color(lv_label_7, lv_color_hex(0xFFFFFF), 0);
+    lv_obj_set_style_text_font(lv_label_7, hos_14, 0);
     
     lv_obj_t * lv_obj_6 = lv_obj_create(lv_obj_4);
     lv_obj_set_width(lv_obj_6, lv_pct(49));
@@ -197,6 +198,7 @@ lv_obj_t * home_create(void)
     lv_obj_t * lv_label_8 = lv_label_create(lv_obj_6);
     lv_label_set_text(lv_label_8, "0.0000 Wh");
     lv_obj_set_style_text_color(lv_label_8, lv_color_hex(0xFFFFFF), 0);
+    lv_obj_set_style_text_font(lv_label_8, hos_14, 0);
     
     lv_obj_t * lv_obj_7 = lv_obj_create(lv_obj_0);
     lv_obj_set_height(lv_obj_7, lv_pct(12));

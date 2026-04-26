@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Size: 32 px
  * Bpp: 4
- * Opts: --font /fonts/HarmonyOS_Sans_SC_Bold.ttf -o /fonts/hos_bold_big_data.c --size 32 --bpp 4 --format lvgl --no-compress --range 0x20-0x7F
+ * Opts: --font /fonts/HarmonyOS_Sans_Bold.ttf -o /fonts/hos_bold_big_data.c --size 32 --bpp 4 --format lvgl --no-compress --range 0x20-0x7F
  ******************************************************************************/
 
 #ifdef __has_include

@@ -424,6 +424,8 @@
  *==================*/
 #define LV_USE_TEST 0
 
+#define LV_USE_XML 0
+
 #endif /* End of "Content enable" */
 
 #endif /* LV_CONF_H */

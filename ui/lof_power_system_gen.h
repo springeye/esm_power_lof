@@ -51,19 +51,11 @@ extern "C" {
  * Fonts
  *----------------*/
 
-extern lv_font_t * hos_black;
-
-extern lv_font_t * hos_bold;
-
 extern lv_font_t * hos_bold_big;
-
-extern lv_font_t * hos_light;
-
-extern lv_font_t * hos_medium;
 
 extern lv_font_t * hos_regular;
 
-extern lv_font_t * hos_thin;
+extern lv_font_t * hos_14;
 
 /*----------------
  * Images

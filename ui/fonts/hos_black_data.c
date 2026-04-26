@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Size: 16 px
  * Bpp: 4
- * Opts: --font /fonts/HarmonyOS_Sans_SC_Black.ttf -o /fonts/hos_black_data.c --size 16 --bpp 4 --format lvgl --no-compress --range 0x20-0x7F
+ * Opts: --font /fonts/HarmonyOS_Sans_Black.ttf -o /fonts/hos_black_data.c --size 16 --bpp 4 --format lvgl --no-compress --range 0x20-0x7F
  ******************************************************************************/
 
 #ifdef __has_include

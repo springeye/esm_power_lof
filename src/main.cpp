@@ -4,14 +4,16 @@
 #include "hal/spi_bus.h"
 #include "display/tft_driver.h"
 #include "display/lvgl_port.h"
-#include "ui/ui_main.h"
-#include "ui/ui_menu.h"
-#include "ui/ui_events.h"
+#include "ui_bridge/screen_manager.h"
+#include "ui_bridge/data_bridge.h"
+#include "ui_bridge/input_bridge.h"
+extern "C" {
+#include "../ui/lof_power_system.h"
+}
 #include "sensors/ina226/ina226.h"
 #include "fan/fan_pwm.h"
 #include "fan/fan_tach.h"
 #include "power/ps_on.h"
-#include "input/keys.h"
 #include "app/watchdog.h"
 #include "app/tasks.h"
 #include "app_config.h"
@@ -28,10 +30,11 @@ void setup() {
     tft_driver::init();
     lvgl_port::init();
 
-    // UI
-    ui_main::init();
-    ui_menu::init();
-    ui_events::init();
+    lof_power_system_init(NULL);
+    ui_bridge::screen_manager_init(2000);
+    ui_bridge::data_bridge_attach(ui_bridge::screen_manager_get_home());
+    ui_bridge::data_bridge_init();
+    ui_bridge::input_bridge_attach_home(ui_bridge::screen_manager_get_home());
 
     // Sensors & peripherals
     ina226_init_all();

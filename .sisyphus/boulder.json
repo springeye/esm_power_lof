@@ -1,59 +1,71 @@
 {
-  "active_plan": "C:\\Users\\develop\\Desktop\\workspaces\\esm_power_lof\\.sisyphus\\plans\\init-esp32-fan-controller.md",
-  "started_at": "2026-04-21T13:58:29.352Z",
+  "active_plan": "C:\\Users\\develop\\Desktop\\workspaces\\esm_power_lof\\.sisyphus\\plans\\ui-integration.md",
+  "started_at": "2026-04-26T01:49:00.893Z",
   "session_ids": [
-    "ses_2500587a0ffe4un7BzV24J9Wbj",
-    "ses_24f5d63eaffehjGpTJwsCp4Jli",
-    "ses_24f46a48fffeQlP6q7ypPN0rX5",
-    "ses_24f3f1284ffe5x01fFzILd0OOl",
-    "ses_24f3e1df9ffeThfAQKb6eE1Bks",
-    "ses_24d13c7d3ffeKnY2A975kNi4aU",
-    "ses_24cf546adffe3yMgTIl7SsqXRM",
-    "ses_24cf50528ffem5TULo2WKdKt6Z",
-    "ses_24cf4d028ffehKZgFW2rXN71KA",
-    "ses_24cf4928bffeAq1uDDKIqLvgQD",
-    "ses_24ceb1107ffe1YbJ3vRRBYMH8R",
-    "ses_24ce9d0ecffeVukh27YfDxZ0Aw"
+    "ses_23acee003ffezjzvl6UlsDGFLY",
+    "ses_238855f7fffew7QzjsCxDvpbc1",
+    "ses_23885437dffePsvWn8BkrqvIFC",
+    "ses_23883c82affeCajyPSlj3ssR44",
+    "ses_23883f1dfffe1EHNjujfa77dxl",
+    "ses_23883af10ffesmJFWSykm43gt2",
+    "ses_23883829effedhoOTb5cfciQ98",
+    "ses_2387f306dffeFLzFsFjngFqhOP",
+    "ses_2387e581dffeV1e6Z8AaljZwkL",
+    "ses_2387d2b52ffem5vuXJMtmhcrYD",
+    "ses_2387b3463ffew1R6VGdAWWeW3M",
+    "ses_23878e9c8ffevUM4zPYql5gQFo",
+    "ses_2386e9beaffe38WIbdpDaBFb9w",
+    "ses_2386e8003ffe0uZk1FUettPyFu",
+    "ses_2386c7a9cffeR4hY9we3t0pAOP",
+    "ses_2386b4cffffedE6g7593FR6fuy",
+    "ses_2386b6b73ffeHBDgn5L0wBJSw7",
+    "ses_237ab2245ffeuAluh6e0KRqib2"
   ],
-  "session_origins": {
-    "ses_2500587a0ffe4un7BzV24J9Wbj": "direct",
-    "ses_24d13c7d3ffeKnY2A975kNi4aU": "direct",
-    "ses_24cf546adffe3yMgTIl7SsqXRM": "appended",
-    "ses_24cf50528ffem5TULo2WKdKt6Z": "appended",
-    "ses_24cf4d028ffehKZgFW2rXN71KA": "appended",
-    "ses_24cf4928bffeAq1uDDKIqLvgQD": "appended",
-    "ses_24ceb1107ffe1YbJ3vRRBYMH8R": "appended",
-    "ses_24ce9d0ecffeVukh27YfDxZ0Aw": "appended"
-  },
-  "plan_name": "init-esp32-fan-controller",
+  "plan_name": "ui-integration",
   "agent": "atlas",
   "task_sessions": {
-    "todo:5": {
-      "task_key": "todo:5",
-      "task_label": "5",
-      "task_title": "**T05 创建 include/app_config.h 全局常量**",
-      "session_id": "ses_24fa6e68dffeYg2jPCugGxN9Iu",
+    "todo:1": {
+      "task_key": "todo:1",
+      "task_label": "1",
+      "task_title": "创建 `src/ui/_legacy/` 目录并移动旧 UI 文件",
+      "session_id": "ses_238855f7fffew7QzjsCxDvpbc1",
       "agent": "Sisyphus-Junior",
       "category": "quick",
-      "updated_at": "2026-04-21T14:04:37.230Z"
+      "updated_at": "2026-04-26T01:50:30.156Z"
+    },
+    "todo:2": {
+      "task_key": "todo:2",
+      "task_label": "2",
+      "task_title": "在 `_legacy/` 文件首尾包裹 `#if 0` / `#endif`",
+      "session_id": "ses_23883829effedhoOTb5cfciQ98",
+      "agent": "explore",
+      "updated_at": "2026-04-26T01:53:20.695Z"
+    },
+    "todo:6": {
+      "task_key": "todo:6",
+      "task_label": "6",
+      "task_title": "实现 `src/ui_bridge/lvgl_xml_stubs.c`（XML API 弱符号 stub）",
+      "session_id": "ses_2387f306dffeFLzFsFjngFqhOP",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "updated_at": "2026-04-26T01:57:03.402Z"
+    },
+    "todo:7": {
+      "task_key": "todo:7",
+      "task_label": "7",
+      "task_title": "实现 `src/ui_bridge/screen_manager.{h,cpp}`（splash → home 2s 切换）",
+      "session_id": "ses_2387e581dffeV1e6Z8AaljZwkL",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-low",
+      "updated_at": "2026-04-26T01:58:12.935Z"
     },
     "todo:8": {
       "task_key": "todo:8",
       "task_label": "8",
-      "task_title": "**T08 platformio.ini 追加 lib_deps**",
-      "session_id": "ses_24f9fbdbcffeoCkjwbeozdnGIS",
-      "agent": "Sisyphus-Junior",
-      "category": "unspecified-high",
-      "updated_at": "2026-04-21T14:13:22.571Z"
-    },
-    "todo:11": {
-      "task_key": "todo:11",
-      "task_label": "11",
-      "task_title": "**T11 创建 include/lv_conf.h（LVGL 9.x 完整配置）**",
-      "session_id": "ses_24f3e1df9ffeThfAQKb6eE1Bks",
-      "agent": "Sisyphus-Junior",
-      "category": "unspecified-high",
-      "updated_at": "2026-04-21T15:59:49.709Z"
+      "task_title": "[DELETED — Momus 修订] 不再需要 sensor API 调研",
+      "session_id": "ses_237ab2245ffeuAluh6e0KRqib2",
+      "agent": "oracle",
+      "updated_at": "2026-04-26T05:48:54.964Z"
     }
   }
 }

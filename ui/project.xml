@@ -1,7 +1,7 @@
 <project name="lof_power_system">
 	<targets>
 		<target name="target1">
-			<display width="240" height="320" />
+			<display width="240" height="280" />
 		</target>
 	</targets>
 </project>
