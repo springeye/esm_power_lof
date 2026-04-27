@@ -48,7 +48,7 @@ struct DashboardData {
     // 风扇
     uint32_t fan_rpm;
     uint16_t fan_duty;       // 0-1023
-    uint8_t  fan_pct;        // 0-100，UI 直接显示
+    uint8_t  fan_pct;        // 0-100，由 fan_duty*100/1023 计算得出
 
     // 电流（三路输出接口）
     float    current_a[3];   // CH1/CH2/CH3
@@ -76,7 +76,7 @@ enum DirtyFlag : uint32_t {
     DIRTY_CURRENT_1   = 1 << 5,
     DIRTY_CURRENT_2   = 1 << 6,
     DIRTY_CURRENT_3   = 1 << 7,
-    DIRTY_CUR_VALID   = 1 << 8,
+    DIRTY_CUR_VALID   = 1 << 8,  // 三路任一 valid 变化时置位
     DIRTY_PSU_STATE   = 1 << 9,
     DIRTY_PWOK        = 1 << 10,
     DIRTY_FAULT       = 1 << 11,
@@ -168,9 +168,9 @@ uint32_t snapshot(DashboardData& out) {
 
 ### 编译约束
 
-- **正常模式**（`viewmodel::init()`）：仅在 ESP32 平台编译，依赖 `app_state` 原子变量和 FreeRTOS
-- **模拟模式**（`viewmodel::init_mock()`）：可在任意平台编译，零硬件依赖，用 `<cmath>` 和 `<ctime>` 生成假数据
-- 两模式通过 `#ifdef` 或编译开关隔离，确保 PC 环境能独立编译 ViewModel 供 UI 调试
+- **正常模式**（`viewmodel::init()`）：运行时读取 `app_state` 原子变量，适用于 ESP32 实际运行
+- **模拟模式**（`viewmodel::init_mock()`）：适用于任何平台（包括 PC），零硬件依赖，用 `<cmath>` 生成假数据
+- 两模式可在同一份代码中共存，通过编译宏或运行时标志切换；ViewModel 头文件不依赖平台头文件
 
 ## ViewBinding 层
 
