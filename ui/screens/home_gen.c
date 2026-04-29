@@ -120,6 +120,7 @@ lv_obj_t * home_create(void)
     lv_obj_set_style_pad_bottom(lv_obj_2, 0, 0);
     lv_obj_set_style_flex_cross_place(lv_obj_2, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_set_style_flex_track_place(lv_obj_2, LV_FLEX_ALIGN_CENTER, 0);
+    lv_obj_set_style_radius(lv_obj_2, 6, 0);
     lv_obj_add_style(lv_obj_2, &no_padding, 0);
     lv_obj_t * lv_label_4 = lv_label_create(lv_obj_2);
     lv_label_set_text(lv_label_4, "POWER PANEL");
@@ -167,7 +168,7 @@ lv_obj_t * home_create(void)
     lv_obj_set_height(lv_obj_5, lv_pct(100));
     lv_obj_set_style_border_color(lv_obj_5, lv_color_hex(0x659595), 0);
     lv_obj_set_style_bg_opa(lv_obj_5, 0, 0);
-    lv_obj_set_style_radius(lv_obj_5, 0, 0);
+    lv_obj_set_style_radius(lv_obj_5, 6, 0);
     lv_obj_set_style_border_width(lv_obj_5, 2, 0);
     lv_obj_set_style_layout(lv_obj_5, LV_LAYOUT_FLEX, 0);
     lv_obj_set_style_flex_main_place(lv_obj_5, LV_FLEX_ALIGN_CENTER, 0);
@@ -187,7 +188,7 @@ lv_obj_t * home_create(void)
     lv_obj_set_style_border_color(lv_obj_6, lv_color_hex(0x659595), 0);
     lv_obj_set_style_border_width(lv_obj_6, 2, 0);
     lv_obj_set_style_bg_opa(lv_obj_6, 0, 0);
-    lv_obj_set_style_radius(lv_obj_6, 0, 0);
+    lv_obj_set_style_radius(lv_obj_6, 6, 0);
     lv_obj_set_style_layout(lv_obj_6, LV_LAYOUT_FLEX, 0);
     lv_obj_set_style_flex_main_place(lv_obj_6, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_set_style_flex_cross_place(lv_obj_6, LV_FLEX_ALIGN_CENTER, 0);
@@ -228,7 +229,7 @@ lv_obj_t * home_create(void)
     lv_obj_set_style_pad_row(lv_obj_8, 0, 0);
     lv_obj_set_style_pad_column(lv_obj_8, 0, 0);
     lv_obj_set_style_flex_track_place(lv_obj_8, LV_FLEX_ALIGN_CENTER, 0);
-    lv_obj_set_style_radius(lv_obj_8, 0, 0);
+    lv_obj_set_style_radius(lv_obj_8, 6, 0);
     lv_obj_t * lv_label_9 = lv_label_create(lv_obj_8);
     lv_label_set_text(lv_label_9, "750");
     lv_obj_set_style_text_color(lv_label_9, lv_color_hex(0xffd208), 0);
@@ -249,7 +250,7 @@ lv_obj_t * home_create(void)
     lv_obj_set_style_pad_left(lv_obj_9, 8, 0);
     lv_obj_set_style_pad_right(lv_obj_9, 8, 0);
     lv_obj_set_style_flex_track_place(lv_obj_9, LV_FLEX_ALIGN_CENTER, 0);
-    lv_obj_set_style_radius(lv_obj_9, 0, 0);
+    lv_obj_set_style_radius(lv_obj_9, 6, 0);
     lv_obj_t * lv_bar_0 = lv_bar_create(lv_obj_9);
     lv_obj_set_width(lv_bar_0, lv_pct(75));
     lv_obj_set_height(lv_bar_0, lv_pct(40));
