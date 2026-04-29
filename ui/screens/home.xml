@@ -169,7 +169,7 @@
 				style_flex_track_place="center"
 				style_radius="6"
 			>
-				<lv_label text="750" style_text_color="0xffd208" />
+				<lv_label text="750" style_text_color="0xffd208" style_text_font="hos_14" />
 			</lv_obj>
 			<lv_obj
 				width="73%"
@@ -190,7 +190,7 @@
 				style_radius="6"
 			>
 				<lv_bar width="75%" height="40%" value="0" />
-				<lv_label text="0%" style_text_color="0xFFFFFF" />
+				<lv_label text="0%" style_text_color="0xFFFFFF" style_text_font="hos_14" />
 			</lv_obj>
 		</lv_obj>
 
@@ -239,7 +239,7 @@
 					style_flex_track_place="center"
 					style_radius="1"
 				>
-					<lv_label text="CH1" style_text_color="0xFFFFFF" />
+					<lv_label text="CH1" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 				</lv_obj>
 				<lv_obj
 					style_flex_grow="1"
@@ -255,9 +255,9 @@
 					style_pad_column="0"
 					style_flex_track_place="center"
 				>
-					<lv_label text="0.000" style_text_color="0xFFFFFF" />
-					<lv_label text="0.000" style_text_color="0xFFFFFF" />
-					<lv_label text="0.000" style_text_color="0xFFFFFF" />
+					<lv_label text="0.000" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+					<lv_label text="0.000" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+					<lv_label text="0.000" style_text_color="0xFFFFFF" style_text_font="hos_14" />
 				</lv_obj>
 			</lv_obj>
 
@@ -289,7 +289,7 @@
 					style_flex_track_place="center"
 					style_radius="1"
 				>
-					<lv_label text="CH2" style_text_color="0xFFFFFF" />
+					<lv_label text="CH2" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 				</lv_obj>
 				<lv_obj
 					style_flex_grow="1"
@@ -305,9 +305,9 @@
 					style_pad_column="0"
 					style_flex_track_place="center"
 				>
-					<lv_label text="0.000" style_text_color="0xFFFFFF" />
-					<lv_label text="0.000" style_text_color="0xFFFFFF" />
-					<lv_label text="0.000" style_text_color="0xFFFFFF" />
+					<lv_label text="0.000" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+					<lv_label text="0.000" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+					<lv_label text="0.000" style_text_color="0xFFFFFF" style_text_font="hos_14" />
 				</lv_obj>
 			</lv_obj>
 
@@ -339,7 +339,7 @@
 					style_pad_column="0"
 					style_radius="1"
 				>
-					<lv_label text="CH3" style_text_color="0xFFFFFF" />
+					<lv_label text="CH3" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 				</lv_obj>
 				<lv_obj
 					style_flex_grow="1"
@@ -355,9 +355,9 @@
 					style_pad_column="0"
 					style_flex_track_place="center"
 				>
-					<lv_label text="0.000" style_text_color="0xFFFFFF" />
-					<lv_label text="0.000" style_text_color="0xFFFFFF" />
-					<lv_label text="0.000" style_text_color="0xFFFFFF" />
+					<lv_label text="0.000" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+					<lv_label text="0.000" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+					<lv_label text="0.000" style_text_color="0xFFFFFF" style_text_font="hos_14" />
 				</lv_obj>
 			</lv_obj>
 		</lv_obj>
