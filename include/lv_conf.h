@@ -39,10 +39,16 @@
 #define LV_INDEV_DEF_READ_PERIOD 30  /* [ms] */
 
 /* Use a custom tick source that tells the elapsed time in milliseconds. */
-#define LV_TICK_CUSTOM 1
-#if LV_TICK_CUSTOM
-    #define LV_TICK_CUSTOM_INCLUDE "Arduino.h"
-    #define LV_TICK_CUSTOM_SYS_TIME_EXPR (millis())
+#if defined(BUILD_NATIVE)
+    /* Native PC build: tick handled manually via lv_tick_inc() in lvgl_port_native.cpp */
+    #define LV_TICK_CUSTOM 0
+#else
+    /* ESP32 build: use Arduino millis() */
+    #define LV_TICK_CUSTOM 1
+    #if LV_TICK_CUSTOM
+        #define LV_TICK_CUSTOM_INCLUDE "Arduino.h"
+        #define LV_TICK_CUSTOM_SYS_TIME_EXPR (millis())
+    #endif
 #endif
 
 /* Default Dot Per Inch. Used to initialize default sizes such as widgets sized, style paddings.
@@ -306,7 +312,11 @@
 #define LV_USE_DROPDOWN   0
 #define LV_USE_IMG        0
 #define LV_USE_LABEL      1
-#define LV_USE_LINE       0
+#if defined(BUILD_NATIVE)
+#define LV_USE_LINE       1
+#else
+#define LV_USE_LINE       1
+#endif
 #define LV_USE_ROLLER     0
 #define LV_USE_SLIDER     1
 #define LV_USE_SWITCH     1

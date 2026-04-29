@@ -1,3 +1,6 @@
 - 已按要求创建 src 目录骨架与 test/native 目录，并为每个目录添加 .gitkeep。
 - 本次头文件注释翻译需优先保持原有注释结构与对齐，字段/常量注释必须补充用途与单位。
 - 任务环境当前缺少 clangd，LSP 诊断无法执行，只能在后续环境补齐后再做静态检查。
+- native 构建与 ESP32 构建共用同一份 lv_conf.h 时，可通过 BUILD_NATIVE 分支隔离 Arduino 依赖，保持 ESP32 行为不变。
+- PlatformIO native 旧配置只覆盖 `src/native_main.cpp` 的最小 CLI 入口；当前 SDL/LVGL 模拟器需要显式纳入 `src/native/native_main_sim.cpp`、`src/display/*_native.cpp`、`src/ui_bridge/*` 与 `ui/` 生成文件，否则会出现“SUCCESS 但没有按预期编译模拟器源集”的误判。
+- `test_framework = unity` 和 `test_build_src = yes` 不是 native 不编译的根因；用旧配置和去掉 `test_framework` 复测后仍会正常编译旧入口，说明关键在 `build_src_filter` 是否指向现有 native 入口与其依赖。

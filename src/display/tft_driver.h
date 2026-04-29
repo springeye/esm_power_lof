@@ -14,7 +14,12 @@
  *  - 背光亮度 0-255，映射到 LEDC 10-bit duty
  */
 
+#if !defined(BUILD_NATIVE)
 #include <TFT_eSPI.h>
+#else
+// Forward declare for native builds
+class TFT_eSPI;
+#endif
 #include <cstdint>
 
 namespace tft_driver {
