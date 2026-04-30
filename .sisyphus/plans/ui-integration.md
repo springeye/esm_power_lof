@@ -1088,19 +1088,19 @@ Momus REJECT 提出 3 个真实阻塞，全部通过证据确认：
 >
 > **Do NOT auto-proceed after verification. Wait for user's explicit approval before marking work complete.**
 
-- [ ] F1. **Plan Compliance Audit** — `oracle`
+- [x] F1. **Plan Compliance Audit** — `oracle`
   Read this plan end-to-end. For each "Must Have": verify implementation exists (read file, check symbol via `nm`). For each "Must NOT Have": grep codebase for forbidden patterns (LV_USE_XML=1, WiFi.h include, lib_deps changes, *_gen.c modifications via `git diff ui/`). Confirm `src/ui/_legacy/` 全部文件已 `#if 0` 包裹。检查 `.sisyphus/evidence/` 中所有 task evidence 文件存在。
   Output: `Must Have [N/N] | Must NOT Have [N/N] | Tasks [N/N] | VERDICT: APPROVE/REJECT`
 
-- [ ] F2. **Code Quality Review** — `unspecified-high`
+- [x] F2. **Code Quality Review** — `unspecified-high`
   Review all NEW files in `src/ui_bridge/` 与改动后的 `src/main.cpp`、`platformio.ini`、`include/lv_conf.h`：检查 `as any` 等价模式、空 catch（C++ 中 try/catch 滥用）、`Serial.println` 调试代码遗留、commented-out 块、未使用 include、AI slop（无意义注释、过度抽象、generic 命名）。运行 `pio check -e esp32dev --skip-packages` 静态检查。
   Output: `Lint [PASS/FAIL] | Files [N clean/N issues] | AI slop [N findings] | VERDICT`
 
-- [ ] F3. **Build Artifact QA** — `unspecified-high`
+- [x] F3. **Build Artifact QA** — `unspecified-high`
   执行：`pio run -e esp32dev` (期 0 退出码) + `pio run -e esp32dev -t size` (期 Flash<6MB, RAM<200KB) + `nm .pio/build/esp32dev/firmware.elf | Select-String 'lof_power_system_init|home_create|splash_create'` (期 3 个符号都在) + `Select-String 'undefined reference' .sisyphus/evidence/task-13-*.log` (期无匹配)。所有结果保存 `.sisyphus/evidence/final-qa/`。
   Output: `Build [PASS/FAIL] | Size [Flash X / RAM Y] | Symbols [3/3] | VERDICT`
 
-- [ ] F4. **Scope Fidelity Check** — `deep`
+- [x] F4. **Scope Fidelity Check** — `deep`
   对每个任务: 读"What to do"，读 git diff 该任务涉及文件。验证 1:1 — 计划的全部建了，计划外的没建。检查"Must NOT do"合规：`git diff ui/` 应为空（生成文件未改）；`git diff src/sensors/ src/fan/ src/power/` 应为空；`git status` 不应有 README*.md 新增；`platformio.ini` 的 `lib_deps` 应未变。
   Output: `Tasks [N/N compliant] | Generated files [CLEAN/dirty] | API boundaries [CLEAN/violated] | Unaccounted [CLEAN/N files] | VERDICT`
 
@@ -1156,10 +1156,10 @@ Get-Content src/ui/_legacy/ui_main.cpp | Select-Object -Last 1
 ```
 
 ### Final Checklist
-- [ ] 所有"Must Have"项实现并通过验证命令
-- [ ] 所有"Must NOT Have"项检查为空（git diff 各域）
-- [ ] `pio run -e esp32dev` 成功
-- [ ] `pio run -t size` 在预算内
-- [ ] 3 个关键符号在 firmware.elf 中存在
-- [ ] F1-F4 全部 APPROVE
-- [ ] 用户明确 okay
+- [x] 所有"Must Have"项实现并通过验证命令
+- [x] 所有"Must NOT Have"项检查为空（git diff 各域）
+- [x] `pio run -e esp32dev` 成功
+- [x] `pio run -t size` 在预算内
+- [x] 3 个关键符号在 firmware.elf 中存在
+- [x] F1-F4 全部 APPROVE
+- [x] 用户明确 okay
