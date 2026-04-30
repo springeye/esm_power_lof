@@ -157,7 +157,14 @@ void lof_power_system_init_gen(const char * asset_path)
                            UI_SUBJECT_STRING_LENGTH,
                            "功耗：125.21Wh"
                           );
-    lv_subject_init_int(&device_power, 750);
+    static char device_power_buf[UI_SUBJECT_STRING_LENGTH];
+    static char device_power_prev_buf[UI_SUBJECT_STRING_LENGTH];
+    lv_subject_init_string(&device_power,
+                           device_power_buf,
+                           device_power_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH,
+                           "750"
+                          );
     lv_subject_init_int(&device_power_percent, 31);
     static char device_power_percent_txt_buf[UI_SUBJECT_STRING_LENGTH];
     static char device_power_percent_txt_prev_buf[UI_SUBJECT_STRING_LENGTH];
@@ -247,7 +254,14 @@ void lof_power_system_init_gen(const char * asset_path)
                            UI_SUBJECT_STRING_LENGTH,
                            "36.0℃"
                           );
-    lv_subject_init_float(&fan_percent, 0.2);
+    static char fan_percent_buf[UI_SUBJECT_STRING_LENGTH];
+    static char fan_percent_prev_buf[UI_SUBJECT_STRING_LENGTH];
+    lv_subject_init_string(&fan_percent,
+                           fan_percent_buf,
+                           fan_percent_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH,
+                           "30%"
+                          );
 
     /*----------------
      * Translations

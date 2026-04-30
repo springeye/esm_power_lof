@@ -117,7 +117,7 @@
 				style_pad_column="0"
 				style_flex_track_place="center"
 			>
-				<lv_label bind_text="uptime" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+				<lv_label bind_text="uptime" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 			</lv_obj>
 			<lv_obj
 				width="49%"
@@ -134,7 +134,7 @@
 				style_pad_column="0"
 				style_flex_track_place="center"
 			>
-				<lv_label bind_text="wh" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+				<lv_label bind_text="wh" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 			</lv_obj>
 		</lv_obj>
 
@@ -169,7 +169,7 @@
 				style_flex_track_place="center"
 				style_radius="6"
 			>
-				<lv_label bind_text="device_power" style_text_color="0xffd208" style_text_font="hos_14" />
+				<lv_label bind_text="device_power" style_text_color="0xffd208" style_text_font="hos_regular" />
 			</lv_obj>
 			<lv_obj
 				width="73%"
@@ -190,7 +190,11 @@
 				style_radius="6"
 			>
 				<lv_bar width="75%" height="40%" bind_value="device_power_percent" />
-				<lv_label bind_text="device_power_percent_txt" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+				<lv_label
+					bind_text="device_power_percent_txt"
+					style_text_color="0xFFFFFF"
+					style_text_font="hos_regular"
+				/>
 			</lv_obj>
 		</lv_obj>
 
@@ -239,7 +243,7 @@
 					style_flex_track_place="center"
 					style_radius="1"
 				>
-					<lv_label text="通道1" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+					<lv_label text="通道1" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 				</lv_obj>
 				<lv_obj
 					style_flex_grow="1"
@@ -255,9 +259,9 @@
 					style_pad_column="0"
 					style_flex_track_place="center"
 				>
-					<lv_label bind_text="ch1_voltage" style_text_color="0xFFFFFF" style_text_font="hos_14" />
-					<lv_label bind_text="ch1_current" style_text_color="0xFFFFFF" style_text_font="hos_14" />
-					<lv_label bind_text="ch1_pwer" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+					<lv_label bind_text="ch1_voltage" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
+					<lv_label bind_text="ch1_current" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
+					<lv_label bind_text="ch1_pwer" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 				</lv_obj>
 			</lv_obj>
 
@@ -289,7 +293,7 @@
 					style_flex_track_place="center"
 					style_radius="1"
 				>
-					<lv_label text="通道2" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+					<lv_label text="通道2" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 				</lv_obj>
 				<lv_obj
 					style_flex_grow="1"
@@ -305,9 +309,9 @@
 					style_pad_column="0"
 					style_flex_track_place="center"
 				>
-					<lv_label bind_text="ch2_voltage" style_text_color="0xFFFFFF" style_text_font="hos_14" />
-					<lv_label bind_text="ch2_current" style_text_color="0xFFFFFF" style_text_font="hos_14" />
-					<lv_label bind_text="ch2_pwer" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+					<lv_label bind_text="ch2_voltage" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
+					<lv_label bind_text="ch2_current" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
+					<lv_label bind_text="ch2_pwer" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 				</lv_obj>
 			</lv_obj>
 
@@ -340,7 +344,7 @@
 					style_flex_track_place="center"
 					style_radius="1"
 				>
-					<lv_label text="通道3" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+					<lv_label text="通道3" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 				</lv_obj>
 				<lv_obj
 					style_flex_grow="1"
@@ -356,9 +360,9 @@
 					style_pad_column="0"
 					style_flex_track_place="center"
 				>
-					<lv_label bind_text="ch2_voltage" style_text_color="0xFFFFFF" style_text_font="hos_14" />
-					<lv_label bind_text="ch2_current" style_text_color="0xFFFFFF" style_text_font="hos_14" />
-					<lv_label bind_text="ch2_pwer" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+					<lv_label bind_text="ch2_voltage" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
+					<lv_label bind_text="ch2_current" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
+					<lv_label bind_text="ch2_pwer" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 				</lv_obj>
 			</lv_obj>
 		</lv_obj>

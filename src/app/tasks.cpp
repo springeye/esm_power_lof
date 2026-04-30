@@ -56,18 +56,21 @@ void sensor_task(void* /*param*/) {
         float temp = ntc_adc_to_temp(adc_raw);
         app_state::set_temp_c(temp);
 
-        // INA226 三路电流采样（轮询，每路 250ms）
+        // INA226 三路电流/电压采样（轮询，每路 250ms）
         Ina226Data d;
         if (ina226_read(INA_CH1, &d)) {
             app_state::set_ch1_ma(static_cast<int32_t>(d.current_a * 1000.0f));
+            app_state::set_ch1_mv(static_cast<uint16_t>(d.voltage_v * 1000.0f));
         }
         vTaskDelay(pdMS_TO_TICKS(250));
         if (ina226_read(INA_CH2, &d)) {
             app_state::set_ch2_ma(static_cast<int32_t>(d.current_a * 1000.0f));
+            app_state::set_ch2_mv(static_cast<uint16_t>(d.voltage_v * 1000.0f));
         }
         vTaskDelay(pdMS_TO_TICKS(250));
         if (ina226_read(INA_CH3, &d)) {
             app_state::set_ch3_ma(static_cast<int32_t>(d.current_a * 1000.0f));
+            app_state::set_ch3_mv(static_cast<uint16_t>(d.voltage_v * 1000.0f));
         }
 
         esp_task_wdt_reset();

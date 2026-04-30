@@ -13,6 +13,9 @@ std::atomic<uint16_t> fan_duty     {0};
 std::atomic<int32_t>  ch1_ma       {0};
 std::atomic<int32_t>  ch2_ma       {0};
 std::atomic<int32_t>  ch3_ma       {0};
+std::atomic<uint16_t> ch1_mv       {0};
+std::atomic<uint16_t> ch2_mv       {0};
+std::atomic<uint16_t> ch3_mv       {0};
 std::atomic<uint8_t>  psu_state_id {0};     // PSU_OFF = 0
 std::atomic<bool>      fault_active {false};
 

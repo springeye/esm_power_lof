@@ -39,6 +39,9 @@ extern std::atomic<uint16_t> fan_duty;     // 风扇 PWM 占空比（0-1023）
     extern std::atomic<int32_t>  ch1_ma;       // 输出接口 1 电流（mA）
     extern std::atomic<int32_t>  ch2_ma;       // 输出接口 2 电流（mA）
     extern std::atomic<int32_t>  ch3_ma;       // 输出接口 3 电流（mA）
+    extern std::atomic<uint16_t> ch1_mv;       // 输出接口 1 电压（mV）
+    extern std::atomic<uint16_t> ch2_mv;       // 输出接口 2 电压（mV）
+    extern std::atomic<uint16_t> ch3_mv;       // 输出接口 3 电压（mV）
 extern std::atomic<uint8_t>  psu_state_id; // PsuState 枚举值（存储为 uint8_t）
 extern std::atomic<bool>      fault_active; // 故障标志
 
@@ -49,6 +52,9 @@ inline uint16_t get_duty()   { return fan_duty.load(); }
 inline float get_ch1_a()     { return ch1_ma.load() / 1000.0f; }
 inline float get_ch2_a()     { return ch2_ma.load() / 1000.0f; }
 inline float get_ch3_a()     { return ch3_ma.load() / 1000.0f; }
+inline uint16_t get_ch1_mv()  { return ch1_mv.load(); }
+inline uint16_t get_ch2_mv()  { return ch2_mv.load(); }
+inline uint16_t get_ch3_mv()  { return ch3_mv.load(); }
 inline bool  is_fault()      { return fault_active.load(); }
 
 // ── 便捷设值函数（内联）──────────────────────────────────────────────────────
@@ -58,6 +64,9 @@ inline void set_duty(uint16_t d)     { fan_duty.store(d); }
 inline void set_ch1_ma(int32_t ma)  { ch1_ma.store(ma); }
 inline void set_ch2_ma(int32_t ma)  { ch2_ma.store(ma); }
 inline void set_ch3_ma(int32_t ma)  { ch3_ma.store(ma); }
+inline void set_ch1_mv(uint16_t mv) { ch1_mv.store(mv); }
+inline void set_ch2_mv(uint16_t mv) { ch2_mv.store(mv); }
+inline void set_ch3_mv(uint16_t mv) { ch3_mv.store(mv); }
 inline void set_fault(bool f)        { fault_active.store(f); }
 inline void set_psu_state(uint8_t s) { psu_state_id.store(s); }
 

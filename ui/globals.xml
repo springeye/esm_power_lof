@@ -23,7 +23,7 @@
 		<!--瓦时-->
 		<string name="wh" value="功耗：125.21Wh" />
 		<!--设备总功率(设计功率)-->
-		<int name="device_power" value="750" />
+		<string name="device_power" value="750" />
 		<!--当前功率和设计功率的百分比-->
 		<int name="device_power_percent" value="31" />
 		<string name="device_power_percent_txt" value="31%" />
@@ -42,7 +42,7 @@
 		<!--设备的温度-->
 		<string name="device_temp" value="36.0℃" />
 		<!--风扇转速百分比-->
-		<float name="fan_percent" value="0.2" />
+		<string name="fan_percent" value="30%" />
 	</subjects>
 
 	<images>
