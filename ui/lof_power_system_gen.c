@@ -123,7 +123,7 @@ void lof_power_system_init_gen(const char * asset_path)
                            system_name_buf,
                            system_name_prev_buf,
                            UI_SUBJECT_STRING_LENGTH,
-                           "LOF SYSTEM"
+                           "LOF电源系统"
                           );
     static char system_state_buf[UI_SUBJECT_STRING_LENGTH];
     static char system_state_prev_buf[UI_SUBJECT_STRING_LENGTH];
@@ -131,7 +131,7 @@ void lof_power_system_init_gen(const char * asset_path)
                            system_state_buf,
                            system_state_prev_buf,
                            UI_SUBJECT_STRING_LENGTH,
-                           "RUN"
+                           "运行中"
                           );
     static char device_current_power_buf[UI_SUBJECT_STRING_LENGTH];
     static char device_current_power_prev_buf[UI_SUBJECT_STRING_LENGTH];
@@ -139,7 +139,7 @@ void lof_power_system_init_gen(const char * asset_path)
                            device_current_power_buf,
                            device_current_power_prev_buf,
                            UI_SUBJECT_STRING_LENGTH,
-                           "Pt 605.00 w"
+                           "功率: 605.00w"
                           );
     static char uptime_buf[UI_SUBJECT_STRING_LENGTH];
     static char uptime_prev_buf[UI_SUBJECT_STRING_LENGTH];
@@ -147,7 +147,7 @@ void lof_power_system_init_gen(const char * asset_path)
                            uptime_buf,
                            uptime_prev_buf,
                            UI_SUBJECT_STRING_LENGTH,
-                           "H 00:00:00"
+                           "运行: 00:00:00"
                           );
     static char wh_buf[UI_SUBJECT_STRING_LENGTH];
     static char wh_prev_buf[UI_SUBJECT_STRING_LENGTH];
@@ -155,7 +155,7 @@ void lof_power_system_init_gen(const char * asset_path)
                            wh_buf,
                            wh_prev_buf,
                            UI_SUBJECT_STRING_LENGTH,
-                           "125.21Wh"
+                           "功耗：125.21Wh"
                           );
     lv_subject_init_int(&device_power, 750);
     lv_subject_init_int(&device_power_percent, 31);
@@ -245,7 +245,7 @@ void lof_power_system_init_gen(const char * asset_path)
                            device_temp_buf,
                            device_temp_prev_buf,
                            UI_SUBJECT_STRING_LENGTH,
-                           "36.0°"
+                           "36.0℃"
                           );
     lv_subject_init_float(&fan_percent, 0.2);
 

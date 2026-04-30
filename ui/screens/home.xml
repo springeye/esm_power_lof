@@ -239,7 +239,7 @@
 					style_flex_track_place="center"
 					style_radius="1"
 				>
-					<lv_label text="CH1" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
+					<lv_label text="通道1" style_text_color="0xFFFFFF" style_text_font="hos_14" />
 				</lv_obj>
 				<lv_obj
 					style_flex_grow="1"
@@ -289,7 +289,7 @@
 					style_flex_track_place="center"
 					style_radius="1"
 				>
-					<lv_label text="CH2" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
+					<lv_label text="通道2" style_text_color="0xFFFFFF" style_text_font="hos_14" />
 				</lv_obj>
 				<lv_obj
 					style_flex_grow="1"
@@ -337,9 +337,10 @@
 					style_pad_all="0"
 					style_pad_row="0"
 					style_pad_column="0"
+					style_flex_track_place="center"
 					style_radius="1"
 				>
-					<lv_label text="CH3" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
+					<lv_label text="通道3" style_text_color="0xFFFFFF" style_text_font="hos_14" />
 				</lv_obj>
 				<lv_obj
 					style_flex_grow="1"

@@ -13,15 +13,15 @@
 
 	<subjects>
 		<!--风扇转速百分比-->
-		<string name="system_name" value="LOF SYSTEM" help="风扇转速百分比" />
+		<string name="system_name" value="LOF电源系统" help="风扇转速百分比" />
 		<!--设备状态:READY,RUN,STOP-->
-		<string name="system_state" value="RUN" />
+		<string name="system_state" value="运行中" />
 		<!--设备当前功率-->
-		<string name="device_current_power" value="Pt 605.00 w" />
+		<string name="device_current_power" value="功率: 605.00w" />
 		<!--开机时间-->
-		<string name="uptime" value="H 00:00:00" />
+		<string name="uptime" value="运行: 00:00:00" />
 		<!--瓦时-->
-		<string name="wh" value="125.21Wh" />
+		<string name="wh" value="功耗：125.21Wh" />
 		<!--设备总功率(设计功率)-->
 		<int name="device_power" value="750" />
 		<!--当前功率和设计功率的百分比-->
@@ -40,7 +40,7 @@
 		<string name="ch3_current" value="0.000" />
 		<string name="ch3_pwer" value="0.000" />
 		<!--设备的温度-->
-		<string name="device_temp" value="36.0°" />
+		<string name="device_temp" value="36.0℃" />
 		<!--风扇转速百分比-->
 		<float name="fan_percent" value="0.2" />
 	</subjects>
@@ -51,10 +51,36 @@
 
 	<fonts>
 		<!-- Add <bin> , <tiny_ttf>, <freetype> tags here -->
-		<!-- <bin name="hos_bold" as_file="false" src_path="fonts/HarmonyOS_Sans_Bold.ttf" size="16" bpp="4" /> -->
-		<bin name="hos_bold_big" as_file="false" src_path="fonts/HarmonyOS_Sans_Bold.ttf" size="32" bpp="8" />
-		<bin name="hos_regular" as_file="false" src_path="fonts/HarmonyOS_Sans_Regular.ttf" size="16" bpp="8" />
-		<bin name="hos_14" as_file="false" src_path="fonts/HarmonyOS_Sans_Regular.ttf" size="14" bpp="8" />
-		<!-- <bin name="hos_thin" as_file="false" src_path="fonts/HarmonyOS_Sans_Thin.ttf" size="16" bpp="4" /> -->
+		<!--
+			SC 字体为简体中文优化版本，用于显示中文字形
+			所需中文: 系统温度电压电流功率就绪运行停止通道℃
+		-->
+		<bin
+			name="hos_bold_big"
+			as_file="false"
+			src_path="fonts/HarmonyOS_Sans_SC_Bold.ttf"
+			size="28"
+			bpp="8"
+			range="0x20-0x7F"
+			symbols="电源功耗运行面板系统温度电压电流功率就绪运行中停止通道℃："
+		/>
+		<bin
+			name="hos_regular"
+			as_file="false"
+			src_path="fonts/HarmonyOS_Sans_SC_Regular.ttf"
+			size="16"
+			bpp="8"
+			range="0x20-0x7F"
+			symbols="电源功耗运行面板系统温度电压电流功率就绪运行中停止通道℃："
+		/>
+		<bin
+			name="hos_14"
+			as_file="false"
+			src_path="fonts/HarmonyOS_Sans_SC_Regular.ttf"
+			size="12"
+			bpp="8"
+			range="0x20-0x7F"
+			symbols="电源功耗运行面板系统温度电压电流功率就绪运行中停止通道℃："
+		/>
 	</fonts>
 </globals>
