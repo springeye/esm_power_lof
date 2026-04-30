@@ -65,6 +65,26 @@ extern lv_font_t * hos_14;
  * Subjects
  *----------------*/
 
+extern lv_subject_t system_name;
+extern lv_subject_t system_state;
+extern lv_subject_t device_current_power;
+extern lv_subject_t uptime;
+extern lv_subject_t wh;
+extern lv_subject_t device_power;
+extern lv_subject_t device_power_percent;
+extern lv_subject_t device_power_percent_txt;
+extern lv_subject_t ch1_voltage;
+extern lv_subject_t ch1_current;
+extern lv_subject_t ch1_pwer;
+extern lv_subject_t ch2_voltage;
+extern lv_subject_t ch2_current;
+extern lv_subject_t ch2_pwer;
+extern lv_subject_t ch3_voltage;
+extern lv_subject_t ch3_current;
+extern lv_subject_t ch3_pwer;
+extern lv_subject_t device_temp;
+extern lv_subject_t fan_percent;
+
 /**********************
  * GLOBAL PROTOTYPES
  **********************/

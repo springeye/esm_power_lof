@@ -60,7 +60,7 @@ lv_obj_t * home_create(void)
     lv_obj_set_name_static(lv_obj_0, "home_#");
     lv_obj_set_style_layout(lv_obj_0, LV_LAYOUT_FLEX, 0);
     lv_obj_set_flex_flow(lv_obj_0, LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_style_pad_all(lv_obj_0, 0, 0);
+    lv_obj_set_style_pad_all(lv_obj_0, 10, 0);
     lv_obj_set_style_pad_row(lv_obj_0, 0, 0);
     lv_obj_set_style_pad_column(lv_obj_0, 0, 0);
     lv_obj_set_height(lv_obj_0, lv_pct(100));
@@ -83,9 +83,9 @@ lv_obj_t * home_create(void)
     lv_obj_set_style_flex_track_place(lv_obj_1, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_add_style(lv_obj_1, &no_padding, 0);
     lv_obj_t * lv_label_0 = lv_label_create(lv_obj_1);
-    lv_label_set_text(lv_label_0, "LOF SYSTEM");
     lv_obj_set_style_text_color(lv_label_0, lv_color_hex(0xFF9900), 0);
     lv_obj_set_style_text_font(lv_label_0, hos_regular, 0);
+    lv_label_bind_text(lv_label_0, &system_name, NULL);
     
     lv_obj_t * lv_label_1 = lv_label_create(lv_obj_1);
     lv_label_set_text(lv_label_1, "F");
@@ -98,7 +98,7 @@ lv_obj_t * home_create(void)
     lv_obj_set_style_text_font(lv_label_2, hos_regular, 0);
     
     lv_obj_t * lv_label_3 = lv_label_create(lv_obj_1);
-    lv_label_set_text(lv_label_3, "RDY");
+    lv_label_bind_text(lv_label_3, &system_state, NULL);
     lv_obj_set_style_text_color(lv_label_3, lv_color_hex(0x0097fa), 0);
     lv_obj_set_style_text_font(lv_label_3, hos_regular, 0);
     
@@ -128,7 +128,7 @@ lv_obj_t * home_create(void)
     lv_obj_set_style_text_font(lv_label_4, hos_regular, 0);
     
     lv_obj_t * lv_label_5 = lv_label_create(lv_obj_2);
-    lv_label_set_text(lv_label_5, "+30.6 ℃");
+    lv_label_bind_text(lv_label_5, &device_temp, NULL);
     lv_obj_set_style_text_color(lv_label_5, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(lv_label_5, hos_regular, 0);
     
@@ -146,7 +146,7 @@ lv_obj_t * home_create(void)
     lv_obj_set_style_flex_track_place(lv_obj_3, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_add_style(lv_obj_3, &no_padding, 0);
     lv_obj_t * lv_label_6 = lv_label_create(lv_obj_3);
-    lv_label_set_text(lv_label_6, "Pt 000.00 w");
+    lv_label_bind_text(lv_label_6, &device_current_power, NULL);
     lv_obj_set_style_text_color(lv_label_6, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(lv_label_6, hos_bold_big, 0);
     
@@ -178,7 +178,7 @@ lv_obj_t * home_create(void)
     lv_obj_set_style_pad_column(lv_obj_5, 0, 0);
     lv_obj_set_style_flex_track_place(lv_obj_5, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_t * lv_label_7 = lv_label_create(lv_obj_5);
-    lv_label_set_text(lv_label_7, "H 02:33:57");
+    lv_label_bind_text(lv_label_7, &uptime, NULL);
     lv_obj_set_style_text_color(lv_label_7, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(lv_label_7, hos_14, 0);
     
@@ -197,7 +197,7 @@ lv_obj_t * home_create(void)
     lv_obj_set_style_pad_column(lv_obj_6, 0, 0);
     lv_obj_set_style_flex_track_place(lv_obj_6, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_t * lv_label_8 = lv_label_create(lv_obj_6);
-    lv_label_set_text(lv_label_8, "0.0000 Wh");
+    lv_label_bind_text(lv_label_8, &wh, NULL);
     lv_obj_set_style_text_color(lv_label_8, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(lv_label_8, hos_14, 0);
     
@@ -231,7 +231,7 @@ lv_obj_t * home_create(void)
     lv_obj_set_style_flex_track_place(lv_obj_8, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_set_style_radius(lv_obj_8, 6, 0);
     lv_obj_t * lv_label_9 = lv_label_create(lv_obj_8);
-    lv_label_set_text(lv_label_9, "750");
+    lv_label_bind_text(lv_label_9, &device_power, NULL);
     lv_obj_set_style_text_color(lv_label_9, lv_color_hex(0xffd208), 0);
     lv_obj_set_style_text_font(lv_label_9, hos_14, 0);
     
@@ -255,10 +255,10 @@ lv_obj_t * home_create(void)
     lv_obj_t * lv_bar_0 = lv_bar_create(lv_obj_9);
     lv_obj_set_width(lv_bar_0, lv_pct(75));
     lv_obj_set_height(lv_bar_0, lv_pct(40));
-    lv_bar_set_value(lv_bar_0, 0, false);
+    lv_bar_bind_value(lv_bar_0, &device_power_percent);
     
     lv_obj_t * lv_label_10 = lv_label_create(lv_obj_9);
-    lv_label_set_text(lv_label_10, "0%");
+    lv_label_bind_text(lv_label_10, &device_power_percent_txt, NULL);
     lv_obj_set_style_text_color(lv_label_10, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(lv_label_10, hos_14, 0);
     
@@ -322,17 +322,17 @@ lv_obj_t * home_create(void)
     lv_obj_set_style_pad_column(lv_obj_13, 0, 0);
     lv_obj_set_style_flex_track_place(lv_obj_13, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_t * lv_label_12 = lv_label_create(lv_obj_13);
-    lv_label_set_text(lv_label_12, "0.000");
+    lv_label_bind_text(lv_label_12, &ch1_voltage, NULL);
     lv_obj_set_style_text_color(lv_label_12, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(lv_label_12, hos_14, 0);
     
     lv_obj_t * lv_label_13 = lv_label_create(lv_obj_13);
-    lv_label_set_text(lv_label_13, "0.000");
+    lv_label_bind_text(lv_label_13, &ch1_current, NULL);
     lv_obj_set_style_text_color(lv_label_13, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(lv_label_13, hos_14, 0);
     
     lv_obj_t * lv_label_14 = lv_label_create(lv_obj_13);
-    lv_label_set_text(lv_label_14, "0.000");
+    lv_label_bind_text(lv_label_14, &ch1_pwer, NULL);
     lv_obj_set_style_text_color(lv_label_14, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(lv_label_14, hos_14, 0);
     
@@ -381,17 +381,17 @@ lv_obj_t * home_create(void)
     lv_obj_set_style_pad_column(lv_obj_16, 0, 0);
     lv_obj_set_style_flex_track_place(lv_obj_16, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_t * lv_label_16 = lv_label_create(lv_obj_16);
-    lv_label_set_text(lv_label_16, "0.000");
+    lv_label_bind_text(lv_label_16, &ch2_voltage, NULL);
     lv_obj_set_style_text_color(lv_label_16, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(lv_label_16, hos_14, 0);
     
     lv_obj_t * lv_label_17 = lv_label_create(lv_obj_16);
-    lv_label_set_text(lv_label_17, "0.000");
+    lv_label_bind_text(lv_label_17, &ch2_current, NULL);
     lv_obj_set_style_text_color(lv_label_17, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(lv_label_17, hos_14, 0);
     
     lv_obj_t * lv_label_18 = lv_label_create(lv_obj_16);
-    lv_label_set_text(lv_label_18, "0.000");
+    lv_label_bind_text(lv_label_18, &ch2_pwer, NULL);
     lv_obj_set_style_text_color(lv_label_18, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(lv_label_18, hos_14, 0);
     
@@ -440,17 +440,17 @@ lv_obj_t * home_create(void)
     lv_obj_set_style_pad_column(lv_obj_19, 0, 0);
     lv_obj_set_style_flex_track_place(lv_obj_19, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_t * lv_label_20 = lv_label_create(lv_obj_19);
-    lv_label_set_text(lv_label_20, "0.000");
+    lv_label_bind_text(lv_label_20, &ch2_voltage, NULL);
     lv_obj_set_style_text_color(lv_label_20, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(lv_label_20, hos_14, 0);
     
     lv_obj_t * lv_label_21 = lv_label_create(lv_obj_19);
-    lv_label_set_text(lv_label_21, "0.000");
+    lv_label_bind_text(lv_label_21, &ch2_current, NULL);
     lv_obj_set_style_text_color(lv_label_21, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(lv_label_21, hos_14, 0);
     
     lv_obj_t * lv_label_22 = lv_label_create(lv_obj_19);
-    lv_label_set_text(lv_label_22, "0.000");
+    lv_label_bind_text(lv_label_22, &ch2_pwer, NULL);
     lv_obj_set_style_text_color(lv_label_22, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(lv_label_22, hos_14, 0);
 

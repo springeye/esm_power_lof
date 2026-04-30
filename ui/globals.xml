@@ -12,7 +12,37 @@
 	</styles>
 
 	<subjects>
-		<!-- Add <int>, <string>, or <float> subjects here -->
+		<!--风扇转速百分比-->
+		<string name="system_name" value="LOF SYSTEM" help="风扇转速百分比" />
+		<!--设备状态:READY,RUN,STOP-->
+		<string name="system_state" value="RUN" />
+		<!--设备当前功率-->
+		<string name="device_current_power" value="Pt 605.00 w" />
+		<!--开机时间-->
+		<string name="uptime" value="H 00:00:00" />
+		<!--瓦时-->
+		<string name="wh" value="125.21Wh" />
+		<!--设备总功率(设计功率)-->
+		<int name="device_power" value="750" />
+		<!--当前功率和设计功率的百分比-->
+		<int name="device_power_percent" value="31" />
+		<string name="device_power_percent_txt" value="31%" />
+		<!--通道1的电压-->
+		<string name="ch1_voltage" value="0.000" />
+		<!--通道1的电流-->
+		<string name="ch1_current" value="0.000" />
+		<!--通道1的功率-->
+		<string name="ch1_pwer" value="0.000" />
+		<string name="ch2_voltage" value="0.000" />
+		<string name="ch2_current" value="0.000" />
+		<string name="ch2_pwer" value="0.000" />
+		<string name="ch3_voltage" value="0.000" />
+		<string name="ch3_current" value="0.000" />
+		<string name="ch3_pwer" value="0.000" />
+		<!--设备的温度-->
+		<string name="device_temp" value="36.0°" />
+		<!--风扇转速百分比-->
+		<float name="fan_percent" value="0.2" />
 	</subjects>
 
 	<images>
