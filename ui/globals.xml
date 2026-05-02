@@ -16,12 +16,12 @@
 		<string name="system_name" value="LOF电源系统" help="风扇转速百分比" />
 		<!--设备状态:READY,RUN,STOP-->
 		<string name="system_state" value="运行中" />
-		<!--设备当前功率-->
-		<string name="device_current_power" value="功率: 605.00w" />
-		<!--开机时间-->
-		<string name="uptime" value="运行: 00:00:00" />
-		<!--瓦时-->
-		<string name="wh" value="功耗：125.21Wh" />
+		<!--设备当前功率(纯数字+单位)-->
+		<string name="device_current_power" value="605W" />
+		<!--开机时间(纯时间，前缀图标在 XML 中)-->
+		<string name="uptime" value="00:00:00" />
+		<!--瓦时(纯数值+单位，前缀图标在 XML 中)-->
+		<string name="wh" value="125Wh" />
 		<!--设备总功率(设计功率)-->
 		<string name="device_power" value="750" />
 		<!--当前功率和设计功率的百分比-->
@@ -43,6 +43,7 @@
 		<string name="device_temp" value="36.0℃" />
 		<!--风扇转速百分比-->
 		<string name="fan_percent" value="30%" />
+		<string name="fan_rpm_txt" value="0 RPM" help="风扇转速" />
 	</subjects>
 
 	<images>
@@ -59,10 +60,10 @@
 			name="hos_bold_big"
 			as_file="false"
 			src_path="fonts/HarmonyOS_Sans_SC_Bold.ttf"
-			size="28"
+			size="44"
 			bpp="8"
 			range="0x20-0x7F"
-			symbols="电源功耗运行面板系统温度电压电流功率就绪运行中停止通道℃："
+			symbols="电源功耗运行面板系统温度电压电流功率就绪运行中停止通道℃：当前占比时间总能效输出风扇转故障"
 		/>
 		<bin
 			name="hos_regular"
@@ -71,7 +72,7 @@
 			size="16"
 			bpp="8"
 			range="0x20-0x7F"
-			symbols="电源功耗运行面板系统温度电压电流功率就绪运行中停止通道℃："
+			symbols="电源功耗运行面板系统温度电压电流功率就绪运行中停止通道℃：当前占比时间总能效输出风扇转故障"
 		/>
 		<bin
 			name="hos_14"
@@ -80,7 +81,15 @@
 			size="12"
 			bpp="8"
 			range="0x20-0x7F"
-			symbols="电源功耗运行面板系统温度电压电流功率就绪运行中停止通道℃："
+			symbols="电源功耗运行面板系统温度电压电流功率就绪运行中停止通道℃：当前占比时间总能效输出风扇转故障"
+		/>
+		<bin
+			name="font_awesome_14"
+			as_file="false"
+			src_path="fonts/fa-solid-900.ttf"
+			size="14"
+			bpp="4"
+			range="0xF2C9,0xF0E7,0xF863,0xF017,0xF5DC,0xE55B,0xF1E6,0xF011"
 		/>
 	</fonts>
 </globals>

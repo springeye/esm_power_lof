@@ -49,6 +49,8 @@ lv_font_t * hos_regular;
 extern lv_font_t hos_regular_data;
 lv_font_t * hos_14;
 extern lv_font_t hos_14_data;
+lv_font_t * font_awesome_14;
+extern lv_font_t font_awesome_14_data;
 
 /*----------------
  * Images
@@ -81,6 +83,7 @@ lv_subject_t ch3_current;
 lv_subject_t ch3_pwer;
 lv_subject_t device_temp;
 lv_subject_t fan_percent;
+lv_subject_t fan_rpm_txt;
 
 /**********************
  *      MACROS
@@ -105,6 +108,8 @@ void lof_power_system_init_gen(const char * asset_path)
     hos_regular = &hos_regular_data;
     /* get font 'hos_14' from a C array */
     hos_14 = &hos_14_data;
+    /* get font 'font_awesome_14' from a C array */
+    font_awesome_14 = &font_awesome_14_data;
 
 
     /*----------------
@@ -139,7 +144,7 @@ void lof_power_system_init_gen(const char * asset_path)
                            device_current_power_buf,
                            device_current_power_prev_buf,
                            UI_SUBJECT_STRING_LENGTH,
-                           "功率: 605.00w"
+                           "605W"
                           );
     static char uptime_buf[UI_SUBJECT_STRING_LENGTH];
     static char uptime_prev_buf[UI_SUBJECT_STRING_LENGTH];
@@ -147,7 +152,7 @@ void lof_power_system_init_gen(const char * asset_path)
                            uptime_buf,
                            uptime_prev_buf,
                            UI_SUBJECT_STRING_LENGTH,
-                           "运行: 00:00:00"
+                           "00:00:00"
                           );
     static char wh_buf[UI_SUBJECT_STRING_LENGTH];
     static char wh_prev_buf[UI_SUBJECT_STRING_LENGTH];
@@ -155,7 +160,7 @@ void lof_power_system_init_gen(const char * asset_path)
                            wh_buf,
                            wh_prev_buf,
                            UI_SUBJECT_STRING_LENGTH,
-                           "功耗：125.21Wh"
+                           "125Wh"
                           );
     static char device_power_buf[UI_SUBJECT_STRING_LENGTH];
     static char device_power_prev_buf[UI_SUBJECT_STRING_LENGTH];
@@ -262,6 +267,14 @@ void lof_power_system_init_gen(const char * asset_path)
                            UI_SUBJECT_STRING_LENGTH,
                            "30%"
                           );
+    static char fan_rpm_txt_buf[UI_SUBJECT_STRING_LENGTH];
+    static char fan_rpm_txt_prev_buf[UI_SUBJECT_STRING_LENGTH];
+    lv_subject_init_string(&fan_rpm_txt,
+                           fan_rpm_txt_buf,
+                           fan_rpm_txt_prev_buf,
+                           UI_SUBJECT_STRING_LENGTH,
+                           "0 RPM"
+                          );
 
     /*----------------
      * Translations
@@ -274,6 +287,7 @@ void lof_power_system_init_gen(const char * asset_path)
     lv_xml_register_font(NULL, "hos_bold_big", hos_bold_big);
     lv_xml_register_font(NULL, "hos_regular", hos_regular);
     lv_xml_register_font(NULL, "hos_14", hos_14);
+    lv_xml_register_font(NULL, "font_awesome_14", font_awesome_14);
 
     /* Register subjects */
     lv_xml_register_subject(NULL, "system_name", &system_name);
@@ -295,6 +309,7 @@ void lof_power_system_init_gen(const char * asset_path)
     lv_xml_register_subject(NULL, "ch3_pwer", &ch3_pwer);
     lv_xml_register_subject(NULL, "device_temp", &device_temp);
     lv_xml_register_subject(NULL, "fan_percent", &fan_percent);
+    lv_xml_register_subject(NULL, "fan_rpm_txt", &fan_rpm_txt);
 
     /* Register callbacks */
 #endif

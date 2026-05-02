@@ -57,6 +57,8 @@ extern lv_font_t * hos_regular;
 
 extern lv_font_t * hos_14;
 
+extern lv_font_t * font_awesome_14;
+
 /*----------------
  * Images
  *----------------*/
@@ -84,6 +86,7 @@ extern lv_subject_t ch3_current;
 extern lv_subject_t ch3_pwer;
 extern lv_subject_t device_temp;
 extern lv_subject_t fan_percent;
+extern lv_subject_t fan_rpm_txt;
 
 /**********************
  * GLOBAL PROTOTYPES

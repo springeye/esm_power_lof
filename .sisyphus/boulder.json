@@ -21,7 +21,11 @@
     "ses_2386b6b73ffeHBDgn5L0wBJSw7",
     "ses_237ab2245ffeuAluh6e0KRqib2",
     "ses_237317e76ffeOkXwYxZ6Nr6fq2",
-    "ses_21c07161bffeQdYos17DX98Td6"
+    "ses_21c07161bffeQdYos17DX98Td6",
+    "ses_21ba1d4a8ffe7oYbvn8Jzn1U5r",
+    "ses_21ba09cbeffe0TJvXNS0Qrn8GZ",
+    "ses_21b82b863ffe2WH1iMju0oHAeu",
+    "ses_21b73e6a4ffeoQzxZMmcXbM9Tz"
   ],
   "plan_name": "ui-integration",
   "agent": "atlas",
@@ -65,10 +69,10 @@
       "task_key": "todo:8",
       "task_label": "8",
       "task_title": "[DELETED — Momus 修订] 不再需要 sensor API 调研",
-      "session_id": "ses_2372730beffeC3R0UmneJC3NoC",
+      "session_id": "ses_21b73e6a4ffeoQzxZMmcXbM9Tz",
       "agent": "Sisyphus-Junior",
-      "category": "quick",
-      "updated_at": "2026-04-26T08:15:09.367Z"
+      "category": "visual-engineering",
+      "updated_at": "2026-05-01T17:18:57.933Z"
     }
   }
 }

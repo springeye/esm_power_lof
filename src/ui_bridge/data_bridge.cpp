@@ -1,9 +1,10 @@
 #include "data_bridge.h"
-#include "app/app_state.h"
+#include "../app/app_state.h"
+#include "../power/psu_fsm.h"
 #include "lvgl/lvgl.h"
 
 extern "C" {
-#include "lof_power_system_gen.h"
+#include "../../ui/lof_power_system_gen.h"
 }
 
 #include <cstdio>
@@ -57,8 +58,18 @@ void refresh_cb(lv_timer_t*) {
     lv_subject_copy_string(&device_temp, buf);
 
     // ── 运行状态 ──
-    lv_subject_copy_string(&system_state,
-                           app_state::is_fault() ? "故障" : "运行中");
+    {
+        uint8_t psu_st = app_state::psu_state_id.load();
+        const char* state_text;
+        if (app_state::is_fault()) {
+            state_text = "故障";
+        } else if (psu_st == PSU_ON) {
+            state_text = "运行中";
+        } else {
+            state_text = "停止";
+        }
+        lv_subject_copy_string(&system_state, state_text);
+    }
 
     // ── 开机时间 ──
     if (g_start_ms == 0) {
@@ -68,7 +79,7 @@ void refresh_cb(lv_timer_t*) {
     uint32_t h = elapsed_s / 3600;
     uint32_t m = (elapsed_s % 3600) / 60;
     uint32_t s = elapsed_s % 60;
-    std::snprintf(buf, sizeof(buf), "运行: %02d:%02d:%02d", h, m, s);
+    std::snprintf(buf, sizeof(buf), "%02d:%02d:%02d", h, m, s);
     lv_subject_copy_string(&uptime, buf);
 
     // ── 三通道电压/电流/功率 ──
@@ -103,7 +114,7 @@ void refresh_cb(lv_timer_t*) {
     }
 
     // ── 总功率 ──
-    std::snprintf(buf, sizeof(buf), "功率: %.2fw", total_w);
+    std::snprintf(buf, sizeof(buf), "%.2fW", total_w);
     lv_subject_copy_string(&device_current_power, buf);
 
     // ── 功率百分比 ──
@@ -121,7 +132,7 @@ void refresh_cb(lv_timer_t*) {
 
     // ── 瓦时累计 ──
     float wh_val = total_w * elapsed_s / 3600.0f;
-    std::snprintf(buf, sizeof(buf), "功耗：%.2fWh", wh_val);
+    std::snprintf(buf, sizeof(buf), "%.2fWh", wh_val);
     lv_subject_copy_string(&wh, buf);
 
     // ── 风扇转速百分比 ──
@@ -134,6 +145,10 @@ void refresh_cb(lv_timer_t*) {
     }
     std::snprintf(buf, sizeof(buf), "%d%%", fan_pct);
     lv_subject_copy_string(&fan_percent, buf);
+
+    // ── 风扇转速 RPM ──
+    std::snprintf(buf, sizeof(buf), "%lu RPM", (unsigned long)rpm);
+    lv_subject_copy_string(&fan_rpm_txt, buf);
 }
 
 } // namespace
