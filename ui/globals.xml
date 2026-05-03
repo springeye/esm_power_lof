@@ -100,5 +100,15 @@
 			bpp="4"
 			range="0xF0E7"
 		/>
+		<!-- 启动画面 MORNSUN 标题专用：size=28，在 240px 宽屏上比例协调 -->
+		<bin
+			name="hos_bold_splash"
+			as_file="false"
+			src_path="fonts/HarmonyOS_Sans_SC_Bold.ttf"
+			size="28"
+			bpp="8"
+			range="0x20-0x7F"
+			symbols="MORNSUN"
+		/>
 	</fonts>
 </globals>

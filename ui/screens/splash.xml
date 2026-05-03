@@ -19,12 +19,22 @@
 			text_color="0xFFFFFF"
 			text_opa="255"
 			text_letter_space="2"
+			text_align="center"
 		/>
 
+		<!-- 进度条底槽样式（MAIN part） -->
 		<style name="style_zap_line"
-			bg_color="0xffb020"
+			bg_color="0x1a1f26"
 			bg_opa="255"
 			border_width="0"
+			radius="2"
+			pad_all="0"
+		/>
+
+		<!-- 进度条填充样式（INDICATOR part），由 splash_anim.cpp 单独应用 -->
+		<style name="style_zap_line_ind"
+			bg_color="0xffb020"
+			bg_opa="255"
 			radius="2"
 		/>
 
@@ -36,10 +46,12 @@
 	</styles>
 
 	<view width="100%" height="100%"
+		align="center"
 		style_layout="flex"
 		flex_flow="column"
 		style_flex_main_place="center"
 		style_flex_cross_place="center"
+		style_flex_track_place="center"
 		style_pad_all="0"
 		style_pad_row="6"
 	>
@@ -48,31 +60,30 @@
 		<lv_label name="bolt"
 			text="&#xf0e7;"
 			style_text_font="font_awesome_48"
-			align="center"
 		>
 			<style name="style_bolt" />
 		</lv_label>
 
 		<lv_label name="brand"
 			text="MORNSUN"
-			style_text_font="hos_bold_big"
-			align="center"
+			style_text_font="hos_bold_splash"
 		>
 			<style name="style_brand" />
 		</lv_label>
 
-		<lv_obj name="zap_line"
+		<lv_bar name="zap_line"
 			width="180"
-			height="2"
-			align="center"
+			height="4"
+			min_value="0"
+			max_value="100"
+			value="0"
 		>
 			<style name="style_zap_line" />
-		</lv_obj>
+		</lv_bar>
 
 		<lv_label name="slogan"
 			text="Power System Inside"
 			style_text_font="hos_14"
-			align="center"
 		>
 			<style name="style_slogan" />
 		</lv_label>

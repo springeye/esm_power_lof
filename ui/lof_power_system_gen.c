@@ -53,6 +53,8 @@ lv_font_t * font_awesome_14;
 extern lv_font_t font_awesome_14_data;
 lv_font_t * font_awesome_48;
 extern lv_font_t font_awesome_48_data;
+lv_font_t * hos_bold_splash;
+extern lv_font_t hos_bold_splash_data;
 
 /*----------------
  * Images
@@ -114,6 +116,8 @@ void lof_power_system_init_gen(const char * asset_path)
     font_awesome_14 = &font_awesome_14_data;
     /* get font 'font_awesome_48' from a C array */
     font_awesome_48 = &font_awesome_48_data;
+    /* get font 'hos_bold_splash' from a C array */
+    hos_bold_splash = &hos_bold_splash_data;
 
 
     /*----------------
@@ -293,6 +297,7 @@ void lof_power_system_init_gen(const char * asset_path)
     lv_xml_register_font(NULL, "hos_14", hos_14);
     lv_xml_register_font(NULL, "font_awesome_14", font_awesome_14);
     lv_xml_register_font(NULL, "font_awesome_48", font_awesome_48);
+    lv_xml_register_font(NULL, "hos_bold_splash", hos_bold_splash);
 
     /* Register subjects */
     lv_xml_register_subject(NULL, "system_name", &system_name);

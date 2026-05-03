@@ -45,7 +45,7 @@ int main() {
     lof_power_system_init(NULL);
 
     // 4. 初始化 UI bridge
-    ui_bridge::screen_manager_init(2000);  // splash 2 秒
+    ui_bridge::screen_manager_init(1500);
     ui_bridge::data_bridge_attach(ui_bridge::screen_manager_get_home());
     ui_bridge::data_bridge_init();
     ui_bridge::input_bridge_attach_home(ui_bridge::screen_manager_get_home());
