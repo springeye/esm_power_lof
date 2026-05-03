@@ -92,3 +92,11 @@ extern "C" void lv_style_set_margin_all(lv_style_t * style, int32_t value)
 {
     lv_style_set_pad_all(style, value);
 }
+
+/* lv_obj_set_name: LVGL 9.5.x (LV_USE_OBJ_NAME) API, not in 9.2.2.
+ * No-op shim — name lookup not used at runtime; child access uses idx. */
+extern "C" void lv_obj_set_name(lv_obj_t * obj, const char * name)
+{
+    (void)obj;
+    (void)name;
+}

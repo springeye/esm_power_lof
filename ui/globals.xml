@@ -17,11 +17,11 @@
 		<!--设备状态:READY,RUN,STOP-->
 		<string name="system_state" value="运行中" />
 		<!--设备当前功率(纯数字+单位)-->
-		<string name="device_current_power" value="605W" />
+		<string name="device_current_power" value="605.25W" />
 		<!--开机时间(纯时间，前缀图标在 XML 中)-->
 		<string name="uptime" value="00:00:00" />
 		<!--瓦时(纯数值+单位，前缀图标在 XML 中)-->
-		<string name="wh" value="125Wh" />
+		<string name="wh" value="125.67Wh" />
 		<!--设备总功率(设计功率)-->
 		<string name="device_power" value="750" />
 		<!--当前功率和设计功率的百分比-->
@@ -90,6 +90,15 @@
 			size="14"
 			bpp="4"
 			range="0xF2C9,0xF0E7,0xF863,0xF017,0xF5DC,0xE55B,0xF1E6,0xF011"
+		/>
+		<!-- 启动画面专用：仅编入 bolt(0xF0E7)，节省字库体积 -->
+		<bin
+			name="font_awesome_48"
+			as_file="false"
+			src_path="fonts/fa-solid-900.ttf"
+			size="80"
+			bpp="4"
+			range="0xF0E7"
 		/>
 	</fonts>
 </globals>

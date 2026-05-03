@@ -51,6 +51,8 @@ lv_font_t * hos_14;
 extern lv_font_t hos_14_data;
 lv_font_t * font_awesome_14;
 extern lv_font_t font_awesome_14_data;
+lv_font_t * font_awesome_48;
+extern lv_font_t font_awesome_48_data;
 
 /*----------------
  * Images
@@ -110,6 +112,8 @@ void lof_power_system_init_gen(const char * asset_path)
     hos_14 = &hos_14_data;
     /* get font 'font_awesome_14' from a C array */
     font_awesome_14 = &font_awesome_14_data;
+    /* get font 'font_awesome_48' from a C array */
+    font_awesome_48 = &font_awesome_48_data;
 
 
     /*----------------
@@ -144,7 +148,7 @@ void lof_power_system_init_gen(const char * asset_path)
                            device_current_power_buf,
                            device_current_power_prev_buf,
                            UI_SUBJECT_STRING_LENGTH,
-                           "605W"
+                           "605.25W"
                           );
     static char uptime_buf[UI_SUBJECT_STRING_LENGTH];
     static char uptime_prev_buf[UI_SUBJECT_STRING_LENGTH];
@@ -160,7 +164,7 @@ void lof_power_system_init_gen(const char * asset_path)
                            wh_buf,
                            wh_prev_buf,
                            UI_SUBJECT_STRING_LENGTH,
-                           "125Wh"
+                           "125.67Wh"
                           );
     static char device_power_buf[UI_SUBJECT_STRING_LENGTH];
     static char device_power_prev_buf[UI_SUBJECT_STRING_LENGTH];
@@ -288,6 +292,7 @@ void lof_power_system_init_gen(const char * asset_path)
     lv_xml_register_font(NULL, "hos_regular", hos_regular);
     lv_xml_register_font(NULL, "hos_14", hos_14);
     lv_xml_register_font(NULL, "font_awesome_14", font_awesome_14);
+    lv_xml_register_font(NULL, "font_awesome_48", font_awesome_48);
 
     /* Register subjects */
     lv_xml_register_subject(NULL, "system_name", &system_name);

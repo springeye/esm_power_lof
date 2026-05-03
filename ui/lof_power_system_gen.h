@@ -59,6 +59,8 @@ extern lv_font_t * hos_14;
 
 extern lv_font_t * font_awesome_14;
 
+extern lv_font_t * font_awesome_48;
+
 /*----------------
  * Images
  *----------------*/

@@ -1,10 +1,80 @@
 <screen>
+	<!-- LOF Power System 开机画面：入场动画由 splash_anim.cpp 在 splash_create() 后编程触发。
+	     仅使用 opa / translate_y 轻量属性，避开 transform_scale / outline 防 WDT 超时。 -->
 	<styles>
-		<style name="style_main" bg_color="0x000000" text_color="0xffffff" />
+		<style name="style_main"
+			bg_color="0x000000"
+			bg_opa="255"
+			text_color="0xFFFFFF"
+			pad_all="0"
+			border_width="0"
+		/>
+
+		<style name="style_bolt"
+			text_color="0xffb020"
+			text_opa="255"
+		/>
+
+		<style name="style_brand"
+			text_color="0xFFFFFF"
+			text_opa="255"
+			text_letter_space="2"
+		/>
+
+		<style name="style_zap_line"
+			bg_color="0xffb020"
+			bg_opa="255"
+			border_width="0"
+			radius="2"
+		/>
+
+		<style name="style_slogan"
+			text_color="0x6b7d8e"
+			text_opa="255"
+			text_letter_space="1"
+		/>
 	</styles>
 
-	<view>
+	<view width="100%" height="100%"
+		style_layout="flex"
+		flex_flow="column"
+		style_flex_main_place="center"
+		style_flex_cross_place="center"
+		style_pad_all="0"
+		style_pad_row="6"
+	>
 		<style name="style_main" />
-		<lv_label text="LOF Power System" align="center" />
+
+		<lv_label name="bolt"
+			text="&#xf0e7;"
+			style_text_font="font_awesome_48"
+			align="center"
+		>
+			<style name="style_bolt" />
+		</lv_label>
+
+		<lv_label name="brand"
+			text="MORNSUN"
+			style_text_font="hos_bold_big"
+			align="center"
+		>
+			<style name="style_brand" />
+		</lv_label>
+
+		<lv_obj name="zap_line"
+			width="180"
+			height="2"
+			align="center"
+		>
+			<style name="style_zap_line" />
+		</lv_obj>
+
+		<lv_label name="slogan"
+			text="Power System Inside"
+			style_text_font="hos_14"
+			align="center"
+		>
+			<style name="style_slogan" />
+		</lv_label>
 	</view>
 </screen>

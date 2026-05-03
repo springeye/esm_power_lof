@@ -436,6 +436,9 @@
 
 #define LV_USE_XML 0
 
+/* Enable lv_obj_set_name() / lv_obj_find_by_name() for LVGL Editor exports */
+#define LV_USE_OBJ_NAME 1
+
 #endif /* End of "Content enable" */
 
 #endif /* LV_CONF_H */

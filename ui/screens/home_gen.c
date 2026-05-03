@@ -188,7 +188,7 @@ lv_obj_t * home_create(void)
     lv_obj_set_height(lv_obj_6, 14);
     lv_obj_set_style_layout(lv_obj_6, LV_LAYOUT_FLEX, 0);
     lv_obj_set_flex_flow(lv_obj_6, LV_FLEX_FLOW_ROW);
-    lv_obj_set_style_flex_main_place(lv_obj_6, LV_FLEX_ALIGN_START, 0);
+    lv_obj_set_style_flex_main_place(lv_obj_6, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_set_style_flex_cross_place(lv_obj_6, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_set_style_flex_track_place(lv_obj_6, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_set_style_bg_opa(lv_obj_6, 0, 0);
@@ -235,10 +235,10 @@ lv_obj_t * home_create(void)
     lv_obj_set_height(lv_obj_8, lv_pct(100));
     lv_obj_set_style_layout(lv_obj_8, LV_LAYOUT_FLEX, 0);
     lv_obj_set_flex_flow(lv_obj_8, LV_FLEX_FLOW_ROW);
-    lv_obj_set_style_flex_main_place(lv_obj_8, LV_FLEX_ALIGN_SPACE_BETWEEN, 0);
+    lv_obj_set_style_flex_main_place(lv_obj_8, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_set_style_flex_cross_place(lv_obj_8, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_set_style_flex_track_place(lv_obj_8, LV_FLEX_ALIGN_CENTER, 0);
-    lv_obj_set_style_pad_column(lv_obj_8, 2, 0);
+    lv_obj_set_style_pad_column(lv_obj_8, 6, 0);
     lv_obj_set_style_pad_left(lv_obj_8, 5, 0);
     lv_obj_set_style_pad_right(lv_obj_8, 5, 0);
     lv_obj_add_style(lv_obj_8, &card, 0);
@@ -258,10 +258,10 @@ lv_obj_t * home_create(void)
     lv_obj_set_height(lv_obj_9, lv_pct(100));
     lv_obj_set_style_layout(lv_obj_9, LV_LAYOUT_FLEX, 0);
     lv_obj_set_flex_flow(lv_obj_9, LV_FLEX_FLOW_ROW);
-    lv_obj_set_style_flex_main_place(lv_obj_9, LV_FLEX_ALIGN_SPACE_BETWEEN, 0);
+    lv_obj_set_style_flex_main_place(lv_obj_9, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_set_style_flex_cross_place(lv_obj_9, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_set_style_flex_track_place(lv_obj_9, LV_FLEX_ALIGN_CENTER, 0);
-    lv_obj_set_style_pad_column(lv_obj_9, 2, 0);
+    lv_obj_set_style_pad_column(lv_obj_9, 6, 0);
     lv_obj_set_style_pad_left(lv_obj_9, 5, 0);
     lv_obj_set_style_pad_right(lv_obj_9, 5, 0);
     lv_obj_add_style(lv_obj_9, &card, 0);

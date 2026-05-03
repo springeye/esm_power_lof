@@ -2,6 +2,7 @@ list(
   APPEND
   LV_EDITOR_PROJECT_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/fonts/font_awesome_14_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/fonts/font_awesome_48_data.c
   ${CMAKE_CURRENT_LIST_DIR}/fonts/hos_14_data.c
   ${CMAKE_CURRENT_LIST_DIR}/fonts/hos_bold_big_data.c
   ${CMAKE_CURRENT_LIST_DIR}/fonts/hos_regular_data.c
