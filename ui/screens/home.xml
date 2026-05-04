@@ -74,7 +74,7 @@
 			>
 				<style name="no_padding" />
 				<lv_label text="&#xf011;" style_text_color="0x00e68a" style_text_font="font_awesome_14" />
-				<lv_label bind_text="system_state" style_text_color="0x00e68a" style_text_font="hos_14" />
+				<lv_label bind_text="system_state" style_text_color="0x00e68a" style_text_font="hos_regular" />
 			</lv_obj>
 			<!-- 中：风扇图标+百分比+转速 -->
 			<lv_obj
@@ -89,8 +89,8 @@
 			>
 				<style name="no_padding" />
 				<lv_label text="&#xf863;" style_text_color="0x3d9eff" style_text_font="font_awesome_14" />
-				<lv_label bind_text="fan_percent" style_text_color="0x3d9eff" style_text_font="hos_14" />
-				<lv_label bind_text="fan_rpm_txt" style_text_color="0x6b7d8e" style_text_font="hos_14" />
+				<lv_label bind_text="fan_percent" style_text_color="0x3d9eff" style_text_font="hos_regular" />
+				<lv_label bind_text="fan_rpm_txt" style_text_color="0x6b7d8e" style_text_font="hos_regular" />
 			</lv_obj>
 			<!-- 右：温度图标+温度 -->
 			<lv_obj
@@ -105,7 +105,7 @@
 			>
 				<style name="no_padding" />
 				<lv_label text="&#xf2c9;" style_text_color="0xff6b35" style_text_font="font_awesome_14" />
-				<lv_label bind_text="device_temp" style_text_color="0xff6b35" style_text_font="hos_14" />
+				<lv_label bind_text="device_temp" style_text_color="0xff6b35" style_text_font="hos_regular" />
 			</lv_obj>
 		</lv_obj>
 
@@ -185,7 +185,7 @@
 			>
 				<style name="card" />
 				<lv_label text="&#xf017;" style_text_color="0x6b7d8e" style_text_font="font_awesome_14" />
-				<lv_label bind_text="uptime" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+				<lv_label bind_text="uptime" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 			</lv_obj>
 
 			<!-- 卡片2：累计电量 -->
@@ -204,7 +204,7 @@
 			>
 				<style name="card" />
 				<lv_label text="&#xf5dc;" style_text_color="0xb968ff" style_text_font="font_awesome_14" />
-				<lv_label bind_text="wh" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+				<lv_label bind_text="wh" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 			</lv_obj>
 
 		</lv_obj>
@@ -263,8 +263,8 @@
 					style_pad_bottom="2"
 				>
 					<style name="no_padding" />
-					<lv_label bind_text="ch1_voltage" style_text_color="0xFFFFFF" style_text_font="hos_14" />
-					<lv_label bind_text="ch1_current" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+					<lv_label bind_text="ch1_voltage" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
+					<lv_label bind_text="ch1_current" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 					<lv_label bind_text="ch1_pwer" style_text_color="0x00e68a" style_text_font="hos_regular" />
 				</lv_obj>
 			</lv_obj>
@@ -308,8 +308,8 @@
 					style_pad_bottom="2"
 				>
 					<style name="no_padding" />
-					<lv_label bind_text="ch2_voltage" style_text_color="0xFFFFFF" style_text_font="hos_14" />
-					<lv_label bind_text="ch2_current" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+					<lv_label bind_text="ch2_voltage" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
+					<lv_label bind_text="ch2_current" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 					<lv_label bind_text="ch2_pwer" style_text_color="0xffb020" style_text_font="hos_regular" />
 				</lv_obj>
 			</lv_obj>
@@ -353,8 +353,8 @@
 					style_pad_bottom="2"
 				>
 					<style name="no_padding" />
-					<lv_label bind_text="ch3_voltage" style_text_color="0xFFFFFF" style_text_font="hos_14" />
-					<lv_label bind_text="ch3_current" style_text_color="0xFFFFFF" style_text_font="hos_14" />
+					<lv_label bind_text="ch3_voltage" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
+					<lv_label bind_text="ch3_current" style_text_color="0xFFFFFF" style_text_font="hos_regular" />
 					<lv_label bind_text="ch3_pwer" style_text_color="0x3d9eff" style_text_font="hos_regular" />
 				</lv_obj>
 			</lv_obj>
