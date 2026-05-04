@@ -25,7 +25,16 @@
     "ses_21ba1d4a8ffe7oYbvn8Jzn1U5r",
     "ses_21ba09cbeffe0TJvXNS0Qrn8GZ",
     "ses_21b82b863ffe2WH1iMju0oHAeu",
-    "ses_21b73e6a4ffeoQzxZMmcXbM9Tz"
+    "ses_21b73e6a4ffeoQzxZMmcXbM9Tz",
+    "ses_2118d101dffeYSoOwVJSE55qs2",
+    "ses_20f4ef9e9ffeVSjYMWYCwNEYDF",
+    "ses_20f4d4252ffe2PhRvFSNTDW664",
+    "ses_20f429b73ffeX1fmrsOpHxTrJN",
+    "ses_20f40cabeffeDILew0rgZIFfRe",
+    "ses_20f3fcac1ffefoXtu0nRa6hoYV",
+    "ses_20f3fa8bfffeawsszGhv2zEP9A",
+    "ses_20f3fe9a2ffeNCfKd2UJZzLU95",
+    "ses_20f3f88e7ffeWYrgv3NEMn5Wki"
   ],
   "plan_name": "ui-integration",
   "agent": "atlas",
@@ -69,10 +78,9 @@
       "task_key": "todo:8",
       "task_label": "8",
       "task_title": "[DELETED — Momus 修订] 不再需要 sensor API 调研",
-      "session_id": "ses_21b73e6a4ffeoQzxZMmcXbM9Tz",
-      "agent": "Sisyphus-Junior",
-      "category": "visual-engineering",
-      "updated_at": "2026-05-01T17:18:57.933Z"
+      "session_id": "ses_20f3fe9a2ffeNCfKd2UJZzLU95",
+      "agent": "oracle",
+      "updated_at": "2026-05-04T02:11:40.109Z"
     }
   }
 }

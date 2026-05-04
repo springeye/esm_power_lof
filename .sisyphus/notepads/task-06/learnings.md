@@ -1,3 +1,4 @@
 - `data_bridge.cpp` 中应使用相对路径包含 `../app/app_state.h` 与 `../power/psu_fsm.h`；直接写 `app/...` 在当前编译单元下会找不到头文件。
 - `fan_rpm_txt` 必须先在 `ui/lof_power_system_gen.h/.c` 中声明并初始化，否则 `src/ui_bridge/data_bridge.cpp` 里直接引用会报未声明错误。
 - `ui/globals.xml` 已经存在 `fan_rpm_txt` 绑定变量，生成代码可按需同步补全。
+- 切换默认字体时，`include/lv_conf.h` 只需更新注释与 `LV_FONT_DEFAULT` 说明；`AGENTS.md` 的 WHERE TO LOOK 需同步记录 `hos_14_data` 为默认字体，Montserrat 14/16/20/28 已禁用。
