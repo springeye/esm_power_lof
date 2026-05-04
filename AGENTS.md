@@ -48,7 +48,7 @@ esm_power_lof/
 | 构建/环境选择 | `platformio.ini` | `build_src_filter` 控制哪些源参与编译，`build_flags` 设置编译宏 |
 | 修改配置常量 | `include/app_config.h` | NTC参数、风扇阈值、任务栈、`USE_DISPLAY_DEMO` 开关 |
 | 修改引脚 | `include/pins.h` | 与 `platformio.ini` build_flags 中的 TFT 引脚保持一致 |
-| 修改默认字体 | `include/lv_conf.h` | `LV_FONT_DEFAULT` = `&hos_14_data`；Montserrat 14/16/20/28 已禁用 |
+| 修改默认字体 | `include/lv_conf.h` | `LV_FONT_DEFAULT` = `&lv_font_montserrat_14`；Montserrat 14 已启用，16/20/28 已禁用 |
 | UI 生成代码（勿手改） | `ui/screens/*_gen.c/h` | 修改对应 XML 后重新生成 |
 | UI 手写扩展 | `ui/lof_power_system.c` | `lof_power_system_init()` 桥接生成逻辑 |
 | 屏幕定义（可编辑） | `ui/screens/*.xml` | 修改后重新生成 `*_gen.c/h` |
@@ -93,6 +93,7 @@ esm_power_lof/
 - **跨线程数据**：所有多任务共享字段使用 `std::atomic`（见 `src/app/app_state.h`）
 - **Main 多入口**：多个 main 由 `platformio.ini` 环境选择（esp32s3→`main.cpp`, native→`native_main_sim.cpp`/`native_main.cpp`）
 - **Include 风格**：项目内部头文件使用 `"..."` 和相对路径（如 `"../sensors/ntc/ntc.h"`），系统/库头文件使用 `<>`
+- **字体显式指定**：所有 `lv_label` 等文本控件必须通过 `style_text_font` 手动指定字体（如 `hos_14`、`hos_regular`、`hos_bold_big`、`font_awesome_14` 等）。不得依赖 `LV_FONT_DEFAULT`。`lv_conf.h` 中 `LV_FONT_DEFAULT` 保持为 `&lv_font_montserrat_14`（仅作后备，UI 中不使用）。
 
 ### 命名约定
 - 宏/预处理常量：`UPPER_SNAKE`（`TFT_MOSI`, `INA_CH1_ADDR`, `KEY_K1`）
