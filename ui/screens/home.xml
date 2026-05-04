@@ -76,7 +76,7 @@
 				<lv_label text="&#xf011;" style_text_color="0x00e68a" style_text_font="font_awesome_14" />
 				<lv_label bind_text="system_state" style_text_color="0x00e68a" style_text_font="hos_regular" />
 			</lv_obj>
-			<!-- 中：风扇图标+百分比+转速 -->
+			<!-- 中：风扇图标+百分比 -->
 			<lv_obj
 				width="content"
 				height="100%"
@@ -90,7 +90,6 @@
 				<style name="no_padding" />
 				<lv_label text="&#xf863;" style_text_color="0x3d9eff" style_text_font="font_awesome_14" />
 				<lv_label bind_text="fan_percent" style_text_color="0x3d9eff" style_text_font="hos_regular" />
-				<lv_label bind_text="fan_rpm_txt" style_text_color="0x6b7d8e" style_text_font="hos_regular" />
 			</lv_obj>
 			<!-- 右：温度图标+温度 -->
 			<lv_obj
