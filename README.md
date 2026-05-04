@@ -241,6 +241,13 @@ cmake --build ui/preview-build
 - **静态检查**：cppcheck（`--enable=warning,style,performance --inconclusive`）
 - **外部库**：TFT_eSPI, INA226, Bounce2
 
+## 字体优化
+
+- `hos_14`：14px 常规字体，用于状态栏、通道标签等关键信息
+- `hos_regular`：16px 常规字体，用于通道数值等重要数据
+- `hos_bold_big`：44px 粗体，用于主功率数字显示
+- 所有字体使用 8bpp 抗锯齿，确保在 240×280 屏幕上的清晰度
+
 ## 项目约定
 
 - **引脚双重维护**：`include/pins.h`（C++ 宏）与 `platformio.ini` build_flags（`-D` 宏）必须保持一致
