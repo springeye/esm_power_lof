@@ -48,6 +48,7 @@ esm_power_lof/
 | 构建/环境选择 | `platformio.ini` | `build_src_filter` 控制哪些源参与编译，`build_flags` 设置编译宏 |
 | 修改配置常量 | `include/app_config.h` | NTC参数、风扇阈值、任务栈、`USE_DISPLAY_DEMO` 开关 |
 | 修改引脚 | `include/pins.h` | 与 `platformio.ini` build_flags 中的 TFT 引脚保持一致 |
+| 修改默认字体 | `include/lv_conf.h` | `LV_FONT_DEFAULT` = `&hos_14_data`；Montserrat 14/16/20/28 已禁用 |
 | UI 生成代码（勿手改） | `ui/screens/*_gen.c/h` | 修改对应 XML 后重新生成 |
 | UI 手写扩展 | `ui/lof_power_system.c` | `lof_power_system_init()` 桥接生成逻辑 |
 | 屏幕定义（可编辑） | `ui/screens/*.xml` | 修改后重新生成 `*_gen.c/h` |

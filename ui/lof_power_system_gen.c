@@ -44,17 +44,17 @@
  *----------------*/
 
 lv_font_t * hos_bold_big;
-extern lv_font_t hos_bold_big_data;
+extern const lv_font_t hos_bold_big_data;
 lv_font_t * hos_regular;
-extern lv_font_t hos_regular_data;
+extern const lv_font_t hos_regular_data;
 lv_font_t * hos_14;
-extern lv_font_t hos_14_data;
+extern const lv_font_t hos_14_data;
 lv_font_t * font_awesome_14;
-extern lv_font_t font_awesome_14_data;
+extern const lv_font_t font_awesome_14_data;
 lv_font_t * font_awesome_48;
-extern lv_font_t font_awesome_48_data;
+extern const lv_font_t font_awesome_48_data;
 lv_font_t * hos_bold_splash;
-extern lv_font_t hos_bold_splash_data;
+extern const lv_font_t hos_bold_splash_data;
 
 /*----------------
  * Images
