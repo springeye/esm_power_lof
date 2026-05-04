@@ -78,7 +78,7 @@
 			name="hos_14"
 			as_file="false"
 			src_path="fonts/HarmonyOS_Sans_SC_Regular.ttf"
-			size="12"
+			size="14"
 			bpp="8"
 			range="0x20-0x7F"
 			symbols="电源功耗运行面板系统温度电压电流功率就绪运行中停止通道℃：当前占比时间总能效输出风扇转故障"
