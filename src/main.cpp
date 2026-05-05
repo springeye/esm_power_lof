@@ -40,10 +40,6 @@ void setup() {
     lvgl_port::init();
 
     lof_power_system_init(NULL);
-    ui_bridge::screen_manager_init(1500);
-    ui_bridge::data_bridge_attach(ui_bridge::screen_manager_get_home());
-    ui_bridge::data_bridge_init();
-    ui_bridge::input_bridge_attach_home(ui_bridge::screen_manager_get_home());
 
     // Sensors & peripherals
     ina226_init_all();
@@ -57,6 +53,12 @@ void setup() {
 
     // Start FreeRTOS tasks (non-returning)
     tasks::start_all();
+
+    // UI init after LVGL task is running
+    ui_bridge::screen_manager_init(1500);
+    ui_bridge::data_bridge_attach(ui_bridge::screen_manager_get_home());
+    ui_bridge::data_bridge_init();
+    ui_bridge::input_bridge_attach_home(ui_bridge::screen_manager_get_home());
 
     Serial.println("[FanCtrl] Tasks started.");
 }
