@@ -9,6 +9,7 @@ extern "C" lv_obj_t* home_create(void);
 namespace {
     lv_obj_t* g_home = nullptr;
     lv_obj_t* g_splash = nullptr;
+    uint32_t g_splash_duration_ms = 1500;
 
     void splash_timer_cb(lv_timer_t* t) {
         lv_screen_load(g_home);
@@ -18,6 +19,13 @@ namespace {
         }
         lv_timer_delete(t);
     }
+
+    void async_splash_init(void*) {
+        if (g_splash == nullptr) return;
+        ui_bridge::splash_play_intro(g_splash);
+        lv_timer_t* t = lv_timer_create(splash_timer_cb, g_splash_duration_ms, nullptr);
+        lv_timer_set_repeat_count(t, 1);
+    }
 }
 
 namespace ui_bridge {
@@ -26,10 +34,10 @@ namespace ui_bridge {
 
         g_splash = splash_create();
         lv_screen_load(g_splash);
-        ui_bridge::splash_play_intro(g_splash);
+        g_splash_duration_ms = splash_duration_ms;
 
-        lv_timer_t* t = lv_timer_create(splash_timer_cb, splash_duration_ms, nullptr);
-        lv_timer_set_repeat_count(t, 1);
+        // 延迟播放动画，等待 LVGL 任务启动
+        lv_async_call(async_splash_init, nullptr);
 
         settings_ui::init();
     }
