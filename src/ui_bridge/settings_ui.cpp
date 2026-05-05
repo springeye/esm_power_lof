@@ -604,7 +604,7 @@ void init() {
     if (g_initialized) {
         return;
     }
-    lv_async_call(async_init, nullptr);
+    init_impl();
 }
 
 void show() {
