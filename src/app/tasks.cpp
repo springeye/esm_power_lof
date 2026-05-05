@@ -37,10 +37,17 @@ namespace tasks {
 
 // ── lvglTask ─────────────────────────────────────────────────────────────────
 void lvgl_task(void* /*param*/) {
+    Serial.println("[LVGL] Task started");
     esp_task_wdt_add(nullptr);
+    uint32_t count = 0;
     for (;;) {
         lvgl_port::tick_increment();
         lvgl_port::task_handler();
+
+        if (++count >= 200) {  // 每 200 次（约 1 秒）打印一次
+            Serial.println("[LVGL] Running");
+            count = 0;
+        }
 
         esp_task_wdt_reset();
         vTaskDelay(pdMS_TO_TICKS(5));
