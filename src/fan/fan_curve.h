@@ -4,12 +4,12 @@
 /**
  * @brief 将温度转换为风扇 PWM 占空比（10 位，0-1023）。
  *
- * 分段线性曲线：
- *   T < 30°C  → 20%（205）
- *   30-50°C   → 线性 20%→60%（205→614）
- *   50-70°C   → 线性 60%→100%（614→1023）
- *   T ≥ 70°C  → 100%（1023）
- *   T ≥ 75°C  → 强制 100%（紧急状态）
+ * 分段线性曲线（参数从 config_manager 动态获取）：
+ *   T < temp_low   → pwm_min_percent
+ *   temp_low-mid   → 线性 pwm_min→pwm_mid
+ *   temp_mid-high  → 线性 pwm_mid→100%
+ *   T ≥ temp_high  → 100%
+ *   T ≥ temp_force → 强制 100%（紧急状态）
  *
  * @param temp_c  温度值，单位 °C
  * @return PWM 占空比（0–1023）

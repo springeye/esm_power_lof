@@ -1,5 +1,6 @@
 #include "screen_manager.h"
 #include "splash_anim.h"
+#include "settings_ui.h"
 #include "lvgl/lvgl.h"
 
 extern "C" lv_obj_t* splash_create(void);
@@ -29,9 +30,19 @@ namespace ui_bridge {
 
         lv_timer_t* t = lv_timer_create(splash_timer_cb, splash_duration_ms, nullptr);
         lv_timer_set_repeat_count(t, 1);
+
+        settings_ui::init();
     }
 
     lv_obj_t* screen_manager_get_home() {
         return g_home;
+    }
+
+    void screen_manager_show_settings() {
+        settings_ui::show();
+    }
+
+    bool screen_manager_is_settings_active() {
+        return settings_ui::is_active();
     }
 }

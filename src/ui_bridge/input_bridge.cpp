@@ -1,5 +1,6 @@
 #include "input_bridge.h"
 #include "input/keys.h"
+#include "settings_ui.h"
 #include <lvgl.h>
 
 namespace {
@@ -66,6 +67,18 @@ namespace ui_bridge {
     }
 
     void input_handle_key(uint8_t key_id, const KeyState& state) {
+        // 设置页面激活时，路由到 settings_ui
+        if (settings_ui::is_active()) {
+            settings_ui::handle_key(key_id, state);
+            return;
+        }
+
+        // 长按 K2 进入设置
+        if (state.event == KEY_LONG && key_id == 1) {
+            settings_ui::show();
+            return;
+        }
+
         // 仅响应短按（KEY_SHORT），忽略 KEY_IDLE / KEY_LONG
         if (state.event != KEY_SHORT) return;
         if (!g_home) return;

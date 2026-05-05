@@ -116,6 +116,7 @@ void lof_power_system_init_gen(const char * asset_path);
 
 /*Include all the widgets, components and screens of this library*/
 #include "screens/home_gen.h"
+#include "screens/settings_gen.h"
 #include "screens/splash_gen.h"
 
 #ifdef __cplusplus

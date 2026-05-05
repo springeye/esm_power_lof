@@ -17,14 +17,14 @@ esm_power_lof/
 │   └── lv_conf.h           # LVGL 9.x 配置
 ├── src/                    # 主固件源码（63 文件）
 │   ├── main.cpp            # ESP32 固件入口（Arduino setup/loop）
-│   ├── app/                # 应用层（tasks, app_state, watchdog, fault_guard）
+│   ├── app/                # 应用层（tasks, app_state, watchdog, fault_guard, config_manager）
 │   ├── hal/                # 硬件抽象（I2C, SPI）
 │   ├── display/            # 显示驱动（TFT_eSPI + LVGL port）
 │   ├── sensors/            # 传感器（ntc/, ina226/）
 │   ├── fan/                # 风扇控制（fan_curve, fan_pwm, fan_tach）
 │   ├── power/              # 电源管理（PSU FSM, PS_ON）
 │   ├── input/              # 按键输入（keys debounce）
-│   ├── ui_bridge/          # UI 胶水层（screen_manager, data_bridge, input_bridge）
+│   ├── ui_bridge/          # UI 胶水层（screen_manager, data_bridge, input_bridge, settings_ui）
 │   ├── compat/             # LVGL v8 兼容 shim
 │   └── native/             # 本地模拟器入口（native_main_sim.cpp）
 ├── ui/                     # LVGL Editor 导出 UI（已有 AGENTS.md）
@@ -59,6 +59,8 @@ esm_power_lof/
 | 风扇曲线 | `src/fan/fan_curve.cpp` | `fan_temp_to_pwm()`, `hysteresis_apply()` |
 | 任务划分 | `src/app/tasks.cpp` | `tasks::start_all()` 启动 5 个 FreeRTOS 任务 |
 | 故障检测 | `src/app/fault_guard.cpp` | 过温/堵转/过流/PWOK 失稳保护 |
+| 运行时配置 | `src/app/config_manager.{h,cpp}` | 风扇曲线、温度阈值、亮度、功率、传感器校准 |
+| 设置页面UI | `src/ui_bridge/settings_ui.{h,cpp}` | 5个分类页面、3按键导航、编辑模式 |
 | 需求与设计 | `openspec/changes/*/design.md` | 硬件约束、引脚决策、模块拆分 |
 | 分区表 | `partitions/default_8MB.csv` | nvs, otadata, app0/1(OTA), spiffs, coredump |
 
@@ -77,6 +79,9 @@ esm_power_lof/
 | `key_debounce_update()` | function | `src/input/keys.cpp` | 按键去抖与事件生成 |
 | `tft_driver::init()` | function | `src/display/tft_driver.cpp` | TFT 初始化 + 背光 LEDC |
 | `lvgl_port::init()` | function | `src/display/lvgl_port.cpp` | LVGL 移植层：display, flush_cb, tick |
+| `config_manager::init()` | function | `src/app/config_manager.cpp` | 初始化配置（从NVS加载或使用默认值） |
+| `settings_ui::init()` | function | `src/ui_bridge/settings_ui.cpp` | 初始化设置页面UI |
+| `settings_ui::handle_key()` | function | `src/ui_bridge/settings_ui.cpp` | 处理设置页面按键事件 |
 | `lof_power_system_init()` | function | `ui/lof_power_system.c` | 手写 UI 入口，调用 `*_init_gen()` |
 | `PsuState` | enum | `src/power/psu_fsm.h` | 电源状态（Off/Standby/Starting/On/Stopping/Fault） |
 | `app_state` | namespace | `src/app/app_state.cpp` | 全局应用状态（温度/PWM/RPM/PSU），原子变量 |
@@ -117,7 +122,7 @@ esm_power_lof/
 - 在全局宏中定义 `TFT_BL`——会导致 TFT_eSPI 的 `pinMode(-1)` 错误（背光由 `tft_driver.cpp` 自管）
 - 绕过 XML 在 `*_gen.c` 中直接大量粘贴修改控件代码
 - 假设本目录存在 npm/ts 测试与构建入口（没有）
-- 期望支持 WiFi/BLE/OTA 或 NVS 持久化（项目不支持，设计层面排除）
+- 期望支持 WiFi/BLE/OTA（项目不支持，设计层面排除）
 
 ## UNIQUE STYLES
 

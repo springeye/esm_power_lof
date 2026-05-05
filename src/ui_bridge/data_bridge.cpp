@@ -1,5 +1,6 @@
 #include "data_bridge.h"
 #include "../app/app_state.h"
+#include "../app/config_manager.h"
 #include "../power/psu_fsm.h"
 #include "lvgl/lvgl.h"
 
@@ -10,9 +11,6 @@ extern "C" {
 #include <cstdio>
 
 namespace {
-
-// 总设计功率 (W)，对应 globals.xml 中 device_power 初始值 750
-static constexpr int DEVICE_DESIGN_POWER_W = 750;
 
 // 开机时间戳 (ms)，首次 refresh 时记录
 static uint32_t g_start_ms = 0;
@@ -118,8 +116,9 @@ void refresh_cb(lv_timer_t*) {
     lv_subject_copy_string(&device_current_power, buf);
 
     // ── 功率百分比 ──
-    int32_t percent = DEVICE_DESIGN_POWER_W > 0
-        ? static_cast<int32_t>(total_w * 100 / DEVICE_DESIGN_POWER_W)
+    uint16_t design_power_w = config_manager::get_design_power_w();
+    int32_t percent = design_power_w > 0
+        ? static_cast<int32_t>(total_w * 100 / static_cast<float>(design_power_w))
         : 0;
     lv_subject_set_int(&device_power_percent, percent);
 
@@ -127,7 +126,7 @@ void refresh_cb(lv_timer_t*) {
     lv_subject_copy_string(&device_power_percent_txt, buf);
 
     // ── 设计功率 ──
-    std::snprintf(buf, sizeof(buf), "%d", DEVICE_DESIGN_POWER_W);
+    std::snprintf(buf, sizeof(buf), "%u", static_cast<unsigned>(design_power_w));
     lv_subject_copy_string(&device_power, buf);
 
     // ── 瓦时累计 ──
