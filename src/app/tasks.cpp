@@ -24,8 +24,13 @@
 #include "../power/psu_fsm.h"
 #include "../power/ps_on.h"
 #include "../input/keys.h"
-#include "../ui_bridge/input_bridge.h"
 #include "../display/lvgl_port.h"
+#include "../ui_bridge/screen_manager.h"
+#include "../ui_bridge/data_bridge.h"
+#include "../ui_bridge/input_bridge.h"
+extern "C" {
+#include "../../ui/lof_power_system.h"
+}
 #include "app_config.h"
 #include "pins.h"
 #include <Arduino.h>
@@ -37,17 +42,21 @@ namespace tasks {
 
 // ── lvglTask ─────────────────────────────────────────────────────────────────
 void lvgl_task(void* /*param*/) {
-    Serial.println("[LVGL] Task started");
     esp_task_wdt_add(nullptr);
-    uint32_t count = 0;
+    static bool initialized = false;
     for (;;) {
+        if (!initialized) {
+            lvgl_port::init();
+            lof_power_system_init(NULL);
+            ui_bridge::screen_manager_init(1500);
+            ui_bridge::data_bridge_attach(ui_bridge::screen_manager_get_home());
+            ui_bridge::data_bridge_init();
+            ui_bridge::input_bridge_attach_home(ui_bridge::screen_manager_get_home());
+            initialized = true;
+        }
+
         lvgl_port::tick_increment();
         lvgl_port::task_handler();
-
-        if (++count >= 200) {  // 每 200 次（约 1 秒）打印一次
-            Serial.println("[LVGL] Running");
-            count = 0;
-        }
 
         esp_task_wdt_reset();
         vTaskDelay(pdMS_TO_TICKS(5));

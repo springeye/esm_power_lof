@@ -4,13 +4,6 @@
 #include "hal/spi_bus.h"
 #include "display/tft_driver.h"
 #include "display/tft_demo.h"
-#include "display/lvgl_port.h"
-#include "ui_bridge/screen_manager.h"
-#include "ui_bridge/data_bridge.h"
-#include "ui_bridge/input_bridge.h"
-extern "C" {
-#include "../ui/lof_power_system.h"
-}
 #include "sensors/ina226/ina226.h"
 #include "fan/fan_pwm.h"
 #include "fan/fan_tach.h"
@@ -37,10 +30,6 @@ void setup() {
     // ─── 正式 UI 分支 ───
     i2c_bus_init();
 
-    lvgl_port::init();
-
-    lof_power_system_init(NULL);
-
     // Sensors & peripherals
     ina226_init_all();
     fan_pwm_init();
@@ -52,13 +41,8 @@ void setup() {
     watchdog::init(TASK_WDT_TIMEOUT_S);
 
     // Start FreeRTOS tasks (non-returning)
+    // LVGL init (lvgl_port::init, UI creation, screen load) happens inside lvgl_task()
     tasks::start_all();
-
-    // UI init after LVGL task is running
-    ui_bridge::screen_manager_init(1500);
-    ui_bridge::data_bridge_attach(ui_bridge::screen_manager_get_home());
-    ui_bridge::data_bridge_init();
-    ui_bridge::input_bridge_attach_home(ui_bridge::screen_manager_get_home());
 
     Serial.println("[FanCtrl] Tasks started.");
 }

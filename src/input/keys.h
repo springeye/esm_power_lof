@@ -14,16 +14,22 @@ typedef enum {
 /**
  * 按键去抖状态。
  * 字段：
- *   stable      - 确认后的按键状态：true=按下
- *   raw         - 最近一次原始 GPIO 读数
- *   event       - 当前按键事件（KEY_IDLE/KEY_SHORT/KEY_LONG）
- *   press_time  - 按键被确认按下时的时间戳（ms）
+ *   stable       - 确认后的按键状态：true=按下
+ *   raw          - 最近一次原始 GPIO 读数
+ *   event        - 当前按键事件（KEY_IDLE/KEY_SHORT/KEY_LONG）
+ *   press_time   - 按键被确认按下时的时间戳（ms）
+ *   consec_count - 连续同电平采样计数（去抖用，每实例独立）
+ *   last_raw     - 上次原始电平（去抖用，每实例独立）
+ *   long_fired   - 本次按下是否已触发 KEY_LONG（防止重复发射）
  */
 typedef struct {
     bool     stable;
     bool     raw;
     KeyEvent event;
     uint32_t press_time;
+    uint8_t  consec_count;
+    bool     last_raw;
+    bool     long_fired;
 } KeyState;
 
 /**

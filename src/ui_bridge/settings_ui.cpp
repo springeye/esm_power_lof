@@ -185,10 +185,7 @@ void init_impl() {
         g_title_label = nullptr;
         g_page_label = nullptr;
         g_content_area = nullptr;
-        return;
     }
-
-    rebuild_page();
 }
 
 const SettingsPageDef& current_page() {
