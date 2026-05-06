@@ -125,13 +125,41 @@ esm_power_lof/
 
 ## ANTI-PATTERNS（本仓库）
 
-- 直接长期手改 `*_gen.c` / `*_gen.h` 或 `lof_power_system_gen.c/h`（生成文件，会被覆盖）
+- **直接手改任何 LVGL Editor 生成文件**：包括 `*_gen.c` / `*_gen.h`、`lof_power_system_gen.c/h`，以及字体数据文件 `ui/fonts/*_data.c`。这些文件由 LVGL Editor 重新导出时**自动覆盖**，手改内容会丢失。要修改 UI，改源 XML 文件后由用户在 LVGL Editor 重新导出；要修改字体，改 `ui/globals.xml` 的 symbols 属性后由用户重新导出——不得直接手改 `_data.c`。
+- 绕过 XML 在 `*_gen.c` 中直接粘贴修改控件代码（同上，会被覆盖）
 - 手改 `preview-build/**` 中的 `.o/.d/.make/.rsp/link.txt`（构建中间产物）
 - 将 `preview-bin/lved-runtime.js` 当作业务源码维护（Emscripten 生成物）
 - 在全局宏中定义 `TFT_BL`——会导致 TFT_eSPI 的 `pinMode(-1)` 错误（背光由 `tft_driver.cpp` 自管）
-- 绕过 XML 在 `*_gen.c` 中直接大量粘贴修改控件代码
 - 假设本目录存在 npm/ts 测试与构建入口（没有）
 - 期望支持 WiFi/BLE/OTA（项目不支持，设计层面排除）
+
+## UI 修改规则（LVGL Editor 工作流）
+
+> **核心原则：只改 XML，不碰生成文件。生成文件由用户在 LVGL Editor 重新导出产生。**
+
+### 可修改的文件（源文件）
+| 文件 | 用途 | 修改后操作 |
+|------|------|-----------|
+| `ui/screens/*.xml` | 屏幕布局、控件属性、文本内容 | 用户在 LVGL Editor 重新导出 |
+| `ui/globals.xml` | 全局变量、字体字符集（symbols） | 用户在 LVGL Editor 重新导出（重新生成字体 `_data.c`） |
+| `ui/lof_power_system.c` | 手写 UI 扩展入口 | 无需导出（直接编译使用） |
+| `src/ui_bridge/*.cpp` | 运行时逻辑（屏幕切换、数据绑定、按键转发） | 无需导出（直接编译使用） |
+| `src/ui_bridge/settings_ui.{h,cpp}` | 设置页面运行时交互逻辑 | 无需导出（直接编译使用） |
+
+### 禁止修改的文件（生成文件，会被覆盖）
+| 文件 | 说明 |
+|------|------|
+| `ui/screens/*_gen.c` / `*_gen.h` | 由对应 `*.xml` 生成 |
+| `ui/lof_power_system_gen.c` / `lof_power_system_gen.h` | 由 LVGL Editor 项目整体生成 |
+| `ui/fonts/*_data.c` | 由 `globals.xml` 的字体 symbols 生成 |
+| `ui/preview-build/**` | CMake 构建中间产物 |
+| `ui/preview-bin/**` | Emscripten 最终产物 |
+
+### 字体修改正确流程
+1. 修改 `ui/globals.xml` 中对应字体的 `symbols` 属性，追加所需字符
+2. 用户在 LVGL Editor 中重新导出项目
+3. LVGL Editor 自动重新生成 `ui/fonts/{font}_data.c`（含新字符的位图数据）
+4. 编译验证：`pio run -e esp32s3`
 
 ## UNIQUE STYLES
 
