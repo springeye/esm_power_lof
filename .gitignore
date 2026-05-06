@@ -1,6 +1,7 @@
 .pio/
 .vscode/
 build/
+release/
 *.bin
 *.elf
 *.map
