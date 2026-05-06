@@ -171,12 +171,29 @@ void init_impl() {
         return;
     }
 
-    lv_obj_t* header = lv_obj_get_child(g_screen, 0);
-    g_content_area = lv_obj_get_child(g_screen, 1);
+    // ── 给关键子对象设置 name（按当前 settings.xml 结构）────
+    {
+        lv_obj_t* header  = lv_obj_get_child(g_screen, 0);
+        lv_obj_t* content = lv_obj_get_child(g_screen, 1);
+        if (header) {
+            lv_obj_set_name(header, "settings_header");
+            lv_obj_t* title = lv_obj_get_child(header, 1);
+            lv_obj_t* page  = lv_obj_get_child(header, 2);
+            if (title) lv_obj_set_name(title, "settings_title");
+            if (page)  lv_obj_set_name(page,  "settings_page");
+        }
+        if (content) {
+            lv_obj_set_name(content, "settings_content");
+        }
+    }
+
+    // ── 改用 name 查找，不再依赖 index ──
+    lv_obj_t* header  = lv_obj_get_child_by_name(g_screen, "settings_header");
+    g_content_area     = lv_obj_get_child_by_name(g_screen, "settings_content");
 
     if (header != nullptr) {
-        g_title_label = lv_obj_get_child(header, 1);
-        g_page_label = lv_obj_get_child(header, 2);
+        g_title_label = lv_obj_get_child_by_name(header, "settings_title");
+        g_page_label  = lv_obj_get_child_by_name(header, "settings_page");
     }
 
     g_initialized = (g_content_area != nullptr && g_title_label != nullptr && g_page_label != nullptr);

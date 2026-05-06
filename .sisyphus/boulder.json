@@ -31,7 +31,8 @@
     "ses_207048cefffeCXPPdxiybeSUAT",
     "ses_206f631e1ffeLqgTmLkHAhKAtq",
     "ses_206d66af2ffeMobDdajEqnhY3r",
-    "ses_206d66ceeffe4FZWcOsHjG740f"
+    "ses_206d66ceeffe4FZWcOsHjG740f",
+    "ses_20460c6f0ffeIRq6QcT5MiHFLm"
   ],
   "plan_name": "add-settings-page",
   "agent": "atlas",
@@ -116,5 +117,8 @@
       "agent": "oracle",
       "updated_at": "2026-05-05T04:04:03.064Z"
     }
+  },
+  "session_origins": {
+    "ses_20460c6f0ffeIRq6QcT5MiHFLm": "direct"
   }
 }
