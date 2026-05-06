@@ -177,6 +177,11 @@ void init_impl() {
     }
 
     // ── 给关键子对象设置 name（按当前 settings.xml 结构）────
+    if (g_screen == nullptr) {
+        return;
+    }
+
+    // ── 给关键子对象设置 name（按当前 settings.xml 结构）────
     {
         lv_obj_t* header  = lv_obj_get_child(g_screen, 0);
         lv_obj_t* content = lv_obj_get_child(g_screen, 1);

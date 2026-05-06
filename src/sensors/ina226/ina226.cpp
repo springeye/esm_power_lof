@@ -1,6 +1,7 @@
 #include "sensors/ina226/ina226.h"
 #include "app_config.h"
 #include "pins.h"
+#include "hal/i2c_bus.h"
 #include <Wire.h>
 
 // INA226 register addresses
@@ -28,20 +29,26 @@ static const uint8_t s_addrs[3] = {
 };
 
 static bool ina226_write_reg(uint8_t addr, uint8_t reg, uint16_t val) {
+    if (!i2c_bus_take(100)) return false;
     Wire.beginTransmission(addr);
     Wire.write(reg);
     Wire.write(static_cast<uint8_t>(val >> 8));
     Wire.write(static_cast<uint8_t>(val & 0xFF));
-    return Wire.endTransmission() == 0;
+    bool ok = (Wire.endTransmission() == 0);
+    i2c_bus_give();
+    return ok;
 }
 
 static bool ina226_read_reg(uint8_t addr, uint8_t reg, int16_t *out) {
+    if (!i2c_bus_take(100)) return false;
     Wire.beginTransmission(addr);
     Wire.write(reg);
-    if (Wire.endTransmission(false) != 0) return false;
-    if (Wire.requestFrom(static_cast<int>(addr), 2) != 2) return false;
+    if (Wire.endTransmission(false) != 0) { i2c_bus_give(); return false; }
+    uint8_t n = Wire.requestFrom(static_cast<int>(addr), 2);
+    if (n != 2) { i2c_bus_give(); return false; }
     uint16_t raw = (static_cast<uint16_t>(Wire.read()) << 8)
                    | static_cast<uint16_t>(Wire.read());
+    i2c_bus_give();
     *out = static_cast<int16_t>(raw);
     return true;
 }

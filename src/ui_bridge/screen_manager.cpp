@@ -20,10 +20,6 @@ namespace {
         lv_timer_delete(t);
     }
 
-    void test_settings_timer_cb(lv_timer_t* t) {
-        ui_bridge::screen_manager_show_settings();
-        lv_timer_delete(t);
-    }
 }
 
 namespace ui_bridge {
@@ -31,10 +27,7 @@ namespace ui_bridge {
         theme_manager::theme_init();
 
         g_home = home_create();
-        theme_manager::theme_apply(g_home);
-
         g_splash = splash_create();
-        theme_manager::theme_apply(g_splash);
         lv_screen_load(g_splash);
 
         ui_bridge::splash_play_intro(g_splash);
@@ -42,9 +35,6 @@ namespace ui_bridge {
         lv_timer_set_repeat_count(t, 1);
 
         settings_ui::init();
-
-        lv_timer_t* test_t = lv_timer_create(test_settings_timer_cb, 3000, nullptr);
-        lv_timer_set_repeat_count(test_t, 1);
     }
 
     lv_obj_t* screen_manager_get_home() {

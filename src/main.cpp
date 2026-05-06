@@ -10,6 +10,7 @@
 #include "power/ps_on.h"
 #include "app/watchdog.h"
 #include "app/tasks.h"
+#include "app/config_manager.h"
 #include "app_config.h"
 
 void setup() {
@@ -36,6 +37,9 @@ void setup() {
     fan_tach_init();
     ps_on_init();
     // keys: no global init needed; key_debounce_update() called per-key in inputTask
+
+    // Runtime config (loads NVS defaults)
+    config_manager::init();
 
     // Watchdog
     watchdog::init(TASK_WDT_TIMEOUT_S);
