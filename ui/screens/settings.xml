@@ -60,7 +60,7 @@
 			style_pad_bottom="0"
 		>
 			<style name="style_no_pad" />
-			<lv_label text="&#xf060;" style_text_font="font_awesome_14" style_text_color="0xFFFFFF" />
+			<lv_label text="&lt;" style_text_font="hos_14" style_text_color="0xFFFFFF" />
 			<lv_label text="设置" style_text_font="hos_14" style_text_color="0xFFFFFF" />
 			<lv_label text="1/5" style_text_font="hos_14" style_text_color="0xFFFFFF" />
 		</lv_obj>
@@ -79,9 +79,76 @@
 			style_pad_column="0"
 		>
 			<style name="style_no_pad" />
+
+			<!-- ▼▼▼ 预览 item（仅 LVGL Editor 预览用，运行时 rebuild_page() 中 lv_obj_clean 清空）▼▼▼ -->
+
+			<!-- ── 普通态：默认外观（bg=0x111820, border=0x1a2533）── -->
+
+			<lv_obj
+				width="100%" height="30"
+				style_layout="flex" flex_flow="row"
+				style_flex_main_place="space_between" style_flex_cross_place="center"
+				style_bg_color="0x111820" style_bg_opa="255"
+				style_border_color="0x1a2533" style_border_width="1"
+				style_radius="3"
+				style_pad_left="8" style_pad_right="8"
+				style_pad_top="4" style_pad_bottom="4"
+			>
+				<lv_label text="低温阈值" style_text_font="hos_14" style_text_color="0xFFFFFF" />
+				<lv_label text="35.0°C" style_text_font="hos_14" style_text_color="0xFFFFFF" />
+			</lv_obj>
+
+			<lv_obj
+				width="100%" height="30"
+				style_layout="flex" flex_flow="row"
+				style_flex_main_place="space_between" style_flex_cross_place="center"
+				style_bg_color="0x111820" style_bg_opa="255"
+				style_border_color="0x1a2533" style_border_width="1"
+				style_radius="3"
+				style_pad_left="8" style_pad_right="8"
+				style_pad_top="4" style_pad_bottom="4"
+			>
+				<lv_label text="中温阈值" style_text_font="hos_14" style_text_color="0xFFFFFF" />
+				<lv_label text="45.0°C" style_text_font="hos_14" style_text_color="0xFFFFFF" />
+			</lv_obj>
+
+			<!-- ── 聚焦态：蓝色高亮边框（bg=0x162536, border=0x3d9eff）── -->
+
+			<lv_obj
+				width="100%" height="30"
+				style_layout="flex" flex_flow="row"
+				style_flex_main_place="space_between" style_flex_cross_place="center"
+				style_bg_color="0x162536" style_bg_opa="255"
+				style_border_color="0x3d9eff" style_border_width="1"
+				style_radius="3"
+				style_pad_left="8" style_pad_right="8"
+				style_pad_top="4" style_pad_bottom="4"
+			>
+				<lv_label text="低温阈值 &gt;" style_text_font="hos_14" style_text_color="0xFFFFFF" />
+				<lv_label text="35.0°C" style_text_font="hos_14" style_text_color="0xFFFFFF" />
+			</lv_obj>
+
+			<!-- ── 编辑态：橙色高亮边框 + 金色数值（bg=0x1b2430, border=0xffb020, value=0xffd166）── -->
+
+			<lv_obj
+				width="100%" height="30"
+				style_layout="flex" flex_flow="row"
+				style_flex_main_place="space_between" style_flex_cross_place="center"
+				style_bg_color="0x1b2430" style_bg_opa="255"
+				style_border_color="0xffb020" style_border_width="1"
+				style_radius="3"
+				style_pad_left="8" style_pad_right="8"
+				style_pad_top="4" style_pad_bottom="4"
+			>
+				<lv_label text="低温阈值 *" style_text_font="hos_14" style_text_color="0xffd166" />
+				<lv_label text="40.0°C" style_text_font="hos_14" style_text_color="0xffd166" />
+			</lv_obj>
+
+			<!-- ▲▲▲ 预览 item 结束 ▲▲▲ -->
+
 		</lv_obj>
 
-		<!-- 底部提示栏 -->
+		<!-- 底部提示栏（导航态） -->
 		<lv_obj
 			width="100%"
 			height="18"
@@ -95,6 +162,38 @@
 		>
 			<style name="style_no_pad" />
 			<lv_label text="K1/K3:移动  K2:编辑  长按K2:返回" style_text_font="hos_14" style_text_color="0x6b7d8e" />
+		</lv_obj>
+
+		<!-- 底部提示栏预览变体：编辑态 -->
+		<lv_obj
+			width="100%"
+			height="18"
+			style_layout="flex"
+			flex_flow="row"
+			style_flex_main_place="center"
+			style_flex_cross_place="center"
+			style_bg_opa="0"
+			style_border_width="0"
+			style_pad_all="0"
+		>
+			<style name="style_no_pad" />
+			<lv_label text="K1/K3:调整  K2:确认  长按K2:取消" style_text_font="hos_14" style_text_color="0x6b7d8e" />
+		</lv_obj>
+
+		<!-- 底部提示栏预览变体：切换页面提示 -->
+		<lv_obj
+			width="100%"
+			height="18"
+			style_layout="flex"
+			flex_flow="row"
+			style_flex_main_place="center"
+			style_flex_cross_place="center"
+			style_bg_opa="0"
+			style_border_width="0"
+			style_pad_all="0"
+		>
+			<style name="style_no_pad" />
+			<lv_label text="长按K1/K3:切换页面" style_text_font="hos_14" style_text_color="0x6b7d8e" />
 		</lv_obj>
 	</view>
 </screen>

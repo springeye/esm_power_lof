@@ -1,124 +1,12 @@
 {
-  "active_plan": "C:\\Users\\develop\\Desktop\\workspaces\\esm_power_lof\\.sisyphus\\plans\\add-settings-page.md",
-  "started_at": "2026-05-04T15:15:41.595Z",
+  "active_plan": "C:\\Users\\develop\\Desktop\\workspaces\\esm_power_lof\\.sisyphus\\plans\\settings-font-cjk-extend.md",
+  "started_at": "2026-05-06T07:06:30.430Z",
   "session_ids": [
-    "ses_20cb01645ffefRFT3MrXfz6bX2",
-    "ses_20c6f29c3ffeYVvVo1GTqWBZPa",
-    "ses_20c64dd57ffeGirrgkMeWfzFG7",
-    "ses_20c647ca0ffe6exSU6fnYAZl7x",
-    "ses_20c64a877ffe7T0ZQ9iPIJI13N",
-    "ses_20c5ee198ffeqI7stwnv7FwnSy",
-    "ses_20c5c6ef5ffe8JDLDIs1fN4bzZ",
-    "ses_20c5af5f6ffenZh0MN1qNh2DDY",
-    "ses_20c465094ffe2Xef9xFShKe9jt",
-    "ses_20c37c016ffe8mmmWxFkpAS3QV",
-    "ses_20c2db385ffeLhoxQ1mOplmktm",
-    "ses_20c2db4caffeeQDBoT1AF3ePdc",
-    "ses_20c0d4479ffeavdafOqAXUiS4M",
-    "ses_20c0b84baffe0mzyaLtN5Zl0uP",
-    "ses_20c0bb5a6ffeggIT2JU3h0b6x1",
-    "ses_20c0b7f83ffehlBOE6YbKjorF9",
-    "ses_209be59f5ffe7EepQPFjFSQnwk",
-    "ses_209b743f8ffe32As6VjmTZ6qTp",
-    "ses_209b4ee54ffeNijk8OHiyxO4IV",
-    "ses_207fbecd0ffezSLPG96CkSZZeS",
-    "ses_207f3afe5ffeo0EdEk5290FPfJ",
-    "ses_207f3adc4ffeCI9WbuaV5XK1Hx",
-    "ses_207f3b0ffffePZaspaIahnzjdl",
-    "ses_207fbf23affeMMfj7Y5xvFUxcI",
-    "ses_207e83430ffejO3Yu2Z1NpADth",
-    "ses_207048900ffeoTHphg4Oz49GH4",
-    "ses_207048cefffeCXPPdxiybeSUAT",
-    "ses_206f631e1ffeLqgTmLkHAhKAtq",
-    "ses_206d66af2ffeMobDdajEqnhY3r",
-    "ses_206d66ceeffe4FZWcOsHjG740f",
     "ses_20460c6f0ffeIRq6QcT5MiHFLm"
   ],
-  "plan_name": "add-settings-page",
-  "agent": "atlas",
-  "task_sessions": {
-    "todo:1": {
-      "task_key": "todo:1",
-      "task_label": "1",
-      "task_title": "创建config_manager模块",
-      "session_id": "ses_20c6f29c3ffeYVvVo1GTqWBZPa",
-      "agent": "Sisyphus-Junior",
-      "category": "deep",
-      "updated_at": "2026-05-04T15:27:09.005Z"
-    },
-    "todo:2": {
-      "task_key": "todo:2",
-      "task_label": "2",
-      "task_title": "创建LVGL Editor XML模板",
-      "session_id": "ses_20c64dd57ffeGirrgkMeWfzFG7",
-      "agent": "Sisyphus-Junior",
-      "category": "quick",
-      "updated_at": "2026-05-04T15:29:23.199Z"
-    },
-    "todo:5": {
-      "task_key": "todo:5",
-      "task_label": "5",
-      "task_title": "修改fan_curve.cpp使用config_manager",
-      "session_id": "ses_20c5af5f6ffenZh0MN1qNh2DDY",
-      "agent": "Sisyphus-Junior",
-      "category": "quick",
-      "updated_at": "2026-05-04T15:40:40.631Z"
-    },
-    "todo:8": {
-      "task_key": "todo:8",
-      "task_label": "8",
-      "task_title": "用户导出settings_gen.c/h",
-      "session_id": "ses_20c465094ffe2Xef9xFShKe9jt",
-      "agent": "Sisyphus-Junior",
-      "category": "quick",
-      "updated_at": "2026-05-04T16:03:58.212Z"
-    },
-    "todo:9": {
-      "task_key": "todo:9",
-      "task_label": "9",
-      "task_title": "创建settings_ui模块",
-      "session_id": "ses_20c37c016ffe8mmmWxFkpAS3QV",
-      "agent": "Sisyphus-Junior",
-      "category": "deep",
-      "updated_at": "2026-05-04T16:25:59.283Z"
-    },
-    "todo:10": {
-      "task_key": "todo:10",
-      "task_label": "10",
-      "task_title": "集成到screen_manager",
-      "session_id": "ses_20c2db4caffeeQDBoT1AF3ePdc",
-      "agent": "Sisyphus-Junior",
-      "category": "unspecified-high",
-      "updated_at": "2026-05-04T16:30:35.688Z"
-    },
-    "todo:12": {
-      "task_key": "todo:12",
-      "task_label": "12",
-      "task_title": "创建config_manager单元测试",
-      "session_id": "ses_20c2b8d23ffe6KSkuTwrHxHDW0",
-      "agent": "Sisyphus-Junior",
-      "category": "unspecified-high",
-      "updated_at": "2026-05-04T17:01:20.456Z"
-    },
-    "todo:13": {
-      "task_key": "todo:13",
-      "task_label": "13",
-      "task_title": "集成测试",
-      "session_id": "ses_20c0d4479ffeavdafOqAXUiS4M",
-      "agent": "Sisyphus-Junior",
-      "category": "writing",
-      "updated_at": "2026-05-04T17:05:15.135Z"
-    },
-    "final-wave:f1": {
-      "task_key": "final-wave:f1",
-      "task_label": "F1",
-      "task_title": "**计划合规审计** — `oracle`",
-      "session_id": "ses_209b4ee54ffeNijk8OHiyxO4IV",
-      "agent": "oracle",
-      "updated_at": "2026-05-05T04:04:03.064Z"
-    }
-  },
   "session_origins": {
     "ses_20460c6f0ffeIRq6QcT5MiHFLm": "direct"
-  }
+  },
+  "plan_name": "settings-font-cjk-extend",
+  "agent": "atlas"
 }
