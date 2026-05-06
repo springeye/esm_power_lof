@@ -1,6 +1,7 @@
 #include "settings_ui.h"
 
 #include "../app/config_manager.h"
+#include "theme_manager.h"
 #include "screen_manager.h"
 
 #include <atomic>
@@ -121,6 +122,10 @@ const SettingsItem DISPLAY_ITEMS[] = {
     {"亮度%", "%", SettingsItemType::UINT8, 10.0f, 100.0f, 5.0f,
      nullptr, nullptr,
      config_manager::get_brightness_percent, config_manager::set_brightness_percent,
+     nullptr, nullptr, nullptr, 0},
+    {"主题模式", "", SettingsItemType::UINT8, 0.0f, 1.0f, 1.0f,
+     nullptr, nullptr,
+     config_manager::get_theme_mode, config_manager::set_theme_mode,
      nullptr, nullptr, nullptr, 0},
 };
 
@@ -260,6 +265,13 @@ void write_item_value(const SettingsItem& item, float value) {
 }
 
 void format_item_value(const SettingsItem& item, float value, char* buffer, size_t size) {
+    // 主题模式特殊渲染
+    if (item.get_u8 == config_manager::get_theme_mode) {
+        const int v = static_cast<int>(std::lround(value));
+        std::snprintf(buffer, size, "%s", v == 0 ? "日间" : "夜间");
+        return;
+    }
+
     switch (item.type) {
         case SettingsItemType::FLOAT:
             std::snprintf(buffer, size, "%.1f%s", value, item.unit ? item.unit : "");
@@ -284,17 +296,18 @@ void refresh_row_visual(size_t row_index) {
     const bool focused = row_index == g_focus_index;
     const bool editing = focused && g_editing;
 
-    lv_color_t bg = lv_color_hex(0x111820);
-    lv_color_t border = lv_color_hex(0x1a2533);
-    lv_color_t value_color = lv_color_hex(0xFFFFFF);
+    const auto& colors = theme_manager::theme_current_colors();
+    lv_color_t bg = colors.row_default_bg;
+    lv_color_t border = colors.row_default_border;
+    lv_color_t value_color = colors.text_primary;
 
     if (editing) {
-        bg = lv_color_hex(0x1b2430);
-        border = lv_color_hex(0xffb020);
+        bg = colors.row_edit_bg;
+        border = colors.row_edit_border;
         value_color = lv_color_hex(0xffd166);
     } else if (focused) {
-        bg = lv_color_hex(0x162536);
-        border = lv_color_hex(0x3d9eff);
+        bg = colors.row_focus_bg;
+        border = colors.row_focus_border;
     }
 
     lv_obj_set_style_bg_color(row, bg, 0);
@@ -394,7 +407,7 @@ void rebuild_page() {
         lv_obj_t* label = lv_label_create(row);
         lv_label_set_text(label, item.label);
         lv_obj_set_style_text_font(label, hos_14, 0);
-        lv_obj_set_style_text_color(label, lv_color_hex(0xFFFFFF), 0);
+        lv_obj_set_style_text_color(label, theme_manager::theme_current_colors().text_primary, 0);
 
         lv_obj_t* value_label = lv_label_create(row);
         lv_obj_set_width(value_label, 72);
@@ -505,6 +518,12 @@ void commit_edit_mode() {
 
     const SettingsItem& item = current_item();
     write_item_value(item, g_edit_value);
+
+    // 如果修改的是主题模式，立即应用主题
+    if (item.get_u8 == config_manager::get_theme_mode) {
+        theme_manager::theme_apply_to_active_screen();
+    }
+
     config_manager::save_to_nvs();
 
     g_editing = false;

@@ -1,6 +1,7 @@
 #include "screen_manager.h"
 #include "splash_anim.h"
 #include "settings_ui.h"
+#include "theme_manager.h"
 #include "lvgl/lvgl.h"
 
 extern "C" lv_obj_t* splash_create(void);
@@ -27,8 +28,13 @@ namespace {
 
 namespace ui_bridge {
     void screen_manager_init(uint32_t splash_duration_ms) {
+        theme_manager::theme_init();
+
         g_home = home_create();
+        theme_manager::theme_apply(g_home);
+
         g_splash = splash_create();
+        theme_manager::theme_apply(g_splash);
         lv_screen_load(g_splash);
 
         ui_bridge::splash_play_intro(g_splash);

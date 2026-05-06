@@ -24,6 +24,7 @@ struct TempProtectionConfig {
 
 struct DisplayConfig {
     uint8_t brightness_percent;
+    uint8_t theme_mode;
 };
 
 struct PowerConfig {
@@ -75,6 +76,9 @@ void set_fan_stall_timeout_ms(uint32_t v);
 
 uint8_t get_brightness_percent();
 void set_brightness_percent(uint8_t v);
+
+uint8_t get_theme_mode();
+void set_theme_mode(uint8_t v);
 
 uint16_t get_design_power_w();
 void set_design_power_w(uint16_t v);
