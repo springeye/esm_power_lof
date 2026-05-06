@@ -1,5 +1,0 @@
-- 选择在 XML 中仅定义骨架，不预置任何具体设置项，避免与后续 settings_ui.cpp 的动态生成逻辑冲突。
-- 统一背景色为 `0x0a0e14`，与 home.xml 视觉基线一致。
-- 状态样式采用三态分离：普通、焦点、编辑中，分别映射不同边框与背景色，便于代码侧切换。
-- settings_ui 内部采用静态页面描述表（5 页 + getter/setter 函数指针）驱动 UI，避免修改 config_manager 或生成文件。
-- 功率配置项使用 `350/450/550/750W` 预设循环，其他数值项使用 step + clamp 调整，并在 K2 确认时额外调用 `config_manager::save_to_nvs()`。

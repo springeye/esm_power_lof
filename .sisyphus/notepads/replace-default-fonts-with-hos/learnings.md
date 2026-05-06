@@ -1,3 +1,0 @@
-- `include/lv_conf.h` 中切换默认字体时，只需要同时处理 `LV_FONT_CUSTOM_DECLARE` 与 `LV_FONT_DEFAULT`，无需改动 `ui/` 下生成代码。
-- `hos_14_data` 已存在于 `ui/fonts/hos_14_data.c`，在配置文件中直接声明并作为默认字体引用即可。
-- 关闭未使用的 Montserrat 宏时，应只改对应的 `LV_FONT_MONTSERRAT_14/16/20/28`，保留 `LV_FONT_MONTSERRAT_28_COMPRESSED` 等特殊字体开关不动。

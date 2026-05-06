@@ -1,6 +1,0 @@
-- settings.xml 采用 `<screen>` 作为根标签，`<styles>` 与 `<view>` 结构与现有 LVGL Editor 导出 XML 保持一致。
-- 顶栏采用 22px 高度，使用 flex row 布局，左/中/右三段信息分别放置返回图标、分类名和页码。
-- 内容区应使用 `style_flex_grow="1"` 吃掉剩余空间，并预留 `content_area` 供代码动态填充。
-- 底部提示栏保持极简，仅放按键说明文本，字体通过 `style_text_font` 显式指定。
-- settings_ui 需要把 `settings_create()`、`lv_screen_load()`、动态行创建和闪烁定时器都放到 `lv_async_call`/LVGL 线程内，避免 input task 跨核直接操作 LVGL。
-- 设置项动态行可直接挂到 `settings_gen.c` 的 `lv_obj_2` 内容容器下，行内左标签/右值标签都要显式绑定 `hos_14`，不能依赖默认字体。
