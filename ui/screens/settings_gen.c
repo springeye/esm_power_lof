@@ -98,8 +98,8 @@ lv_obj_t * settings_create(void)
     lv_obj_set_style_pad_bottom(lv_obj_1, 0, 0);
     lv_obj_add_style(lv_obj_1, &style_no_pad, 0);
     lv_obj_t * lv_label_0 = lv_label_create(lv_obj_1);
-    lv_label_set_text(lv_label_0, "");
-    lv_obj_set_style_text_font(lv_label_0, font_awesome_14, 0);
+    lv_label_set_text(lv_label_0, "<");
+    lv_obj_set_style_text_font(lv_label_0, hos_14, 0);
     lv_obj_set_style_text_color(lv_label_0, lv_color_hex(0xFFFFFF), 0);
     
     lv_obj_t * lv_label_1 = lv_label_create(lv_obj_1);
