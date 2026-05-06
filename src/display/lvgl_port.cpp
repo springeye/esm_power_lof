@@ -53,6 +53,10 @@ void init() {
 
     // 注册 flush_cb
     lv_display_set_flush_cb(s_disp, flush_cb);
+
+#if LV_USE_SYSMON && LV_USE_PERF_MONITOR
+    lv_sysmon_show_performance(s_disp);
+#endif
 }
 
 void tick_increment() {

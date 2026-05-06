@@ -33,7 +33,7 @@
    HAL SETTINGS
  *====================*/
 /* Default display refresh, input device read and animation step period. */
-#define LV_DEF_REFR_PERIOD 33  /* [ms] ~30fps */
+#define LV_DEF_REFR_PERIOD 16  /* [ms] ~60fps */
 
 /* Input device read period in milliseconds */
 #define LV_INDEV_DEF_READ_PERIOD 30  /* [ms] */
@@ -89,7 +89,9 @@
  * Logging
  *-----------*/
 /* Enable the log module */
+#ifndef LV_USE_LOG
 #define LV_USE_LOG 0
+#endif
 #if LV_USE_LOG
     /* How important log should be added:
      * LV_LOG_LEVEL_TRACE       A lot of logs to give detailed information
@@ -121,19 +123,31 @@
 #define LV_ASSERT_HANDLER while(1);   /* Halt by default */
 
 /*-------------
- * Others
+ *  Others
  *-----------*/
-/* 1: Show CPU usage and FPS count */
-#define LV_USE_PERF_MONITOR 0
+/* 1: Enable system monitor component (required for perf/mem monitor) */
+#ifndef LV_USE_SYSMON
+    #define LV_USE_SYSMON 1
+#endif
+
+/* 1: Show CPU usage and FPS count
+ * Requires LV_USE_SYSMON = 1 */
+#ifndef LV_USE_PERF_MONITOR
+    #define LV_USE_PERF_MONITOR 1
+#endif
 #if LV_USE_PERF_MONITOR
     #define LV_USE_PERF_MONITOR_POS LV_ALIGN_BOTTOM_RIGHT
 #endif
 
 /* 1: Show the used memory and the memory fragmentation */
-#define LV_USE_MEM_MONITOR 0
+#ifndef LV_USE_MEM_MONITOR
+    #define LV_USE_MEM_MONITOR 0
+#endif
 
 /* 1: Draw random colored rectangles over the redrawn areas */
-#define LV_USE_REFR_DEBUG 0
+#ifndef LV_USE_REFR_DEBUG
+    #define LV_USE_REFR_DEBUG 0
+#endif
 
 /* Change the built in (v)snprintf functions */
 #define LV_SPRINTF_CUSTOM 0
