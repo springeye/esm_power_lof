@@ -61,3 +61,20 @@ static constexpr uint32_t TASK_WDT_TIMEOUT_S = 5;    // 任务看门狗超时时
 //         用于排查屏幕接线、SPI 时序、引脚配置等底层问题
 // false : 正常运行业务 UI（LVGL + 风扇控制 + 电源管理 + 传感器）
 static constexpr bool USE_DISPLAY_DEMO = false;
+
+// ── WiFi 配置 ──
+static constexpr uint32_t WIFI_CONNECT_TIMEOUT_MS    = 10000;  // WiFi STA连接超时（10s）
+static constexpr uint32_t WIFI_RECONNECT_INTERVAL_MS = 30000;  // WiFi重连间隔（30s）
+static constexpr uint8_t  WIFI_AP_CHANNEL            = 1;      // AP热点信道
+static constexpr uint8_t  WIFI_AP_MAX_CONN           = 4;      // AP最大连接数
+
+// ── Web 服务器 ──
+static constexpr uint16_t WEB_SERVER_PORT            = 80;     // HTTP端口
+static constexpr uint32_t WEB_UPLOAD_MAX_SIZE        = 0x340000; // 最大固件上传大小（3.25MB）
+
+// ── OTA ──
+static constexpr uint32_t OTA_REBOOT_DELAY_MS        = 500;    // OTA成功后重启延时
+static constexpr uint32_t OTA_WATCHDOG_FEED_MS       = 1;      // 看门狗喂狗间隔
+
+// ── 网络任务 ──
+static constexpr uint32_t TASK_STACK_NET             = 8192;   // 网络任务栈大小（字节）

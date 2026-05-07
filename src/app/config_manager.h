@@ -37,12 +37,19 @@ struct SensorConfig {
     float ntc_temp_offset;
 };
 
+struct OtaConfig {
+    bool ota_mode_enabled;      // OTA模式开关
+    char wifi_ssid[33];         // WiFi SSID（最大32字符 + null）
+    char wifi_password[65];     // WiFi密码（最大64字符 + null）
+};
+
 struct AppConfig {
     FanConfig fan;
     TempProtectionConfig temp_protection;
     DisplayConfig display;
     PowerConfig power;
     SensorConfig sensor;
+    OtaConfig ota;
 };
 
 void init();
@@ -93,5 +100,12 @@ void set_design_power_w(uint16_t v);
 
 float get_ntc_temp_offset();
 void set_ntc_temp_offset(float v);
+
+bool get_ota_mode_enabled();
+void set_ota_mode_enabled(bool v);
+const char* get_wifi_ssid();
+void set_wifi_ssid(const char* v);
+const char* get_wifi_password();
+void set_wifi_password(const char* v);
 
 } // namespace config_manager

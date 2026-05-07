@@ -36,6 +36,9 @@ constexpr char kKeyChartYaxis[] = "cfg_chart_yaxis";
 constexpr char kKeyDefaultView[] = "cfg_default_view";
 constexpr char kKeyDesignPower[] = "cfg_design_power";
 constexpr char kKeyNtcOffset[] = "cfg_ntc_offset";
+constexpr char kKeyOtaEnabled[] = "cfg_ota_enabled";
+constexpr char kKeyWifiSsid[] = "cfg_wifi_ssid";
+constexpr char kKeyWifiPass[] = "cfg_wifi_pass";
 
 constexpr uint16_t kFanStallRpmMin = 0u;
 constexpr uint16_t kFanStallRpmMax = 5000u;
@@ -114,6 +117,10 @@ void set_defaults_locked() {
     s_config.display.default_view = 1u;
     s_config.power.design_power_w = 750u;
     s_config.sensor.ntc_temp_offset = 0.0f;
+
+    s_config.ota.ota_mode_enabled = false;
+    s_config.ota.wifi_ssid[0] = '\0';
+    s_config.ota.wifi_password[0] = '\0';
 }
 
 void ensure_initialized_locked() {
@@ -148,6 +155,9 @@ void save_to_nvs_locked() {
     prefs.putUChar(kKeyDefaultView, s_config.display.default_view);
     prefs.putUShort(kKeyDesignPower, s_config.power.design_power_w);
     prefs.putFloat(kKeyNtcOffset, s_config.sensor.ntc_temp_offset);
+    prefs.putBool(kKeyOtaEnabled, s_config.ota.ota_mode_enabled);
+    prefs.putString(kKeyWifiSsid, s_config.ota.wifi_ssid);
+    prefs.putString(kKeyWifiPass, s_config.ota.wifi_password);
     prefs.end();
 }
 
@@ -203,6 +213,10 @@ void load_from_nvs_locked() {
 
     s_config.sensor.ntc_temp_offset = clamp_float(
         prefs.getFloat(kKeyNtcOffset, s_config.sensor.ntc_temp_offset), -10.0f, 10.0f);
+
+    s_config.ota.ota_mode_enabled = prefs.getBool(kKeyOtaEnabled, false);
+    prefs.getString(kKeyWifiSsid, s_config.ota.wifi_ssid, sizeof(s_config.ota.wifi_ssid));
+    prefs.getString(kKeyWifiPass, s_config.ota.wifi_password, sizeof(s_config.ota.wifi_password));
     prefs.end();
 }
 
@@ -483,6 +497,47 @@ void set_ntc_temp_offset(float v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.sensor.ntc_temp_offset = clamp_float(v, -10.0f, 10.0f);
+    save_to_nvs_locked();
+}
+
+bool get_ota_mode_enabled() {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    return s_config.ota.ota_mode_enabled;
+}
+
+void set_ota_mode_enabled(bool v) {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    s_config.ota.ota_mode_enabled = v;
+    save_to_nvs_locked();
+}
+
+const char* get_wifi_ssid() {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    return s_config.ota.wifi_ssid;
+}
+
+void set_wifi_ssid(const char* v) {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    strncpy(s_config.ota.wifi_ssid, v, sizeof(s_config.ota.wifi_ssid) - 1);
+    s_config.ota.wifi_ssid[sizeof(s_config.ota.wifi_ssid) - 1] = '\0';
+    save_to_nvs_locked();
+}
+
+const char* get_wifi_password() {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    return s_config.ota.wifi_password;
+}
+
+void set_wifi_password(const char* v) {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    strncpy(s_config.ota.wifi_password, v, sizeof(s_config.ota.wifi_password) - 1);
+    s_config.ota.wifi_password[sizeof(s_config.ota.wifi_password) - 1] = '\0';
     save_to_nvs_locked();
 }
 

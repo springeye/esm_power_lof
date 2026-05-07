@@ -9,6 +9,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include <cstring>
 
 #include "lvgl/lvgl.h"
 
@@ -32,6 +33,7 @@ enum SettingsPage : uint8_t {
     PAGE_DISPLAY,
     PAGE_POWER,
     PAGE_SENSOR,
+    PAGE_NETWORK,
     PAGE_COUNT
 };
 
@@ -150,12 +152,20 @@ const SettingsItem SENSOR_ITEMS[] = {
      nullptr, nullptr, nullptr, nullptr, nullptr, 0},
 };
 
+const SettingsItem NETWORK_ITEMS[] = {
+    {"OTA模式", "", SettingsItemType::UINT8, 0.0f, 1.0f, 1.0f,
+     nullptr, nullptr,
+     nullptr, nullptr,
+     nullptr, nullptr, nullptr, 0},
+};
+
 const SettingsPageDef PAGES[] = {
     {"风扇设置", FAN_ITEMS, sizeof(FAN_ITEMS) / sizeof(FAN_ITEMS[0])},
     {"温度保护", TEMP_ITEMS, sizeof(TEMP_ITEMS) / sizeof(TEMP_ITEMS[0])},
     {"显示设置", DISPLAY_ITEMS, sizeof(DISPLAY_ITEMS) / sizeof(DISPLAY_ITEMS[0])},
     {"功率配置", POWER_ITEMS, sizeof(POWER_ITEMS) / sizeof(POWER_ITEMS[0])},
     {"传感器校准", SENSOR_ITEMS, sizeof(SENSOR_ITEMS) / sizeof(SENSOR_ITEMS[0])},
+    {"网络设置", NETWORK_ITEMS, sizeof(NETWORK_ITEMS) / sizeof(NETWORK_ITEMS[0])},
 };
 
 lv_obj_t* g_screen = nullptr;
@@ -294,6 +304,12 @@ void format_item_value(const SettingsItem& item, float value, char* buffer, size
         const int v = static_cast<int>(std::lround(value));
         const char* names[] = {"默认", "CH1图", "CH2图", "CH3图"};
         std::snprintf(buffer, size, "%s", (v >= 0 && v <= 3) ? names[v] : "默认");
+        return;
+    }
+
+    if (item.label && strcmp(item.label, "OTA模式") == 0) {
+        const int v = static_cast<int>(std::lround(value));
+        std::snprintf(buffer, size, "%s", v == 0 ? "关闭" : "开启");
         return;
     }
 

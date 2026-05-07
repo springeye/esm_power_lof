@@ -31,6 +31,10 @@
 extern "C" {
 #include "../../ui/lof_power_system.h"
 }
+#include "../net/wifi_manager.h"
+#include "../net/web_server.h"
+#include "../net/ota_handler.h"
+#include "config_manager.h"
 #include "app_config.h"
 #include "pins.h"
 #include <Arduino.h>
@@ -176,6 +180,37 @@ void power_task(void* /*param*/) {
     }
 }
 
+// ── netTask ──────────────────────────────────────────────────────────────────
+void net_task(void* /*param*/) {
+    esp_task_wdt_add(nullptr);
+
+    wifi_manager::init();
+    web_server::init();
+    ota_handler::init();
+
+    bool ap_mode_active = false;
+
+    for (;;) {
+        bool ota_enabled = config_manager::get_ota_mode_enabled();
+
+        if (ota_enabled && !ap_mode_active) {
+            wifi_manager::start_ap();
+            web_server::start();
+            ap_mode_active = true;
+        } else if (!ota_enabled && ap_mode_active) {
+            web_server::stop();
+            wifi_manager::stop();
+            ap_mode_active = false;
+            wifi_manager::connect_sta();
+        }
+
+        wifi_manager::loop();
+
+        esp_task_wdt_reset();
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+}
+
 // ── start_all ────────────────────────────────────────────────────────────────
 void start_all() {
     xTaskCreatePinnedToCore(lvgl_task,   "lvgl",   TASK_STACK_LVGL,   nullptr, 5, nullptr, 1);
@@ -183,6 +218,7 @@ void start_all() {
     xTaskCreatePinnedToCore(ctrl_task,   "ctrl",   TASK_STACK_CTRL,   nullptr, 3, nullptr, 0);
     xTaskCreatePinnedToCore(input_task,  "input",  TASK_STACK_INPUT,  nullptr, 4, nullptr, 0);
     xTaskCreatePinnedToCore(power_task,  "power",  TASK_STACK_POWER,  nullptr, 6, nullptr, 0);
+    xTaskCreatePinnedToCore(net_task,    "net",    TASK_STACK_NET,    nullptr, 3, nullptr, 0);
 }
 
 } // namespace tasks
