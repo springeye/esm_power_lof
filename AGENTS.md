@@ -5,7 +5,7 @@
 **Branch:** master
 
 ## OVERVIEW
-ESP32 智能风扇控制器固件。C++/Arduino 框架 + PlatformIO 构建，对偶 LVGL Editor 导出的 UI 子工程（C/CMake + Emscripten 预览）。
+ESP32 ESM_POWER_SYSTEM固件。C++/Arduino 框架 + PlatformIO 构建，对偶 LVGL Editor 导出的 UI 子工程（C/CMake + Emscripten 预览）。
 
 ## STRUCTURE
 ```

@@ -1,6 +1,6 @@
-# ESP32-S3 智能风扇控制器固件
+# ESP32-S3 ESM_POWER_SYSTEM固件
 
-基于 **ESP32-S3-WROOM-1-N8R8**（8MB Quad Flash + 8MB Octal PSRAM）的智能风扇控制器，支持温度监测、PWM 风扇调速、电源管理和 LVGL 显示界面。
+基于 **ESP32-S3-WROOM-1-N8R8**（8MB Quad Flash + 8MB Octal PSRAM）的ESM_POWER_SYSTEM，支持温度监测、PWM 风扇调速、电源管理和 LVGL 显示界面。
 
 ## 目标硬件
 

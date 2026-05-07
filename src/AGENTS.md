@@ -1,7 +1,7 @@
 # FIRMWARE SOURCE KNOWLEDGE BASE
 
 ## OVERVIEW
-`src/` 包含 ESP32 智能风扇控制器全部固件源码（C++17，Arduino 框架）。模块化分层：硬件抽象 → 外设驱动 → 算法逻辑 → 应用协调。由 `platformio.ini` 按环境选择编译哪些文件（`build_src_filter`）。
+`src/` 包含 ESP32 ESM_POWER_SYSTEM全部固件源码（C++17，Arduino 框架）。模块化分层：硬件抽象 → 外设驱动 → 算法逻辑 → 应用协调。由 `platformio.ini` 按环境选择编译哪些文件（`build_src_filter`）。
 
 ## STRUCTURE
 ```
