@@ -20,6 +20,9 @@ namespace {
             g_splash = nullptr;
         }
         lv_timer_delete(t);
+
+        view_manager::view_manager_init(g_home);
+        chart_view::chart_view_init();
     }
 
 }
@@ -37,8 +40,6 @@ namespace ui_bridge {
         lv_timer_set_repeat_count(t, 1);
 
         settings_ui::init();
-        view_manager::view_manager_init(g_home);
-        chart_view::chart_view_init();
 
         //TODO: 测试用 — 进入 home 页 3 秒后自动打开设置页面，验证后删除
         lv_timer_t* auto_settings = lv_timer_create(

@@ -167,21 +167,26 @@ void update_chart_data(uint8_t ch) {
 
 namespace chart_view {
 
-void chart_view_init() {
-    if (g_initialized) return;
+void chart_view_update(uint8_t ch) {
+    if (ch >= 3) return;
 
-    for (uint8_t i = 0; i < 3; ++i) {
-        create_chart_ui(i);
+    // 懒创建：首次访问时才建 chart，一次只建一个，不阻塞
+    if (g_charts[ch].chart == nullptr) {
+        lv_obj_t* container = view_manager::view_manager_get_chart_container(ch);
+        if (!container) return;
+        create_chart_ui(ch);
     }
 
-    g_window_index = 0;
-    g_initialized = true;
-}
-
-void chart_view_update(uint8_t ch) {
-    if (!g_initialized || ch >= 3) return;
     update_title_labels(ch);
     update_chart_data(ch);
+}
+
+// chart_view_init 已废弃 — chart 在首次 chart_view_update 或
+// chart_view_set_window 时懒创建
+void chart_view_init() {
+    if (g_initialized) return;
+    g_window_index = 0;
+    g_initialized = true;
 }
 
 void chart_view_set_window(uint8_t ch, uint32_t window_ms) {
