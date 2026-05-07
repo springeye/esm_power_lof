@@ -1,7 +1,7 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-05-06
-**Commit:** 7dfd47d
+**Generated:** 2026-05-08
+**Commit:** abf0203
 **Branch:** master
 
 ## OVERVIEW
@@ -25,8 +25,10 @@ esm_power_lof/
 │   ├── fan/                # 风扇控制（fan_curve, fan_pwm, fan_tach）
 │   ├── power/              # 电源管理（PSU FSM, PS_ON）
 │   ├── input/              # 按键输入（keys debounce）
-│   ├── ui_bridge/          # UI 胶水层（screen_manager, data_bridge, input_bridge, splash_anim, settings_ui）
+│   ├── ui_bridge/          # UI 胶水层（screen_manager, data_bridge, input_bridge, splash_anim, settings_ui, view_manager, chart_view, power_history, theme_manager）
+│   ├── net/                # 网络层（wifi_manager, web_server, ota_handler）
 │   ├── compat/             # LVGL 兼容层（v8 shim + v9.5 compat）
+│   ├── test_main.cpp       # 单元测试入口（Unity 框架）
 │   └── ui/_legacy/         # 旧版 UI（已排除构建，保留参考）
 ├── ui/                     # LVGL Editor 导出 UI（已有 AGENTS.md）
 │   ├── screens/            # 屏幕 XML + 生成 *_gen.c/h（home, splash, settings）
@@ -62,6 +64,13 @@ esm_power_lof/
 | 故障检测 | `src/app/fault_guard.cpp` | 过温/堵转/过流/PWOK 失稳保护 |
 | 运行时配置 | `src/app/config_manager.{h,cpp}` | 风扇曲线、温度阈值、亮度、功率、传感器校准 |
 | 设置页面UI | `src/ui_bridge/settings_ui.{h,cpp}` | 5个分类页面、3按键导航、编辑模式 |
+| 功率历史记录 | `src/ui_bridge/power_history.{h,cpp}` | 环形缓冲区，3000 点/通道，10 分钟窗口 |
+| 视图管理 | `src/ui_bridge/view_manager.{h,cpp}` | 多视图循环切换（默认/CH1/CH2/CH3 图表） |
+| 图表视图 | `src/ui_bridge/chart_view.{h,cpp}` | LVGL 图表控件，功率历史曲线渲染 |
+| 主题管理 | `src/ui_bridge/theme_manager.{h,cpp}` | UI 主题与样式管理 |
+| WiFi 管理 | `src/net/wifi_manager.{h,cpp}` | WiFi 连接与管理 |
+| Web 服务器 | `src/net/web_server.{h,cpp}` | 内置 Web 管理界面 |
+| OTA 升级 | `src/net/ota_handler.{h,cpp}` | 固件空中升级 |
 | 需求与设计 | `openspec/changes/*/design.md` | 硬件约束、引脚决策、模块拆分 |
 | 分区表 | `partitions/default_8MB.csv` | nvs, otadata, app0/1(OTA), spiffs, coredump |
 
@@ -111,7 +120,7 @@ esm_power_lof/
 
 ### 测试约定
 - 框架：Unity（`<unity.h>`）
-- 位置：`test/esp32/<suite>/test_main.cpp`
+- 位置：`src/test_main.cpp`
 - 运行：`pio test -e esp32s3`
 - 每个测试文件实现 `setUp()`/`tearDown()`（即使为空），用 `RUN_TEST()` 注册用例
 - Mock 策略：通过 `platformio.ini` 的 `build_src_filter` 排除硬件实现，替换为测试替身（`*_mock.cpp`）
@@ -124,7 +133,6 @@ esm_power_lof/
 - 将 `preview-bin/lved-runtime.js` 当作业务源码维护（Emscripten 生成物）
 - 在全局宏中定义 `TFT_BL`——会导致 TFT_eSPI 的 `pinMode(-1)` 错误（背光由 `tft_driver.cpp` 自管）
 - 假设本目录存在 npm/ts 测试与构建入口（没有）
-- 期望支持 WiFi/BLE/OTA（项目不支持，设计层面排除）
 
 ## UI 修改规则（LVGL Editor 工作流）
 
@@ -183,6 +191,12 @@ pio device monitor -e esp32s3
 
 # UI 预览构建（需 emsdk/cmake 环境）
 cmake --build ui/preview-build
+
+# 源文件自动发现（PlatformIO extra_script）
+python scripts/auto_src_filter.py
+
+# 打包发布
+python scripts/release_package.py
 ```
 
 ## ANTI-PATTERNS（本仓库）
@@ -198,6 +212,7 @@ cmake --build ui/preview-build
 ## NOTES
 
 - 本固件仅经编译验证，**未经实际硬件测试**；烧录前确认引脚连接
+- 支持 WiFi/Web/OTA（`src/net/`），但需在 `platformio.ini` 中启用相关环境
 - 无 CI/CD 配置——建议添加 GitHub Actions 工作流（`pio run` + `pio check`）
 - 无 Docker 配置——可通过 PlatformIO 官方镜像容器化构建
 - LSP 支持：clangd（需安装），支持 `.c/.cpp/.h/.hpp`
