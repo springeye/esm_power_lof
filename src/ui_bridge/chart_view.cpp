@@ -91,6 +91,7 @@ void create_chart_ui(uint8_t ch) {
     lv_obj_set_style_border_color(g_charts[ch].chart, lv_color_hex(0x1a2533), 0);
     lv_obj_set_style_line_color(g_charts[ch].chart, lv_color_hex(0x2a3545), 0);
     lv_obj_set_style_line_width(g_charts[ch].chart, 1, 0);
+    lv_obj_set_style_size(g_charts[ch].chart, 0, 0, LV_PART_INDICATOR);
 
     g_charts[ch].series = lv_chart_add_series(g_charts[ch].chart, CH_COLORS[ch], LV_CHART_AXIS_PRIMARY_Y);
     lv_chart_set_all_values(g_charts[ch].chart, g_charts[ch].series, LV_CHART_POINT_NONE);

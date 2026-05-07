@@ -111,7 +111,7 @@ void set_defaults_locked() {
     s_config.display.theme_mode = 1u;
     s_config.display.chart_yaxis_mode = 0u;
     //TODO "启动视图"（0=默认,1=CH1图,2=CH2图,3=CH3图）
-    s_config.display.default_view = 0u;
+    s_config.display.default_view = 1u;
     s_config.power.design_power_w = 750u;
     s_config.sensor.ntc_temp_offset = 0.0f;
 }
