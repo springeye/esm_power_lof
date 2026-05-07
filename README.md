@@ -95,14 +95,13 @@ GPIO 42 - I2C 时钟（SCL）
 
 ```
 esm_power_lof/
-├── platformio.ini            # 主构建配置（envs: esp32s3, native, native-smoke）
+├── platformio.ini            # 主构建配置（env: esp32s3）
 ├── include/                  # 全局头文件与配置
 │   ├── pins.h                # 引脚单点定义（ESP32-S3 N8R8）
 │   ├── app_config.h          # 全局常量（NTC/风扇/INA226/任务栈）
 │   └── lv_conf.h             # LVGL 9.x 配置
 ├── src/                      # 主固件源码（48 文件，含 _legacy/ 共 54）
 │   ├── main.cpp              # ESP32-S3 固件入口（Arduino setup/loop）
-│   ├── native_main.cpp       # CLI 本地模拟器入口（算法验证，无 GUI）
 │   ├── app/                  # 应用层
 │   │   ├── app_state.{h,cpp} # 全局状态（原子变量，跨任务共享）
 │   │   ├── config_manager.{h,cpp}  # 运行时配置管理（NVS持久化）
@@ -114,10 +113,8 @@ esm_power_lof/
 │   │   └── spi_bus.{h,cpp}   # SPI 总线抽象
 │   ├── display/              # 显示驱动
 │   │   ├── tft_driver.{h,cpp}      # TFT_eSPI 初始化 + LEDC 背光
-│   │   ├── tft_driver_native.cpp   # native 替身
 │   │   ├── tft_demo.{h,cpp}        # 底层测试图案（彩条/文本）
-│   │   ├── lvgl_port.{h,cpp}       # LVGL 移植层（display flush + tick）
-│   │   └── lvgl_port_native.cpp    # native 替身
+│   │   └── lvgl_port.{h,cpp}       # LVGL 移植层（display flush + tick）
 │   ├── sensors/              # 传感器
 │   │   ├── ntc/              # NTC 温度传感器（β 公式 + 中值滤波）
 │   │   └── ina226/           # INA226 电流/电压/功率监测
@@ -138,13 +135,9 @@ esm_power_lof/
 │   ├── ui_bridge/            # UI 胶水层
 │   │   ├── screen_manager.{h,cpp}  # 屏幕切换管理
 │   │   ├── data_bridge.{h,cpp}     # 应用状态→UI 控件数据绑定
-│   │   ├── input_bridge.{h,cpp}    # 按键事件→LVGL 事件转发
-│   │   └── lvgl_xml_stubs.c        # native 构建 XML 桩
+│   │   └── input_bridge.{h,cpp}    # 按键事件→LVGL 事件转发
 │   ├── compat/               # LVGL v8 兼容层
 │   │   └── lvgl_v8_shim.cpp  # v8 API → v9 API 适配
-│   ├── native/               # Native SDL2 模拟器入口
-│   │   ├── native_main_sim.cpp     # SDL2 LVGL 模拟器主入口（带 GUI）
-│   │   └── test_main.cpp           # Smoke 测试入口
 │   └── ui/_legacy/           # 旧版 UI（已排除构建，保留参考）
 │       ├── ui_events.{h,cpp}
 │       ├── ui_main.{h,cpp}
@@ -162,16 +155,10 @@ esm_power_lof/
 │   ├── CMakeLists.txt        # Emscripten 预览构建入口
 │   ├── preview-build/        # CMake 构建中间产物（勿手改）
 │   └── preview-bin/          # 生成的预览 WASM/JS（勿手改）
-├── test/native/              # Unity 单元测试（native 平台）
-│   ├── test_ntc_beta/        # NTC β 公式测试
-│   ├── test_fan_curve/       # 风扇温控曲线测试
-│   ├── test_psu_fsm/         # 电源状态机测试
-│   ├── test_keys_debounce/   # 按键去抖测试
-│   └── test_hysteresis/      # 滞回逻辑测试
+├── test/                     # 单元测试
 ├── partitions/               # ESP32 分区表
 │   └── default_8MB.csv       # 8MB Flash：nvs, otadata, app0/1(OTA), spiffs, coredump
 ├── scripts/                  # 辅助脚本
-│   └── use_msys2_mingw.py    # 自动注入 MSYS2/MinGW 路径（Windows native 构建）
 ├── openspec/                 # OpenSpec 规范驱动变更管理
 │   └── changes/              # 变更提案（proposal/design/spec/tasks）
 ├── .editorconfig             # 编辑器配置（UTF-8, LF, 缩进）
@@ -185,8 +172,6 @@ esm_power_lof/
 | 环境 | 目标 | 说明 |
 |------|------|------|
 | `esp32s3` | ESP32-S3 固件 | 默认构建目标，完整固件 |
-| `native` | Windows/Linux/Mac | SDL2 LVGL 模拟器 |
-| `native-smoke` | Native | Smoke 测试（快速验证编译） |
 
 ### 命令
 
@@ -196,13 +181,6 @@ pio run
 
 # 编译指定环境
 pio run -e esp32s3
-pio run -e native
-
-# 运行单元测试
-pio test -e native
-
-# 运行 smoke 测试（快速编译验证）
-pio run -e native-smoke
 
 # 静态分析（cppcheck）
 pio check -e esp32s3 --skip-packages
@@ -215,12 +193,7 @@ pio run -e esp32s3 -t upload
 
 # 串口监视
 pio device monitor -e esp32s3
-
-# UI 预览构建（需 Emscripten SDK + CMake 环境）
-cmake --build ui/preview-build
 ```
-
-> **Windows native 构建**：需要 MSYS2/MinGW（`C:\msys64\mingw64\bin`），`scripts/use_msys2_mingw.py` 自动注入路径。
 
 ## 功能特性
 
@@ -235,7 +208,6 @@ cmake --build ui/preview-build
 - **运行时设置**：通过3个物理按键调整风扇曲线、温度阈值、亮度、功率配置和传感器校准，NVS持久化保存
 - **显示界面**：LVGL 9.x，ST7789 240×280，主仪表盘（温度/转速/功率/电压），40MHz SPI
 - **按键交互**：3 键导航（上/确认/下），5ms 轮询去抖，800ms 长按判定，2s 超长按关机
-- **本地模拟**：SDL2 LVGL 模拟器（native 平台），无需硬件即可调试 UI
 - **任务看门狗**：5 个 FreeRTOS 任务均有看门狗保护，5s 超时自动复位
 
 ## 设置页面
@@ -269,8 +241,8 @@ cmake --build ui/preview-build
 - **语言**：C++17 / C（UI 层）
 - **框架**：Arduino + FreeRTOS
 - **构建**：PlatformIO
-- **UI 引擎**：LVGL 9.x（ESP32-S3: ~9.5.0，Native: ~9.2.2；UI 由 LVGL Editor 导出）
-- **测试**：Unity 框架（`pio test -e native`）
+- **UI 引擎**：LVGL 9.x（ESP32-S3: ~9.5.0；UI 由 LVGL Editor 导出）
+- **测试**：Unity 框架（`<unity.h>`）
 - **静态检查**：cppcheck（`--enable=warning,style,performance --inconclusive`）
 - **外部库**：TFT_eSPI, INA226, Bounce2
 
@@ -293,12 +265,12 @@ cmake --build ui/preview-build
 
 ## 注意事项
 
-- 本固件仅经过编译验证和 native 模拟器测试，**未经实际硬件验证**
+- 本固件仅经过编译验证，**未经实际硬件验证**
 - 烧录前请仔细确认引脚连接，避免损坏硬件
 - N8R8 模组的 GPIO 33-37 被 Octal PSRAM 占用，切勿连接到这些引脚
 - 不要在全局宏中定义 `TFT_BL`（会导致 TFT_eSPI 触发 `pinMode(-1)` 错误），背光由 `tft_driver.cpp` 自行管理
 - 不支持 WiFi/BLE/OTA（设计层面排除）；NVS 持久化仅用于运行时配置保存
-- 无 CI/CD 配置（建议添加 GitHub Actions：`pio run` + `pio test` + `pio check`）
+- 无 CI/CD 配置（建议添加 GitHub Actions：`pio run` + `pio check`）
 
 ## OpenSpec 工作流
 

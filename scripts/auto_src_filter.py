@@ -4,12 +4,9 @@ PlatformIO extra_script: 自动发现源文件并注入 build_src_filter。
 消除手工维护 platformio.ini 中 +<...> 条目的痛点:
 - 新增 src/ 模块 → 自动编译，无需手改 platformio.ini
 - LVGL Editor 导出新屏幕/字体 → 从 file_list_gen.cmake 自动发现
-- 平台专属文件通过约定自动区分 (hal/ → esp32 only, *_native.* → native only)
 
 使用方式:
   [env:esp32s3]
-  extra_scripts = post:scripts/auto_src_filter.py
-  [env:native]
   extra_scripts = pre:scripts/auto_src_filter.py
 """
 import os
@@ -24,7 +21,6 @@ PROJECT_DIR = Path(env.subst("$PROJECT_DIR"))  # type: ignore[name-defined]
 SRC_DIR = PROJECT_DIR / "src"
 UI_DIR = PROJECT_DIR / "ui"
 FILE_LIST_CMAKE = UI_DIR / "file_list_gen.cmake"
-PIOENV = env.subst("$PIOENV")  # type: ignore[name-defined]
 
 _verbose_cache = None
 
@@ -88,41 +84,11 @@ def _ui_discovery():
     return ui_files, entries
 
 
-def _is_native_only(rel_path):
-    p = rel_path.replace("\\", "/")
-    if Path(p).stem.endswith("_native"):
-        return True
-    return p.startswith("native/")
-
-
-def _is_esp32_only(rel_path):
-    """ESP32 专用：依赖 Arduino/FreeRTOS/硬件 API，无法在 native 编译."""
-    p = rel_path.replace("\\", "/")
-
-    if p.startswith("hal/"):
-        return True
-    if p.startswith("display/") and not Path(p).stem.endswith("_native"):
-        return True
-    if p.startswith("sensors/"):
-        return True
-    if p in ("fan/fan_pwm.cpp", "fan/fan_tach.cpp"):
-        return True
-    if p == "power/ps_on.cpp":
-        return True
-    if p in ("app/tasks.cpp", "app/watchdog.cpp", "app/fault_guard.cpp"):
-        return True
-    if p in ("main.cpp", "native_main.cpp"):
-        return True
-    return False
-
-
 def _is_legacy(rel_path):
     return "_legacy" in rel_path.replace("\\", "/").split("/")
 
 
 def _src_discovery():
-    native_entries = []
-    esp32_count = 0
     excluded = []
 
     for dirpath, _, filenames in os.walk(SRC_DIR):
@@ -135,23 +101,10 @@ def _src_discovery():
                 excluded.append(rel)
                 continue
 
-            native_only = _is_native_only(rel)
-            esp32_only = _is_esp32_only(rel)
-
-            if native_only and not esp32_only:
-                native_entries.append(f"+<{rel}>")
-            elif esp32_only and not native_only:
-                esp32_count += 1
-            else:
-                native_entries.append(f"+<{rel}>")
-                esp32_count += 1
-
-    return native_entries, esp32_count, excluded
+    return excluded
 
 
 def main():
-    _log(f"PIOENV={PIOENV}")
-
     new_filters = []
     total_discovered = 0
 
@@ -162,19 +115,11 @@ def main():
     for f in ui_files:
         _vlog(f"  ui/{f}")
 
-    native_src, esp32_count, excluded = _src_discovery()
+    excluded = _src_discovery()
 
-    if PIOENV == "native":
-        # Native: platformio.ini 的 +<*> 已覆盖所有 src/ 文件
-        # 脚本仅负责 UI 文件自动发现，不重复添加 src/ 条目（避免覆盖排除规则）
-        _log(f"Native: +<*> 覆盖 {esp32_count + len(native_src)} 个 src/ 文件, "
-             f"排除 {len(excluded)} 个 (legacy/hardware)")
-
-    elif PIOENV.startswith("esp32"):
-        new_filters.append("+<../src/compat/lvgl_v8_shim.cpp>")
-        total_discovered += esp32_count
-        _log(f"ESP32: +<*> 已覆盖 {esp32_count} 个 src/ 文件, "
-             f"排除 {len(excluded)} 个 (legacy)")
+    new_filters.append("+<../src/compat/lvgl_v8_shim.cpp>")
+    _log(f"ESP32: +<*> 已覆盖 src/ 文件, "
+         f"排除 {len(excluded)} 个 (legacy)")
 
     if new_filters:
         existing = env.get("SRC_FILTER", [])  # type: ignore[name-defined]

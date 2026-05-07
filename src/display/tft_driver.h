@@ -9,17 +9,12 @@
  *  - 提供 flush_cb 所需的原始像素写入接口
  *
  * 约束：
- *  - 仅在 esp32dev env 编译（不参与 native 测试）
+ *  - 仅在 ESP32 目标编译
  *  - 不在此层分配堆内存
  *  - 背光亮度 0-255，映射到 LEDC 10-bit duty
  */
 
-#if !defined(BUILD_NATIVE)
 #include <TFT_eSPI.h>
-#else
-// Forward declare for native builds
-class TFT_eSPI;
-#endif
 #include <cstdint>
 
 namespace tft_driver {

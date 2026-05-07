@@ -34,10 +34,8 @@ src/
 │   ├── screen_manager.{h,cpp} # 屏幕生命周期（splash→home）
 │   ├── data_bridge.{h,cpp}    # app_state → LVGL 数据刷新
 │   └── input_bridge.{h,cpp}   # 按键 → LVGL 事件分发
-├── compat/                 # 兼容层
-│   └── lvgl_v8_shim.cpp    # LVGL v8 生成代码适配
-└── native/                 # 本地模拟器
-    └── native_main_sim.cpp # SDL2 LVGL 模拟器入口
+└── compat/                 # 兼容层
+    └── lvgl_v8_shim.cpp    # LVGL v8 生成代码适配
 ```
 
 ## WHERE TO LOOK
@@ -63,8 +61,6 @@ src/
 | UI 输入分发 | `ui_bridge/input_bridge.cpp` | `lv_async_call` 安全跨任务分发按键事件 |
 | 屏幕切换 | `ui_bridge/screen_manager.cpp` | splash 显示 → 定时 → 切换到 home |
 | LVGL v8 兼容 | `compat/lvgl_v8_shim.cpp` | 类型别名与宏桥接 v8 生成代码到 v9 API |
-| 本地模拟器 | `native/native_main_sim.cpp` | SDL2 窗口启动 LVGL + UI 桥接 |
-| 硬件替身（测试） | `display/tft_driver_native.cpp` | 非 `BUILD_NATIVE` 时由 `tft_driver.cpp` 提供 |
 
 ## CONVENTIONS
 
@@ -76,7 +72,7 @@ src/
 - **Include 风格**：项目内部用 `"../module/header.h"` 相对路径，系统/库用 `<>`
 - **多任务安全**：所有跨任务共享数据在 `app_state` 中用 `std::atomic`
 - **模块边界**：每个 `.h` 只暴露模块公共 API，`.cpp` 隐藏实现细节
-- **入口分离**：`main.cpp`（ESP32 固件）、`native/native_main_sim.cpp`（SDK 模拟器）、`native_main.cpp`（CLI 测试）——由 `platformio.ini` env 选择
+- **入口分离**：`main.cpp`（ESP32 固件）——由 `platformio.ini` env 选择
 - **编译期配置**：`include/app_config.h` 提供 `static constexpr` 常量，`platformio.ini` 提供 `-D` 宏
 - **HAL 层**：所有硬件访问经 `hal/` 抽象，上层不直接操作寄存器
 
@@ -95,13 +91,10 @@ src/
 - 绕过 `hal/` 层直接操作 I2C/SPI 寄存器
 - 在任务函数外访问 `app_state` 不加锁（内部已用 `std::atomic`）
 - 在 `*_gen.c/h` 所在模块添加编译依赖（生成文件路径由 `platformio.ini` 显式列出）
-- 修改 `build_src_filter` 时忘记同时更新 `esp32s3` 和 `native` 两个 env 的 UI 文件列表
-- 在 `native` 环境 `build_src_filter` 中遗漏新模块，导致测试编译失败
+- 修改 `build_src_filter` 时忘记更新 UI 文件列表
 
 ## NOTES
 
 - 本目录是固件业务逻辑唯一位置；UI 源码在 `../ui/`，由 `platformio.ini::build_src_filter` 通过 `+<../ui/...>` 引入编译
 - 各模块 `.h` 暴露的公共函数即该模块的稳定接口；新增模块时在 `app/tasks.cpp` 接入任务调度
-- `test/native/` 中的 Unity 测试通过 `build_src_filter` 选择业务源 + native 替身编译运行
-- `native` 和 `esp32s3` 两套 env 的 `build_src_filter` 独立维护；添加新模块/文件时需同步更新两处
 - `tft_driver.cpp` 的背光控制使用 LEDC ch1 并避免在全局定义 `TFT_BL`（防止 TFT_eSPI 误判）

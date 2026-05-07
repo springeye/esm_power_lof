@@ -73,5 +73,5 @@ Get-Content preview-bin/build.log
 
 ## NOTES
 - `.gitignore` 当前仅忽略 `preview-build`；`preview-bin` 是否忽略由仓库策略决定。
-- 本目录未发现独立测试配置；测试主入口在上层仓库 `test/native`。
+- 本目录未发现独立测试配置。
 - 修改生成边界规则时，优先更新导出/生成流程，而非补丁式改生成物。

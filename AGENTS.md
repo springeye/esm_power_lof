@@ -10,27 +10,24 @@ ESP32 智能风扇控制器固件。C++/Arduino 框架 + PlatformIO 构建，对
 ## STRUCTURE
 ```
 esm_power_lof/
-├── platformio.ini          # 主构建配置（envs: esp32s3, native, native-smoke）
+├── platformio.ini          # 主构建配置（env: esp32s3）
 ├── include/                # 全局头文件与配置
 │   ├── pins.h              # 引脚单点定义（ESP32-S3）
 │   ├── app_config.h        # 全局常量（NTC/风扇/INA226/任务栈）
 │   ├── lv_conf.h           # LVGL 9.x 配置
-│   ├── lvgl_v8_shim.h      # LVGL v8 兼容层头文件
-│   ├── lvgl/               # LVGL 头文件桩（native 构建用）
-│   └── SDL2/               # SDL2 头文件桩（native 构建用）
+│   └── lvgl_v8_shim.h      # LVGL v8 兼容层头文件
 ├── src/                    # 主固件源码（61 文件）
 │   ├── main.cpp            # ESP32 固件入口（Arduino setup/loop）
 │   ├── app/                # 应用层（tasks, app_state, watchdog, fault_guard, config_manager）
 │   ├── hal/                # 硬件抽象（I2C, SPI）
-│   ├── display/            # 显示驱动（TFT_eSPI + LVGL port + native 替身）
+│   ├── display/            # 显示驱动（TFT_eSPI + LVGL port）
 │   ├── sensors/            # 传感器（ntc/, ina226/）
 │   ├── fan/                # 风扇控制（fan_curve, fan_pwm, fan_tach）
 │   ├── power/              # 电源管理（PSU FSM, PS_ON）
 │   ├── input/              # 按键输入（keys debounce）
 │   ├── ui_bridge/          # UI 胶水层（screen_manager, data_bridge, input_bridge, splash_anim, settings_ui）
 │   ├── compat/             # LVGL 兼容层（v8 shim + v9.5 compat）
-│   ├── ui/_legacy/         # 旧版 UI（已排除构建，保留参考）
-│   └── native/             # 本地模拟器入口（native_main_sim.cpp + smoke test）
+│   └── ui/_legacy/         # 旧版 UI（已排除构建，保留参考）
 ├── ui/                     # LVGL Editor 导出 UI（已有 AGENTS.md）
 │   ├── screens/            # 屏幕 XML + 生成 *_gen.c/h（home, splash, settings）
 │   ├── fonts/              # 字体数据（C 数组，.ttf 源文件）
@@ -40,9 +37,8 @@ esm_power_lof/
 │   ├── CMakeLists.txt      # 预览构建入口（Emscripten）
 │   ├── preview-build/      # 生成：CMake 中间产物
 │   └── preview-bin/        # 生成：预览 runtime.js/wasm
-├── test/native/            # Unity 单元测试（native 平台）
 ├── partitions/             # 固件分区表（8MB Flash CSV）
-├── scripts/                # 辅助脚本（MSYS2/MinGW 注入）
+├── scripts/                # 辅助脚本
 └── openspec/               # 规范驱动变更提案（proposal/design/spec/tasks）
 ```
 
@@ -60,9 +56,6 @@ esm_power_lof/
 | UI 手写扩展 | `ui/lof_power_system.c` | `lof_power_system_init()` 桥接生成逻辑 |
 | 屏幕定义（可编辑） | `ui/screens/*.xml` | 修改后重新生成 `*_gen.c/h`；现有 home.xml、splash.xml、settings.xml |
 | 启动动画 | `src/ui_bridge/splash_anim.cpp` | splash 屏幕动画与定时切换逻辑 |
-| 本地模拟器 | `src/native/native_main_sim.cpp` | SDL2 LVGL 模拟器，`-DBUILD_NATIVE` |
-| 头文件模拟 | `src/native_main.cpp` | CLI 模拟器，用于算法功能测试 |
-| 单元测试 | `test/native/<suite>/test_main.cpp` | Unity 框架，`pio test -e native` |
 | 状态机实现 | `src/power/psu_fsm.cpp` | `psu_fsm_transition()` |
 | 风扇曲线 | `src/fan/fan_curve.cpp` | `fan_temp_to_pwm()`, `hysteresis_apply()` |
 | 任务划分 | `src/app/tasks.cpp` | `tasks::start_all()` 启动 5 个 FreeRTOS 任务 |
@@ -105,7 +98,7 @@ esm_power_lof/
 - **构建产物**：`preview-build/` 与 `preview-bin/` 为生成目录，不应直接编辑其内容
 - **编译期配置**：几乎所有配置通过 `app_config.h`（`static constexpr`）和 `platformio.ini`（`-D` flags）控制，无运行时配置文件
 - **跨线程数据**：所有多任务共享字段使用 `std::atomic`（见 `src/app/app_state.h`）
-- **Main 多入口**：多个 main 由 `platformio.ini` 环境选择（esp32s3→`main.cpp`, native→`native_main_sim.cpp`/`native_main.cpp`）
+- **Main 入口**：固件入口位于 `src/main.cpp`
 - **Include 风格**：项目内部头文件使用 `"..."` 和相对路径（如 `"../sensors/ntc/ntc.h"`），系统/库头文件使用 `<>`
 - **字体显式指定**：所有 `lv_label` 等文本控件必须通过 `style_text_font` 手动指定字体。可用字体：`hos_14`(14px)、`hos_regular`(16px)、`hos_medium`、`hos_bold`、`hos_bold_big`(44px)、`hos_bold_splash`、`hos_black`、`hos_light`、`hos_thin`、`font_medium`、`font_awesome_14`、`font_awesome_48`。不得依赖 `LV_FONT_DEFAULT`。`lv_conf.h` 中 `LV_FONT_DEFAULT` 保持为 `&lv_font_montserrat_14`（仅作后备，UI 中不使用）。
 
@@ -118,10 +111,10 @@ esm_power_lof/
 
 ### 测试约定
 - 框架：Unity（`<unity.h>`）
-- 位置：`test/native/<suite>/test_main.cpp`
-- 运行：`pio test -e native`
+- 位置：`test/esp32/<suite>/test_main.cpp`
+- 运行：`pio test -e esp32s3`
 - 每个测试文件实现 `setUp()`/`tearDown()`（即使为空），用 `RUN_TEST()` 注册用例
-- Mock 策略：通过 `platformio.ini` 的 `build_src_filter` 排除硬件实现，替换为 native 替身（`*_native.cpp`）
+- Mock 策略：通过 `platformio.ini` 的 `build_src_filter` 排除硬件实现，替换为测试替身（`*_mock.cpp`）
 
 ## ANTI-PATTERNS（本仓库）
 
@@ -166,7 +159,7 @@ esm_power_lof/
 - 生成文件采用 `*_gen` 命名，手写入口不带 `_gen`
 - 生成屏幕函数以 `*_create()` 暴露，初始化函数以 `*_init_gen()` 命名
 - 样式对象常见 `static ... + style_inited` 的一次性初始化模式
-- UI 源码不在 `src/` 下——由 `platformio.ini` 的 `build_src_filter` 通过 `+<../ui/...>` 显式引入
+- UI 源码不在 `src/` 下——由 `platformio.ini` 显式引入
 - 引脚定义双重维护：`include/pins.h`（C++ 宏）+ `platformio.ini` build_flags（`-D` 宏），两处必须一致
 - 文档和 UI 生成产物均遵循电报风格（`TELEGRAPHIC_STYLE_GUIDE`）
 
@@ -175,15 +168,6 @@ esm_power_lof/
 ```bash
 # 固件构建（默认目标 esp32s3）
 pio run -e esp32s3
-
-# 本地单元测试（native 平台）
-pio test -e native
-
-# 本地 LVGL 模拟器（native 构建并运行）
-pio run -e native
-
-# 编译验证（smoke 测试）
-pio run -e native-smoke
 
 # 静态分析
 pio check -e esp32s3 --skip-packages
@@ -204,10 +188,7 @@ cmake --build ui/preview-build
 ## NOTES
 
 - 本固件仅经编译验证，**未经实际硬件测试**；烧录前确认引脚连接
-- 无 CI/CD 配置——建议添加 GitHub Actions 工作流（`pio run` + `pio test` + `pio check`）
+- 无 CI/CD 配置——建议添加 GitHub Actions 工作流（`pio run` + `pio check`）
 - 无 Docker 配置——可通过 PlatformIO 官方镜像容器化构建
-- Windows native 构建需要 MSYS2/MinGW（`C:\msys64\mingw64\bin`），由 `scripts/use_msys2_mingw.py` 自动注入
-- `.gitignore` 仅忽略 `preview-build`；`preview-bin` 是否跟踪由仓库策略决定
-- 无代码覆盖率配置——可在 native env 添加 `-fprofile-arcs -ftest-coverage`
 - LSP 支持：clangd（需安装），支持 `.c/.cpp/.h/.hpp`
 - 分区表：8MB Flash，双 OTA 分区（app0/app1）+ spiffs + coredump
