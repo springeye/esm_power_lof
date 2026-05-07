@@ -25,6 +25,8 @@ struct TempProtectionConfig {
 struct DisplayConfig {
     uint8_t brightness_percent;
     uint8_t theme_mode;
+    uint8_t chart_yaxis_mode;
+    uint8_t default_view;
 };
 
 struct PowerConfig {
@@ -79,6 +81,12 @@ void set_brightness_percent(uint8_t v);
 
 uint8_t get_theme_mode();
 void set_theme_mode(uint8_t v);
+
+uint8_t get_chart_yaxis_mode();
+void set_chart_yaxis_mode(uint8_t v);
+
+uint8_t get_default_view();
+void set_default_view(uint8_t v);
 
 uint16_t get_design_power_w();
 void set_design_power_w(uint16_t v);

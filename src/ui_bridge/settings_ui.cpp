@@ -127,6 +127,14 @@ const SettingsItem DISPLAY_ITEMS[] = {
      nullptr, nullptr,
      config_manager::get_theme_mode, config_manager::set_theme_mode,
      nullptr, nullptr, nullptr, 0},
+    {"Y轴模式", "", SettingsItemType::UINT8, 0.0f, 1.0f, 1.0f,
+     nullptr, nullptr,
+     config_manager::get_chart_yaxis_mode, config_manager::set_chart_yaxis_mode,
+     nullptr, nullptr, nullptr, 0},
+    {"启动视图", "", SettingsItemType::UINT8, 0.0f, 3.0f, 1.0f,
+     nullptr, nullptr,
+     config_manager::get_default_view, config_manager::set_default_view,
+     nullptr, nullptr, nullptr, 0},
 };
 
 const SettingsItem POWER_ITEMS[] = {
@@ -270,10 +278,22 @@ void write_item_value(const SettingsItem& item, float value) {
 }
 
 void format_item_value(const SettingsItem& item, float value, char* buffer, size_t size) {
-    // 主题模式特殊渲染
     if (item.get_u8 == config_manager::get_theme_mode) {
         const int v = static_cast<int>(std::lround(value));
         std::snprintf(buffer, size, "%s", v == 0 ? "日间" : "夜间");
+        return;
+    }
+
+    if (item.get_u8 == config_manager::get_chart_yaxis_mode) {
+        const int v = static_cast<int>(std::lround(value));
+        std::snprintf(buffer, size, "%s", v == 0 ? "自动" : "固定");
+        return;
+    }
+
+    if (item.get_u8 == config_manager::get_default_view) {
+        const int v = static_cast<int>(std::lround(value));
+        const char* names[] = {"默认", "CH1图", "CH2图", "CH3图"};
+        std::snprintf(buffer, size, "%s", (v >= 0 && v <= 3) ? names[v] : "默认");
         return;
     }
 

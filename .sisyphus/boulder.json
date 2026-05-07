@@ -1,0 +1,29 @@
+{
+  "active_plan": "C:\\Users\\develop\\Desktop\\workspaces\\esm_power_lof\\.sisyphus\\plans\\home-chart-view.md",
+  "started_at": "2026-05-07T02:29:47.209Z",
+  "session_ids": [
+    "ses_1ffe49273fferfFQZFA3A7oq6D",
+    "ses_1ffb7cb48ffePtUwETi3Ej7ND4",
+    "ses_1ffb78f7fffeFNqJdLRnIpQLIf",
+    "ses_1ffb7541effemzBPjDYTgBQ7aV"
+  ],
+  "session_origins": {
+    "ses_1ffe49273fferfFQZFA3A7oq6D": "direct",
+    "ses_1ffb7cb48ffePtUwETi3Ej7ND4": "appended",
+    "ses_1ffb78f7fffeFNqJdLRnIpQLIf": "appended",
+    "ses_1ffb7541effemzBPjDYTgBQ7aV": "appended"
+  },
+  "plan_name": "home-chart-view",
+  "agent": "atlas",
+  "task_sessions": {
+    "todo:1": {
+      "task_key": "todo:1",
+      "task_label": "1",
+      "task_title": "环形缓冲数据采集模块 `power_history`",
+      "session_id": "ses_1ffb7541effemzBPjDYTgBQ7aV",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "updated_at": "2026-05-07T02:33:43.245Z"
+    }
+  }
+}

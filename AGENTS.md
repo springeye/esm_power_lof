@@ -185,6 +185,16 @@ pio device monitor -e esp32s3
 cmake --build ui/preview-build
 ```
 
+## ANTI-PATTERNS（本仓库）
+
+- **看门狗重启风险**：FreeRTOS 任务有 5s 看门狗超时（`app_config.h: TASK_WDT_TIMEOUT_S`）。任何在任务循环中执行的耗时操作（如大量 LVGL 控件创建、长循环、阻塞 I/O）都必须分片执行或使用 `vTaskDelay` 让出 CPU。**已知教训**：设置页面曾因一次性创建大量预览 item 导致 LVGL 任务阻塞超过 5s 触发看门狗重启。解决方案：延迟创建（lazy init）、分批构建 UI、或在长操作中插入 `vTaskDelay(pdMS_TO_TICKS(1))` 喂狗。
+- **LVGL 任务阻塞**：`lvgl_task`（Core 1, 优先级 5）每 5ms 调用一次 `lvgl_port::task_handler()`。任何在此任务中同步执行的耗时操作都会阻塞 LVGL 渲染和看门狗喂狗。新建 UI 控件应使用 `lv_async_call` 或在 `data_bridge` 定时器中分批完成。
+- 直接手改任何 LVGL Editor 生成文件（`*_gen.c/h`、`lof_power_system_gen.c/h`、字体 `_data.c`）
+- 绕过 XML 在 `*_gen.c` 中直接粘贴修改控件代码
+- 手改 `preview-build/**` 中的构建中间产物
+- 在全局宏中定义 `TFT_BL`（会导致 TFT_eSPI 的 `pinMode(-1)` 错误）
+- 假设本目录存在 npm/ts 测试与构建入口
+
 ## NOTES
 
 - 本固件仅经编译验证，**未经实际硬件测试**；烧录前确认引脚连接

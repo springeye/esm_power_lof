@@ -1,4 +1,7 @@
 #include "data_bridge.h"
+#include "power_history.h"
+#include "chart_view.h"
+#include "view_manager.h"
 #include "../app/app_state.h"
 #include "../app/config_manager.h"
 #include "../power/psu_fsm.h"
@@ -108,7 +111,14 @@ void refresh_cb(lv_timer_t*) {
         fmt_power(buf, sizeof(buf), ch_w);
         lv_subject_copy_string(ch[i].power, buf);
 
+        power_history_push(i, lv_tick_get(), ch_w);
+
         total_w += ch_w;
+    }
+
+    HomeView current_view = view_manager::view_manager_get_current();
+    if (current_view >= VIEW_CHART_CH1 && current_view <= VIEW_CHART_CH3) {
+        chart_view::chart_view_update(current_view - VIEW_CHART_CH1);
     }
 
     // ── 总功率 ──
@@ -158,6 +168,7 @@ void data_bridge_attach(lv_obj_t*) {
 }
 
 void data_bridge_init() {
+    power_history_init();
     lv_timer_create(refresh_cb, 200, nullptr);
 }
 

@@ -32,6 +32,8 @@ constexpr char kKeyStallDuty[] = "cfg_stall_duty";
 constexpr char kKeyStallTimeout[] = "cfg_stall_tm";
 constexpr char kKeyBrightness[] = "cfg_brightness";
 constexpr char kKeyThemeMode[] = "cfg_theme_mode";
+constexpr char kKeyChartYaxis[] = "cfg_chart_yaxis";
+constexpr char kKeyDefaultView[] = "cfg_default_view";
 constexpr char kKeyDesignPower[] = "cfg_design_power";
 constexpr char kKeyNtcOffset[] = "cfg_ntc_offset";
 
@@ -107,6 +109,8 @@ void set_defaults_locked() {
 
     s_config.display.brightness_percent = 80u;
     s_config.display.theme_mode = 1u;
+    s_config.display.chart_yaxis_mode = 0u;
+    s_config.display.default_view = 0u;
     s_config.power.design_power_w = 750u;
     s_config.sensor.ntc_temp_offset = 0.0f;
 }
@@ -139,6 +143,8 @@ void save_to_nvs_locked() {
     prefs.putUInt(kKeyStallTimeout, s_config.temp_protection.stall_timeout_ms);
     prefs.putUChar(kKeyBrightness, s_config.display.brightness_percent);
     prefs.putUChar(kKeyThemeMode, s_config.display.theme_mode);
+    prefs.putUChar(kKeyChartYaxis, s_config.display.chart_yaxis_mode);
+    prefs.putUChar(kKeyDefaultView, s_config.display.default_view);
     prefs.putUShort(kKeyDesignPower, s_config.power.design_power_w);
     prefs.putFloat(kKeyNtcOffset, s_config.sensor.ntc_temp_offset);
     prefs.end();
@@ -184,6 +190,10 @@ void load_from_nvs_locked() {
         prefs.getUChar(kKeyBrightness, s_config.display.brightness_percent), 10u, 100u);
     s_config.display.theme_mode = clamp_u8(
         prefs.getUChar(kKeyThemeMode, s_config.display.theme_mode), 0u, 1u);
+    s_config.display.chart_yaxis_mode = clamp_u8(
+        prefs.getUChar(kKeyChartYaxis, s_config.display.chart_yaxis_mode), 0u, 1u);
+    s_config.display.default_view = clamp_u8(
+        prefs.getUChar(kKeyDefaultView, s_config.display.default_view), 0u, 3u);
 
     const uint16_t design_power = prefs.getUShort(kKeyDesignPower, s_config.power.design_power_w);
     if (is_valid_design_power(design_power)) {
@@ -418,6 +428,32 @@ void set_theme_mode(uint8_t v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.display.theme_mode = clamp_u8(v, 0u, 1u);
+    save_to_nvs_locked();
+}
+
+uint8_t get_chart_yaxis_mode() {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    return s_config.display.chart_yaxis_mode;
+}
+
+void set_chart_yaxis_mode(uint8_t v) {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    s_config.display.chart_yaxis_mode = clamp_u8(v, 0u, 1u);
+    save_to_nvs_locked();
+}
+
+uint8_t get_default_view() {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    return s_config.display.default_view;
+}
+
+void set_default_view(uint8_t v) {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    s_config.display.default_view = clamp_u8(v, 0u, 3u);
     save_to_nvs_locked();
 }
 
