@@ -75,6 +75,7 @@ struct SettingsPageDef {
 
 struct RowRefs {
     lv_obj_t* row;
+    lv_obj_t* label;
     lv_obj_t* value_label;
 };
 
@@ -420,18 +421,9 @@ void refresh_all_values() {
     }
 }
 
-void rebuild_page() {
-    if (g_content_area == nullptr) {
-        return;
-    }
-
-    stop_blink();
-    g_editing = false;
-    lv_obj_clean(g_content_area);
-    g_row_count = current_page().item_count;
-
-    for (size_t i = 0; i < g_row_count; ++i) {
-        const SettingsItem& item = current_page().items[i];
+void ensure_rows_created() {
+    if (g_rows[0].row != nullptr) return;
+    for (size_t i = 0; i < MAX_PAGE_ITEMS; ++i) {
         lv_obj_t* row = lv_obj_create(g_content_area);
         lv_obj_set_width(row, lv_pct(100));
         lv_obj_set_height(row, 30);
@@ -446,7 +438,6 @@ void rebuild_page() {
         lv_obj_set_style_radius(row, 3, 0);
 
         lv_obj_t* label = lv_label_create(row);
-        lv_label_set_text(label, item.label);
         lv_obj_set_style_text_font(label, hos_14, 0);
         lv_obj_set_style_text_color(label, theme_manager::theme_current_colors().text_primary, 0);
 
@@ -455,14 +446,40 @@ void rebuild_page() {
         lv_obj_set_style_text_align(value_label, LV_TEXT_ALIGN_RIGHT, 0);
         lv_obj_set_style_text_font(value_label, hos_14, 0);
 
-        g_rows[i] = {row, value_label};
+        g_rows[i] = {row, label, value_label};
+        lv_obj_add_flag(row, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+void bind_page_to_rows() {
+    for (size_t i = 0; i < g_row_count; ++i) {
+        const SettingsItem& item = current_page().items[i];
+        lv_label_set_text(g_rows[i].label, item.label);
+        lv_obj_clear_flag(g_rows[i].row, LV_OBJ_FLAG_HIDDEN);
         update_row_value(i);
         refresh_row_visual(i);
     }
+}
 
-    for (size_t i = g_row_count; i < MAX_PAGE_ITEMS; ++i) {
-        g_rows[i] = {};
+void hide_unused_rows(size_t used_count) {
+    for (size_t i = used_count; i < MAX_PAGE_ITEMS; ++i) {
+        if (g_rows[i].row != nullptr) {
+            lv_obj_add_flag(g_rows[i].row, LV_OBJ_FLAG_HIDDEN);
+        }
     }
+}
+
+void rebuild_page() {
+    if (g_content_area == nullptr) {
+        return;
+    }
+
+    stop_blink();
+    g_editing = false;
+    ensure_rows_created();
+    g_row_count = current_page().item_count;
+    bind_page_to_rows();
+    hide_unused_rows(g_row_count);
 
     if (g_focus_index >= g_row_count) {
         g_focus_index = 0;
