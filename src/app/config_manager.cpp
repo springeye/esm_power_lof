@@ -274,7 +274,6 @@ void set_fan_temp_low(float v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.fan.temp_low = clamp_float(v, 20.0f, 50.0f);
-    save_to_nvs_locked();
 }
 
 float get_fan_temp_mid() {
@@ -287,7 +286,6 @@ void set_fan_temp_mid(float v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.fan.temp_mid = clamp_float(v, 30.0f, 60.0f);
-    save_to_nvs_locked();
 }
 
 float get_fan_temp_high() {
@@ -300,7 +298,6 @@ void set_fan_temp_high(float v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.fan.temp_high = clamp_float(v, 40.0f, 70.0f);
-    save_to_nvs_locked();
 }
 
 float get_fan_temp_force() {
@@ -313,7 +310,6 @@ void set_fan_temp_force(float v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.fan.temp_force = clamp_float(v, 50.0f, 80.0f);
-    save_to_nvs_locked();
 }
 
 uint8_t get_fan_pwm_min_percent() {
@@ -326,7 +322,6 @@ void set_fan_pwm_min_percent(uint8_t v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.fan.pwm_min_percent = clamp_u8(v, 10u, 50u);
-    save_to_nvs_locked();
 }
 
 uint8_t get_fan_pwm_mid_percent() {
@@ -339,7 +334,6 @@ void set_fan_pwm_mid_percent(uint8_t v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.fan.pwm_mid_percent = clamp_u8(v, 40u, 90u);
-    save_to_nvs_locked();
 }
 
 float get_fan_hysteresis() {
@@ -352,7 +346,6 @@ void set_fan_hysteresis(float v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.fan.hysteresis = clamp_float(v, 0.5f, 5.0f);
-    save_to_nvs_locked();
 }
 
 float get_temp_warning_threshold() {
@@ -365,7 +358,6 @@ void set_temp_warning_threshold(float v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.temp_protection.warning_threshold = clamp_float(v, 50.0f, 80.0f);
-    save_to_nvs_locked();
 }
 
 float get_temp_shutdown_threshold() {
@@ -378,7 +370,6 @@ void set_temp_shutdown_threshold(float v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.temp_protection.shutdown_threshold = clamp_float(v, 60.0f, 90.0f);
-    save_to_nvs_locked();
 }
 
 uint16_t get_fan_stall_rpm_thresh() {
@@ -391,7 +382,6 @@ void set_fan_stall_rpm_thresh(uint16_t v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.temp_protection.stall_rpm_thresh = clamp_u16(v, kFanStallRpmMin, kFanStallRpmMax);
-    save_to_nvs_locked();
 }
 
 uint16_t get_fan_stall_duty_thresh() {
@@ -404,7 +394,6 @@ void set_fan_stall_duty_thresh(uint16_t v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.temp_protection.stall_duty_thresh = clamp_u16(v, kFanStallDutyMin, kFanStallDutyMax);
-    save_to_nvs_locked();
 }
 
 uint32_t get_fan_stall_timeout_ms() {
@@ -417,7 +406,6 @@ void set_fan_stall_timeout_ms(uint32_t v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.temp_protection.stall_timeout_ms = clamp_u32(v, kFanStallTimeoutMinMs, kFanStallTimeoutMaxMs);
-    save_to_nvs_locked();
 }
 
 uint8_t get_brightness_percent() {
@@ -430,7 +418,6 @@ void set_brightness_percent(uint8_t v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.display.brightness_percent = clamp_u8(v, 10u, 100u);
-    save_to_nvs_locked();
 }
 
 uint8_t get_theme_mode() {
@@ -443,7 +430,6 @@ void set_theme_mode(uint8_t v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.display.theme_mode = clamp_u8(v, 0u, 1u);
-    save_to_nvs_locked();
 }
 
 uint8_t get_chart_yaxis_mode() {
@@ -456,7 +442,6 @@ void set_chart_yaxis_mode(uint8_t v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.display.chart_yaxis_mode = clamp_u8(v, 0u, 1u);
-    save_to_nvs_locked();
 }
 
 uint8_t get_default_view() {
@@ -469,7 +454,6 @@ void set_default_view(uint8_t v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.display.default_view = clamp_u8(v, 0u, 3u);
-    save_to_nvs_locked();
 }
 
 uint16_t get_design_power_w() {
@@ -483,7 +467,6 @@ void set_design_power_w(uint16_t v) {
     ensure_initialized_locked();
     if (is_valid_design_power(v)) {
         s_config.power.design_power_w = v;
-        save_to_nvs_locked();
     }
 }
 
@@ -497,7 +480,6 @@ void set_ntc_temp_offset(float v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.sensor.ntc_temp_offset = clamp_float(v, -10.0f, 10.0f);
-    save_to_nvs_locked();
 }
 
 bool get_ota_mode_enabled() {
@@ -510,7 +492,6 @@ void set_ota_mode_enabled(bool v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.ota.ota_mode_enabled = v;
-    save_to_nvs_locked();
 }
 
 const char* get_wifi_ssid() {
@@ -524,7 +505,6 @@ void set_wifi_ssid(const char* v) {
     ensure_initialized_locked();
     strncpy(s_config.ota.wifi_ssid, v, sizeof(s_config.ota.wifi_ssid) - 1);
     s_config.ota.wifi_ssid[sizeof(s_config.ota.wifi_ssid) - 1] = '\0';
-    save_to_nvs_locked();
 }
 
 const char* get_wifi_password() {
@@ -538,7 +518,6 @@ void set_wifi_password(const char* v) {
     ensure_initialized_locked();
     strncpy(s_config.ota.wifi_password, v, sizeof(s_config.ota.wifi_password) - 1);
     s_config.ota.wifi_password[sizeof(s_config.ota.wifi_password) - 1] = '\0';
-    save_to_nvs_locked();
 }
 
 } // namespace config_manager

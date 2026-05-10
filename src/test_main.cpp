@@ -184,6 +184,31 @@ void test_config_yaxis_clamp(void) {
     TEST_ASSERT_EQUAL_UINT8(1, config_manager::get_chart_yaxis_mode());
 }
 
+void test_config_theme_mode_set_get_without_autosave(void) {
+    config_manager::init();
+    config_manager::set_theme_mode(0);
+    TEST_ASSERT_EQUAL_UINT8(0, config_manager::get_theme_mode());
+    config_manager::set_theme_mode(1);
+    TEST_ASSERT_EQUAL_UINT8(1, config_manager::get_theme_mode());
+}
+
+void test_config_design_power_set_get_without_autosave(void) {
+    config_manager::init();
+    config_manager::set_design_power_w(350);
+    TEST_ASSERT_EQUAL_UINT16(350, config_manager::get_design_power_w());
+    config_manager::set_design_power_w(750);
+    TEST_ASSERT_EQUAL_UINT16(750, config_manager::get_design_power_w());
+    config_manager::set_design_power_w(999);
+    TEST_ASSERT_EQUAL_UINT16(750, config_manager::get_design_power_w());
+}
+
+void test_config_save_to_nvs_callable_after_setters(void) {
+    config_manager::init();
+    config_manager::set_brightness_percent(50);
+    config_manager::save_to_nvs();
+    TEST_ASSERT_EQUAL_UINT8(50, config_manager::get_brightness_percent());
+}
+
 void test_view_manager_cycle_forward(void) {
     TEST_ASSERT_EQUAL(VIEW_DEFAULT, view_manager::view_manager_get_current());
     view_manager::view_manager_cycle(1);
@@ -233,6 +258,9 @@ void setup() {
     RUN_TEST(test_config_yaxis_default);
     RUN_TEST(test_config_yaxis_set_get);
     RUN_TEST(test_config_yaxis_clamp);
+    RUN_TEST(test_config_theme_mode_set_get_without_autosave);
+    RUN_TEST(test_config_design_power_set_get_without_autosave);
+    RUN_TEST(test_config_save_to_nvs_callable_after_setters);
     RUN_TEST(test_view_manager_cycle_forward);
     RUN_TEST(test_view_manager_cycle_backward);
     RUN_TEST(test_view_manager_switch_to);
