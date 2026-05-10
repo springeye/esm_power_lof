@@ -1,8 +1,10 @@
+#include <Arduino.h>
 #include <unity.h>
-#include <cstdlib>
 #include "../../src/ui_bridge/power_history.h"
 #include "../../src/ui_bridge/view_manager.h"
 #include "../../src/app/config_manager.h"
+
+static bool g_tests_done = false;
 
 void setUp(void) {}
 void tearDown(void) {}
@@ -265,7 +267,11 @@ void setup() {
     RUN_TEST(test_view_manager_cycle_backward);
     RUN_TEST(test_view_manager_switch_to);
     UNITY_END();
-    exit(0);
+    g_tests_done = true;
 }
 
-void loop() {}
+void loop() {
+    if (g_tests_done) {
+        delay(1000);
+    }
+}
