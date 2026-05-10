@@ -16,6 +16,7 @@ static constexpr uint32_t WINDOW_5MIN_MS = 300000;
 static constexpr uint32_t WINDOW_10MIN_MS = 600000;
 static constexpr uint32_t WINDOWS[] = {WINDOW_1MIN_MS, WINDOW_5MIN_MS, WINDOW_10MIN_MS};
 static constexpr uint8_t WINDOW_COUNT = 3;
+static constexpr uint16_t CHART_POINT_COUNT = 300;
 
 static const lv_color_t CH_COLORS[3] = {
     lv_color_hex(0x00e68a),
@@ -138,17 +139,20 @@ void update_chart_data(uint8_t ch) {
     if (!g_charts[ch].chart || !g_charts[ch].series) return;
 
     uint32_t window_ms = WINDOWS[g_window_index];
-    uint32_t count = 0;
-    const PowerPoint* data = nullptr;
-    power_history_get_range(ch, window_ms, &count, &data);
+    PowerHistorySample points[CHART_POINT_COUNT];
+    uint32_t count = power_history_sample_window(
+        ch,
+        window_ms,
+        CHART_POINT_COUNT,
+        points,
+        CHART_POINT_COUNT);
 
-    if (count == 0 || !data) {
+    if (count == 0) {
         lv_chart_set_all_values(g_charts[ch].chart, g_charts[ch].series, LV_CHART_POINT_NONE);
         return;
     }
 
-    uint32_t point_count = (count > 3000) ? 3000 : count;
-    lv_chart_set_point_count(g_charts[ch].chart, point_count);
+    lv_chart_set_point_count(g_charts[ch].chart, count);
 
     uint8_t yaxis_mode = config_manager::get_chart_yaxis_mode();
     if (yaxis_mode == 1) {
@@ -156,8 +160,8 @@ void update_chart_data(uint8_t ch) {
         lv_chart_set_axis_range(g_charts[ch].chart, LV_CHART_AXIS_PRIMARY_Y, 0, design_w);
     }
 
-    for (uint32_t i = 0; i < point_count; ++i) {
-        int32_t val = static_cast<int32_t>(data[i].power_w);
+    for (uint32_t i = 0; i < count; ++i) {
+        int32_t val = static_cast<int32_t>(points[i].power_w);
         lv_chart_set_series_value_by_id(g_charts[ch].chart, g_charts[ch].series, i, val);
     }
 

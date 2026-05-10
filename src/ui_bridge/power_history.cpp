@@ -8,7 +8,7 @@ namespace {
 static constexpr uint32_t BUFFER_SIZE = 3000;
 static constexpr uint8_t CHANNEL_COUNT = 3;
 
-static PowerPoint s_buffer[CHANNEL_COUNT][BUFFER_SIZE];
+static PowerHistorySample s_buffer[CHANNEL_COUNT][BUFFER_SIZE];
 static uint32_t s_head[CHANNEL_COUNT] = {0};
 static uint32_t s_count[CHANNEL_COUNT] = {0};
 static std::mutex s_history_mutex;
@@ -125,26 +125,4 @@ uint32_t power_history_sample_window(
     }
 
     return out_idx;
-}
-
-void power_history_get_range(uint8_t ch, uint32_t window_ms, uint32_t* out_count, const PowerPoint** out_data) {
-    if (ch >= CHANNEL_COUNT || out_count == nullptr || out_data == nullptr) return;
-
-    std::lock_guard<std::mutex> lock(s_history_mutex);
-
-    if (s_count[ch] == 0) {
-        *out_count = 0;
-        *out_data = nullptr;
-        return;
-    }
-
-    uint32_t now = 0;
-    uint32_t latest_idx = (s_head[ch] + BUFFER_SIZE - 1) % BUFFER_SIZE;
-    now = s_buffer[ch][latest_idx].timestamp_ms;
-
-    uint32_t start_time = (now > window_ms) ? (now - window_ms) : 0;
-
-    *out_count = s_count[ch];
-    uint32_t start_idx = (s_head[ch] + BUFFER_SIZE - s_count[ch]) % BUFFER_SIZE;
-    *out_data = &s_buffer[ch][start_idx];
 }

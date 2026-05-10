@@ -2,11 +2,6 @@
 
 #include <cstdint>
 
-struct PowerPoint {
-    uint32_t timestamp_ms;
-    float power_w;
-};
-
 struct PowerHistorySample {
     uint32_t timestamp_ms;
     float power_w;
@@ -40,5 +35,3 @@ uint32_t power_history_sample_window(
     uint16_t max_points,
     PowerHistorySample* out_points,
     uint16_t out_capacity);
-
-void power_history_get_range(uint8_t ch, uint32_t window_ms, uint32_t* out_count, const PowerPoint** out_data);
