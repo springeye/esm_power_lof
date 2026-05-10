@@ -1,4 +1,5 @@
 #include <unity.h>
+#include <cstdlib>
 #include "../../src/ui_bridge/power_history.h"
 #include "../../src/ui_bridge/view_manager.h"
 #include "../../src/app/config_manager.h"
@@ -8,23 +9,19 @@ void tearDown(void) {}
 
 void test_power_history_init(void) {
     power_history_init();
-    uint32_t count = 0;
-    const PowerPoint* data = nullptr;
-    power_history_get_range(0, 600000, &count, &data);
+    PowerHistorySample points[10];
+    uint32_t count = power_history_sample_window(0, 600000, 10, points, 10);
     TEST_ASSERT_EQUAL_UINT32(0, count);
-    TEST_ASSERT_NULL(data);
 }
 
 void test_power_history_push_single(void) {
     power_history_init();
     power_history_push(0, 1000, 50.0f);
-    uint32_t count = 0;
-    const PowerPoint* data = nullptr;
-    power_history_get_range(0, 600000, &count, &data);
+    PowerHistorySample points[10];
+    uint32_t count = power_history_sample_window(0, 600000, 10, points, 10);
     TEST_ASSERT_EQUAL_UINT32(1, count);
-    TEST_ASSERT_NOT_NULL(data);
-    TEST_ASSERT_EQUAL_UINT32(1000, data[0].timestamp_ms);
-    TEST_ASSERT_FLOAT_WITHIN(0.01f, 50.0f, data[0].power_w);
+    TEST_ASSERT_EQUAL_UINT32(1000, points[0].timestamp_ms);
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, 50.0f, points[0].power_w);
 }
 
 void test_power_history_push_multiple(void) {
@@ -32,14 +29,13 @@ void test_power_history_push_multiple(void) {
     for (int i = 0; i < 100; ++i) {
         power_history_push(0, i * 200, static_cast<float>(i));
     }
-    uint32_t count = 0;
-    const PowerPoint* data = nullptr;
-    power_history_get_range(0, 600000, &count, &data);
+    PowerHistorySample points[200];
+    uint32_t count = power_history_sample_window(0, 600000, 200, points, 200);
     TEST_ASSERT_EQUAL_UINT32(100, count);
-    TEST_ASSERT_EQUAL_UINT32(0, data[0].timestamp_ms);
-    TEST_ASSERT_FLOAT_WITHIN(0.01f, 0.0f, data[0].power_w);
-    TEST_ASSERT_EQUAL_UINT32(99 * 200, data[99].timestamp_ms);
-    TEST_ASSERT_FLOAT_WITHIN(0.01f, 99.0f, data[99].power_w);
+    TEST_ASSERT_EQUAL_UINT32(0, points[0].timestamp_ms);
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, 0.0f, points[0].power_w);
+    TEST_ASSERT_EQUAL_UINT32(99 * 200, points[99].timestamp_ms);
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, 99.0f, points[99].power_w);
 }
 
 void test_power_history_overflow(void) {
@@ -47,12 +43,11 @@ void test_power_history_overflow(void) {
     for (uint32_t i = 0; i < 3500; ++i) {
         power_history_push(0, i * 200, static_cast<float>(i));
     }
-    uint32_t count = 0;
-    const PowerPoint* data = nullptr;
-    power_history_get_range(0, 600000, &count, &data);
+    PowerHistorySample points[3500];
+    uint32_t count = power_history_sample_window(0, 600000, 3500, points, 3500);
     TEST_ASSERT_EQUAL_UINT32(3000, count);
-    TEST_ASSERT_EQUAL_UINT32(500 * 200, data[0].timestamp_ms);
-    TEST_ASSERT_FLOAT_WITHIN(0.01f, 500.0f, data[0].power_w);
+    TEST_ASSERT_EQUAL_UINT32(500 * 200, points[0].timestamp_ms);
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, 500.0f, points[0].power_w);
 }
 
 void test_power_history_time_window(void) {
@@ -61,9 +56,8 @@ void test_power_history_time_window(void) {
     for (uint32_t i = 0; i < 3000; ++i) {
         power_history_push(0, now - (3000 - i) * 200, static_cast<float>(i));
     }
-    uint32_t count = 0;
-    const PowerPoint* data = nullptr;
-    power_history_get_range(0, 60000, &count, &data);
+    PowerHistorySample points[500];
+    uint32_t count = power_history_sample_window(0, 60000, 500, points, 500);
     TEST_ASSERT_EQUAL_UINT32(300, count);
 }
 
@@ -72,19 +66,100 @@ void test_power_history_channels(void) {
     power_history_push(0, 1000, 10.0f);
     power_history_push(1, 1000, 20.0f);
     power_history_push(2, 1000, 30.0f);
-    uint32_t count0 = 0, count1 = 0, count2 = 0;
-    const PowerPoint* data0 = nullptr;
-    const PowerPoint* data1 = nullptr;
-    const PowerPoint* data2 = nullptr;
-    power_history_get_range(0, 600000, &count0, &data0);
-    power_history_get_range(1, 600000, &count1, &data1);
-    power_history_get_range(2, 600000, &count2, &data2);
+    PowerHistorySample points0[10], points1[10], points2[10];
+    uint32_t count0 = power_history_sample_window(0, 600000, 10, points0, 10);
+    uint32_t count1 = power_history_sample_window(1, 600000, 10, points1, 10);
+    uint32_t count2 = power_history_sample_window(2, 600000, 10, points2, 10);
     TEST_ASSERT_EQUAL_UINT32(1, count0);
     TEST_ASSERT_EQUAL_UINT32(1, count1);
     TEST_ASSERT_EQUAL_UINT32(1, count2);
-    TEST_ASSERT_FLOAT_WITHIN(0.01f, 10.0f, data0[0].power_w);
-    TEST_ASSERT_FLOAT_WITHIN(0.01f, 20.0f, data1[0].power_w);
-    TEST_ASSERT_FLOAT_WITHIN(0.01f, 30.0f, data2[0].power_w);
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, 10.0f, points0[0].power_w);
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, 20.0f, points1[0].power_w);
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, 30.0f, points2[0].power_w);
+}
+
+void test_power_history_time_window_bounds(void) {
+    power_history_init();
+    for (uint32_t i = 0; i < 100; ++i) {
+        power_history_push(0, i * 200, static_cast<float>(i));
+    }
+    PowerHistorySample points[200];
+    uint32_t count = power_history_sample_window(0, 60000, 200, points, 200);
+    TEST_ASSERT_EQUAL_UINT32(100, count);
+    TEST_ASSERT_EQUAL_UINT32(0, points[0].timestamp_ms);
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, 0.0f, points[0].power_w);
+    TEST_ASSERT_EQUAL_UINT32(99 * 200, points[99].timestamp_ms);
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, 99.0f, points[99].power_w);
+}
+
+void test_power_history_query_is_stable(void) {
+    power_history_init();
+    for (uint32_t i = 0; i < 50; ++i) {
+        power_history_push(0, i * 200, static_cast<float>(i));
+    }
+    PowerHistorySample points1[100];
+    PowerHistorySample points2[100];
+    uint32_t count1 = power_history_sample_window(0, 600000, 100, points1, 100);
+    uint32_t count2 = power_history_sample_window(0, 600000, 100, points2, 100);
+    TEST_ASSERT_EQUAL_UINT32(count1, count2);
+    for (uint32_t i = 0; i < count1; ++i) {
+        TEST_ASSERT_EQUAL_UINT32(points1[i].timestamp_ms, points2[i].timestamp_ms);
+        TEST_ASSERT_FLOAT_WITHIN(0.001f, points1[i].power_w, points2[i].power_w);
+    }
+}
+
+void test_power_history_overflow_keeps_order(void) {
+    power_history_init();
+    for (uint32_t i = 0; i < 3500; ++i) {
+        power_history_push(0, i * 200, static_cast<float>(i));
+    }
+    PowerHistorySample points[3500];
+    uint32_t count = power_history_sample_window(0, 600000, 3500, points, 3500);
+    TEST_ASSERT_EQUAL_UINT32(3000, count);
+    for (uint32_t i = 1; i < count; ++i) {
+        TEST_ASSERT_TRUE(points[i].timestamp_ms > points[i - 1].timestamp_ms);
+    }
+}
+
+void test_power_history_sample_window_caps_points(void) {
+    power_history_init();
+    for (uint32_t i = 0; i < 3500; ++i) {
+        power_history_push(0, i * 200, static_cast<float>(i));
+    }
+    PowerHistorySample points[300];
+    uint32_t count = power_history_sample_window(0, 600000, 300, points, 300);
+    TEST_ASSERT_TRUE(count <= 300);
+    for (uint32_t i = 1; i < count; ++i) {
+        TEST_ASSERT_TRUE(points[i].timestamp_ms > points[i - 1].timestamp_ms);
+    }
+}
+
+void test_power_history_sample_window_prefers_recent_range(void) {
+    power_history_init();
+    uint32_t now = 100000;
+    for (uint32_t i = 0; i < 100; ++i) {
+        power_history_push(0, now - (100 - i) * 1000, static_cast<float>(i));
+    }
+    PowerHistorySample points[20];
+    uint32_t count = power_history_sample_window(0, 10000, 20, points, 20);
+    TEST_ASSERT_EQUAL_UINT32(10, count);
+    TEST_ASSERT_TRUE(points[0].timestamp_ms >= now - 10000);
+    TEST_ASSERT_EQUAL_UINT32(now, points[count - 1].timestamp_ms);
+}
+
+void test_power_history_sample_window_zero_capacity(void) {
+    power_history_init();
+    power_history_push(0, 1000, 50.0f);
+
+    PowerHistorySample points[10];
+    TEST_ASSERT_EQUAL_UINT32(0, power_history_sample_window(0, 600000, 0, points, 10));
+
+    TEST_ASSERT_EQUAL_UINT32(0, power_history_sample_window(0, 600000, 10, nullptr, 10));
+
+    power_history_init();
+    TEST_ASSERT_EQUAL_UINT32(0, power_history_sample_window(0, 600000, 10, points, 10));
+
+    TEST_ASSERT_EQUAL_UINT32(0, power_history_sample_window(99, 600000, 10, points, 10));
 }
 
 void test_config_yaxis_default(void) {
@@ -149,6 +224,12 @@ void setup() {
     RUN_TEST(test_power_history_overflow);
     RUN_TEST(test_power_history_time_window);
     RUN_TEST(test_power_history_channels);
+    RUN_TEST(test_power_history_time_window_bounds);
+    RUN_TEST(test_power_history_query_is_stable);
+    RUN_TEST(test_power_history_overflow_keeps_order);
+    RUN_TEST(test_power_history_sample_window_caps_points);
+    RUN_TEST(test_power_history_sample_window_prefers_recent_range);
+    RUN_TEST(test_power_history_sample_window_zero_capacity);
     RUN_TEST(test_config_yaxis_default);
     RUN_TEST(test_config_yaxis_set_get);
     RUN_TEST(test_config_yaxis_clamp);
@@ -156,6 +237,7 @@ void setup() {
     RUN_TEST(test_view_manager_cycle_backward);
     RUN_TEST(test_view_manager_switch_to);
     UNITY_END();
+    exit(0);
 }
 
 void loop() {}
