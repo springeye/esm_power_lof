@@ -7,3 +7,9 @@ release/
 *.map
 .sisyphus/evidence/
 .idea
+
+# ── 安全密钥：绝不提交 ──
+secure_keys/
+*.pem
+*.key
+!secure_boot_pubkey.pem

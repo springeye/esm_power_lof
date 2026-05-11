@@ -1,7 +1,7 @@
 # FIRMWARE SOURCE KNOWLEDGE BASE
 
 ## OVERVIEW
-`src/` 包含 ESP32 智能风扇控制器全部固件源码（C++17，Arduino 框架）。模块化分层：硬件抽象 → 外设驱动 → 算法逻辑 → 应用协调。由 `platformio.ini` 按环境选择编译哪些文件（`build_src_filter`）。
+`src/` 包含 ESP32 ESM_POWER_SYSTEM全部固件源码（C++17，Arduino 框架）。模块化分层：硬件抽象 → 外设驱动 → 算法逻辑 → 应用协调。由 `platformio.ini` 按环境选择编译哪些文件（`build_src_filter`）。
 
 ## STRUCTURE
 ```
@@ -10,6 +10,7 @@ src/
 ├── app/                    # 应用协调层
 │   ├── tasks.{h,cpp}       # FreeRTOS 任务定义与启动
 │   ├── app_state.{h,cpp}   # 全局应用状态（std::atomic）
+│   ├── config_manager.{h,cpp} # 运行时配置（NVS 持久化）
 │   ├── watchdog.{h,cpp}    # 任务看门狗
 │   └── fault_guard.{h,cpp} # 故障检测与保护
 ├── hal/                    # 硬件抽象层
@@ -33,7 +34,18 @@ src/
 ├── ui_bridge/              # UI 胶水层
 │   ├── screen_manager.{h,cpp} # 屏幕生命周期（splash→home）
 │   ├── data_bridge.{h,cpp}    # app_state → LVGL 数据刷新
-│   └── input_bridge.{h,cpp}   # 按键 → LVGL 事件分发
+│   ├── input_bridge.{h,cpp}   # 按键 → LVGL 事件分发
+│   ├── settings_ui.{h,cpp}    # 设置页面 UI（5 分类，3 键导航）
+│   ├── splash_anim.{h,cpp}    # splash 屏幕动画
+│   ├── view_manager.{h,cpp}   # 多视图循环切换
+│   ├── chart_view.{h,cpp}     # 功率历史图表渲染
+│   ├── power_history.{h,cpp}  # 功率历史环形缓冲区
+│   └── theme_manager.{h,cpp}  # UI 主题管理
+├── net/                    # 网络层
+│   ├── wifi_manager.{h,cpp}   # WiFi 连接管理
+│   ├── web_server.{h,cpp}     # 内置 Web 管理界面
+│   └── ota_handler.{h,cpp}    # 固件 OTA 升级
+├── test_main.cpp           # 单元测试入口（Unity 框架）
 └── compat/                 # 兼容层
     └── lvgl_v8_shim.cpp    # LVGL v8 生成代码适配
 ```
@@ -60,6 +72,17 @@ src/
 | UI 数据刷新 | `ui_bridge/data_bridge.cpp` | 200ms 定时器读取 `app_state` 更新 LVGL 标签 |
 | UI 输入分发 | `ui_bridge/input_bridge.cpp` | `lv_async_call` 安全跨任务分发按键事件 |
 | 屏幕切换 | `ui_bridge/screen_manager.cpp` | splash 显示 → 定时 → 切换到 home |
+| 设置页面 UI | `ui_bridge/settings_ui.cpp` | 5 个分类页面，3 键导航，编辑模式 |
+| splash 动画 | `ui_bridge/splash_anim.cpp` | splash 屏幕动画与定时切换 |
+| 视图切换 | `ui_bridge/view_manager.cpp` | 多视图循环（默认/CH1/CH2/CH3 图表） |
+| 图表渲染 | `ui_bridge/chart_view.cpp` | LVGL 图表控件，功率历史曲线 |
+| 功率历史 | `ui_bridge/power_history.cpp` | 环形缓冲区，3000 点/通道 |
+| 主题管理 | `ui_bridge/theme_manager.cpp` | UI 主题与样式 |
+| WiFi 管理 | `net/wifi_manager.cpp` | WiFi 连接与管理 |
+| Web 服务器 | `net/web_server.cpp` | 内置 Web 管理界面 |
+| OTA 升级 | `net/ota_handler.cpp` | 固件空中升级 |
+| 运行时配置 | `app/config_manager.cpp` | 风扇曲线、温度阈值、亮度、功率、传感器校准 |
+| 单元测试 | `test_main.cpp` | Unity 框架，power_history/config_manager/view_manager 测试 |
 | LVGL v8 兼容 | `compat/lvgl_v8_shim.cpp` | 类型别名与宏桥接 v8 生成代码到 v9 API |
 
 ## CONVENTIONS
@@ -96,5 +119,7 @@ src/
 ## NOTES
 
 - 本目录是固件业务逻辑唯一位置；UI 源码在 `../ui/`，由 `platformio.ini::build_src_filter` 通过 `+<../ui/...>` 引入编译
+- `net/` 提供 WiFi/Web/OTA 功能，需在 `platformio.ini` 中启用相关环境
+- `test_main.cpp` 使用 Unity 框架，通过 `pio test -e esp32s3` 运行
 - 各模块 `.h` 暴露的公共函数即该模块的稳定接口；新增模块时在 `app/tasks.cpp` 接入任务调度
 - `tft_driver.cpp` 的背光控制使用 LEDC ch1 并避免在全局定义 `TFT_BL`（防止 TFT_eSPI 误判）

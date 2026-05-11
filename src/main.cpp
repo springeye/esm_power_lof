@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <esp_ota_ops.h>
 
 #include "hal/i2c_bus.h"
 #include "hal/spi_bus.h"
@@ -16,6 +17,9 @@
 void setup() {
     Serial.begin(115200);
     Serial.println("[FanCtrl] Booting...");
+
+    // OTA回滚保护：标记当前固件为有效
+    esp_ota_mark_app_valid_cancel_rollback();
 
     // ─── 显示驱动（demo / 正式 共用） ───
     spi_bus_init();
