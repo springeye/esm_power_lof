@@ -44,6 +44,8 @@ extern std::atomic<uint16_t> fan_duty;     // 风扇 PWM 占空比（0-1023）
     extern std::atomic<uint16_t> ch3_mv;       // 输出接口 3 电压（mV）
 extern std::atomic<uint8_t>  psu_state_id; // PsuState 枚举值（存储为 uint8_t）
 extern std::atomic<bool>      fault_active; // 故障标志
+extern std::atomic<int8_t>   ota_progress;  // OTA 进度（-1=无OTA，0-100=百分比）
+extern char                   wifi_ap_password[7]; // AP 密码（MAC 后6位hex + \0）
 
 // ── 便捷取值函数（内联）──────────────────────────────────────────────────────
 inline float get_temp_c()    { return temp_cdeg.load() / 100.0f; }
@@ -56,6 +58,7 @@ inline uint16_t get_ch1_mv()  { return ch1_mv.load(); }
 inline uint16_t get_ch2_mv()  { return ch2_mv.load(); }
 inline uint16_t get_ch3_mv()  { return ch3_mv.load(); }
 inline bool  is_fault()      { return fault_active.load(); }
+inline int8_t get_ota_progress() { return ota_progress.load(); }
 
 // ── 便捷设值函数（内联）──────────────────────────────────────────────────────
 inline void set_temp_c(float t)      { temp_cdeg.store(static_cast<int32_t>(t * 100)); }
@@ -69,5 +72,6 @@ inline void set_ch2_mv(uint16_t mv) { ch2_mv.store(mv); }
 inline void set_ch3_mv(uint16_t mv) { ch3_mv.store(mv); }
 inline void set_fault(bool f)        { fault_active.store(f); }
 inline void set_psu_state(uint8_t s) { psu_state_id.store(s); }
+inline void set_ota_progress(int8_t p) { ota_progress.store(p); }
 
 } // namespace app_state

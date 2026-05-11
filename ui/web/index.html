@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ESM Power System - Web Management</title>
+    <style>
+        :root {
+            --bg-color: #0a0e14;
+            --card-bg: #111820;
+            --border-color: #1a2533;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #e2e8f0;
+            --text-sec: #94a3b8;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            line-height: 1.5;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .header h1 {
+            font-size: 24px;
+            margin: 0 0 4px;
+        }
+        .header p {
+            color: var(--text-sec);
+            margin: 0;
+            font-size: 14px;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-size: 18px;
+            margin: 0 0 16px;
+            font-weight: 600;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-sec);
+            font-size: 14px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px 12px;
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 16px;
+            min-height: 44px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: var(--accent-color);
+        }
+        button {
+            width: 100%;
+            background-color: var(--accent-color);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: 44px;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: var(--accent-hover); }
+        button:disabled {
+            background-color: #334155;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+        .drop-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 30px 20px;
+            text-align: center;
+            color: var(--text-sec);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+        .drop-zone.dragover {
+            border-color: var(--accent-color);
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        .drop-zone input[type="file"] { display: none; }
+        .file-name {
+            margin-top: 8px;
+            color: var(--accent-color);
+            font-size: 14px;
+            word-break: break-all;
+        }
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border-color);
+            border-radius: 4px;
+            margin-top: 16px;
+            overflow: hidden;
+            display: none;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+        .status {
+            margin-top: 12px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .status.success { color: var(--success-color); }
+        .status.error { color: var(--error-color); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ESM Power System</h1>
+            <p>Web Management</p>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">固件更新 (OTA)</h2>
+            <div class="drop-zone" id="dropZone">
+                <span id="dropText">点击选择或拖拽 .bin 文件至此</span>
+                <div class="file-name" id="fileName"></div>
+                <input type="file" id="fileInput" accept=".bin">
+            </div>
+            <button id="uploadBtn" disabled>开始上传</button>
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="status" id="otaStatus">就绪</div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">WiFi 配置</h2>
+            <div class="form-group">
+                <label for="ssid">网络名称 (SSID)</label>
+                <input type="text" id="ssid" placeholder="输入 WiFi 名称">
+            </div>
+            <div class="form-group">
+                <label for="password">无线密码 (Password)</label>
+                <input type="password" id="password" placeholder="输入 WiFi 密码">
+            </div>
+            <button id="wifiBtn">保存配置</button>
+            <div class="status" id="wifiStatus"></div>
+        </div>
+    </div>
+
+    <script>
+        // OTA Update Logic
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileNameDisp = document.getElementById('fileName');
+        const dropText = document.getElementById('dropText');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const otaStatus = document.getElementById('otaStatus');
+        let selectedFile = null;
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            let dt = e.dataTransfer;
+            let files = dt.files;
+            handleFiles(files);
+        });
+
+        fileInput.addEventListener('change', function() {
+            handleFiles(this.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                selectedFile = files[0];
+                if (!selectedFile.name.endsWith('.bin')) {
+                    otaStatus.textContent = '错误：只支持 .bin 固件文件';
+                    otaStatus.className = 'status error';
+                    selectedFile = null;
+                    fileNameDisp.textContent = '';
+                    uploadBtn.disabled = true;
+                    return;
+                }
+                dropText.style.display = 'none';
+                fileNameDisp.textContent = selectedFile.name;
+                uploadBtn.disabled = false;
+                otaStatus.textContent = '文件已选择，点击开始上传';
+                otaStatus.className = 'status';
+            }
+        }
+
+        uploadBtn.addEventListener('click', () => {
+            if (!selectedFile) return;
+
+            uploadBtn.disabled = true;
+            fileInput.disabled = true;
+            dropZone.style.pointerEvents = 'none';
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+            otaStatus.textContent = '上传中... 0%';
+            otaStatus.className = 'status';
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/ota', true);
+            xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+
+            xhr.upload.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    const percentComplete = Math.round((e.loaded / e.total) * 100);
+                    progressBar.style.width = percentComplete + '%';
+                    otaStatus.textContent = '上传中... ' + percentComplete + '%';
+                }
+            };
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    otaStatus.textContent = '成功，设备重启中...';
+                    otaStatus.className = 'status success';
+                } else {
+                    otaStatus.textContent = '失败：' + xhr.status + ' ' + xhr.responseText;
+                    otaStatus.className = 'status error';
+                    uploadBtn.disabled = false;
+                    fileInput.disabled = false;
+                    dropZone.style.pointerEvents = 'auto';
+                }
+            };
+
+            xhr.onerror = function() {
+                otaStatus.textContent = '请求失败，请检查网络连接';
+                otaStatus.className = 'status error';
+                uploadBtn.disabled = false;
+                fileInput.disabled = false;
+                dropZone.style.pointerEvents = 'auto';
+            };
+
+            xhr.send(selectedFile);
+        });
+
+        // WiFi Config Logic
+        const wifiBtn = document.getElementById('wifiBtn');
+        const ssidInput = document.getElementById('ssid');
+        const pwdInput = document.getElementById('password');
+        const wifiStatus = document.getElementById('wifiStatus');
+
+        wifiBtn.addEventListener('click', async () => {
+            const ssid = ssidInput.value.trim();
+            const password = pwdInput.value;
+
+            if (!ssid) {
+                wifiStatus.textContent = '请输入 WiFi 名称';
+                wifiStatus.className = 'status error';
+                return;
+            }
+
+            wifiBtn.disabled = true;
+            wifiStatus.textContent = '保存中...';
+            wifiStatus.className = 'status';
+
+            try {
+                const response = await fetch('/wifi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ssid, password })
+                });
+
+                if (response.ok) {
+                    wifiStatus.textContent = '保存成功！设备将尝试连接新网络。';
+                    wifiStatus.className = 'status success';
+                    ssidInput.value = '';
+                    pwdInput.value = '';
+                } else {
+                    const text = await response.text();
+                    wifiStatus.textContent = '保存失败：' + response.status + ' ' + text;
+                    wifiStatus.className = 'status error';
+                }
+            } catch (err) {
+                wifiStatus.textContent = '网络错误，请稍后重试';
+                wifiStatus.className = 'status error';
+            } finally {
+                wifiBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

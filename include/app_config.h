@@ -61,3 +61,10 @@ static constexpr uint32_t TASK_WDT_TIMEOUT_S = 5;    // 任务看门狗超时时
 //         用于排查屏幕接线、SPI 时序、引脚配置等底层问题
 // false : 正常运行业务 UI（LVGL + 风扇控制 + 电源管理 + 传感器）
 static constexpr bool USE_DISPLAY_DEMO = false;
+
+// ── Web OTA ──
+static constexpr char    WEB_AP_SSID_PREFIX[] = "ESM_POWER_SYSTEM_"; // AP SSID 前缀，后接 MAC 末 6 位
+static constexpr uint16_t WEB_SERVER_PORT     = 80;                   // Web 服务器端口
+static constexpr uint32_t OTA_MAX_SIZE        = 0x340000;             // OTA 分区最大固件大小（3.25MB）
+static constexpr uint32_t WEB_TASK_STACK      = 5120;                 // web_task FreeRTOS 栈大小（字节）
+static constexpr uint32_t WEB_TASK_PERIOD_MS  = 500;                  // web_task 循环周期（ms）

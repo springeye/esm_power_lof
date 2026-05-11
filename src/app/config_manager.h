@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 
 namespace config_manager {
@@ -37,12 +38,19 @@ struct SensorConfig {
     float ntc_temp_offset;
 };
 
+struct WifiConfig {
+    char ssid[33];         // WiFi SSID（最大 32 字符 + \0）
+    char password[65];     // WiFi 密码（最大 64 字符 + \0）
+    bool web_mgmt_enabled; // Web 管理开关状态
+};
+
 struct AppConfig {
     FanConfig fan;
     TempProtectionConfig temp_protection;
     DisplayConfig display;
     PowerConfig power;
     SensorConfig sensor;
+    WifiConfig wifi;
 };
 
 void init();
@@ -93,5 +101,12 @@ void set_design_power_w(uint16_t v);
 
 float get_ntc_temp_offset();
 void set_ntc_temp_offset(float v);
+
+bool get_web_mgmt_enabled();
+void set_web_mgmt_enabled(bool v);
+void get_wifi_ssid(char* buf, size_t n);
+void set_wifi_ssid(const char* s);
+void get_wifi_password(char* buf, size_t n);
+void set_wifi_password(const char* p);
 
 } // namespace config_manager

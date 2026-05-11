@@ -2,6 +2,7 @@
 
 #include "app_config.h"
 
+#include <cstring>
 #include <mutex>
 
 #if !defined(BUILD_NATIVE) && defined(ARDUINO_ARCH_ESP32) && defined(__has_include)
@@ -35,7 +36,10 @@ constexpr char kKeyThemeMode[] = "cfg_theme_mode";
 constexpr char kKeyChartYaxis[] = "cfg_chart_yaxis";
 constexpr char kKeyDefaultView[] = "cfg_default_view";
 constexpr char kKeyDesignPower[] = "cfg_design_power";
-constexpr char kKeyNtcOffset[] = "cfg_ntc_offset";
+constexpr char kKeyNtcOffset[]   = "cfg_ntc_offset";
+constexpr char kKeyWifiSsid[]    = "cfg_wifi_ssid";
+constexpr char kKeyWifiPass[]    = "cfg_wifi_pass";
+constexpr char kKeyWebMgmt[]     = "cfg_web_mgmt";
 
 constexpr uint16_t kFanStallRpmMin = 0u;
 constexpr uint16_t kFanStallRpmMax = 5000u;
@@ -148,6 +152,9 @@ void save_to_nvs_locked() {
     prefs.putUChar(kKeyDefaultView, s_config.display.default_view);
     prefs.putUShort(kKeyDesignPower, s_config.power.design_power_w);
     prefs.putFloat(kKeyNtcOffset, s_config.sensor.ntc_temp_offset);
+    prefs.putString(kKeyWifiSsid, s_config.wifi.ssid);
+    prefs.putString(kKeyWifiPass, s_config.wifi.password);
+    prefs.putBool(kKeyWebMgmt, s_config.wifi.web_mgmt_enabled);
     prefs.end();
 }
 
@@ -203,6 +210,9 @@ void load_from_nvs_locked() {
 
     s_config.sensor.ntc_temp_offset = clamp_float(
         prefs.getFloat(kKeyNtcOffset, s_config.sensor.ntc_temp_offset), -10.0f, 10.0f);
+    prefs.getString(kKeyWifiSsid, s_config.wifi.ssid, sizeof(s_config.wifi.ssid));
+    prefs.getString(kKeyWifiPass, s_config.wifi.password, sizeof(s_config.wifi.password));
+    s_config.wifi.web_mgmt_enabled = prefs.getBool(kKeyWebMgmt, false);
     prefs.end();
 }
 
@@ -484,6 +494,57 @@ void set_ntc_temp_offset(float v) {
     ensure_initialized_locked();
     s_config.sensor.ntc_temp_offset = clamp_float(v, -10.0f, 10.0f);
     save_to_nvs_locked();
+}
+
+bool get_web_mgmt_enabled() {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    return s_config.wifi.web_mgmt_enabled;
+}
+
+void set_web_mgmt_enabled(bool v) {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    s_config.wifi.web_mgmt_enabled = v;
+    save_to_nvs_locked();
+}
+
+void get_wifi_ssid(char* buf, size_t n) {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    if (buf && n > 0) {
+        strncpy(buf, s_config.wifi.ssid, n - 1);
+        buf[n - 1] = '\0';
+    }
+}
+
+void set_wifi_ssid(const char* s) {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    if (s) {
+        strncpy(s_config.wifi.ssid, s, sizeof(s_config.wifi.ssid) - 1);
+        s_config.wifi.ssid[sizeof(s_config.wifi.ssid) - 1] = '\0';
+        save_to_nvs_locked();
+    }
+}
+
+void get_wifi_password(char* buf, size_t n) {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    if (buf && n > 0) {
+        strncpy(buf, s_config.wifi.password, n - 1);
+        buf[n - 1] = '\0';
+    }
+}
+
+void set_wifi_password(const char* p) {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    if (p) {
+        strncpy(s_config.wifi.password, p, sizeof(s_config.wifi.password) - 1);
+        s_config.wifi.password[sizeof(s_config.wifi.password) - 1] = '\0';
+        save_to_nvs_locked();
+    }
 }
 
 } // namespace config_manager

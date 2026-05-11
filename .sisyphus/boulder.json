@@ -1,29 +1,64 @@
 {
-  "active_plan": "C:\\Users\\develop\\Desktop\\workspaces\\esm_power_lof\\.sisyphus\\plans\\home-chart-view.md",
-  "started_at": "2026-05-07T02:29:47.209Z",
+  "active_plan": "C:\\Users\\develop\\Desktop\\workspaces\\esm_power_lof\\.sisyphus\\plans\\web-ota-update.md",
+  "started_at": "2026-05-11T05:33:38.926Z",
   "session_ids": [
-    "ses_1ffe49273fferfFQZFA3A7oq6D",
-    "ses_1ffb7cb48ffePtUwETi3Ej7ND4",
-    "ses_1ffb78f7fffeFNqJdLRnIpQLIf",
-    "ses_1ffb7541effemzBPjDYTgBQ7aV"
+    "ses_1eb4169e8ffenfChhy49He1yEd",
+    "ses_1ea757895ffe3pRtcZ6r4bS9rk",
+    "ses_1ea7511b8ffePZMquGmcQRB95U",
+    "ses_1ea74debcffeIuuggkXD65As8Q",
+    "ses_1ea7420c0ffe1N3ucdZw3uhJDs",
+    "ses_1ea65bcccffeAAoS9YM0ptkpG5",
+    "ses_1ea6362fcfferaI3anJhzT1G9C",
+    "ses_1ea633917ffebmw9VwiWYs3yJD",
+    "ses_1ea62f1b4ffetg5LL9DR8KbBz8",
+    "ses_1ea626b03ffeojHcdtnC9Y4v7r",
+    "ses_1ea539f76ffeHFJFG1tpp6cIXF",
+    "ses_1ea5350bdffecwqFt6cqWKpPAH",
+    "ses_1ea4d0515ffeDhS3rANFTgTiDe",
+    "ses_1ea4cd7acffe5GCbkpYCvP5DpD",
+    "ses_1ea4c99deffekosz9GC7JSy9Hz",
+    "ses_1ea3e8324ffewJmWuJ5ig9RJTr",
+    "ses_1ea3e387fffeumLUaAsw1hUEmJ"
   ],
   "session_origins": {
-    "ses_1ffe49273fferfFQZFA3A7oq6D": "direct",
-    "ses_1ffb7cb48ffePtUwETi3Ej7ND4": "appended",
-    "ses_1ffb78f7fffeFNqJdLRnIpQLIf": "appended",
-    "ses_1ffb7541effemzBPjDYTgBQ7aV": "appended"
+    "ses_1eb4169e8ffenfChhy49He1yEd": "direct",
+    "ses_1ea757895ffe3pRtcZ6r4bS9rk": "appended",
+    "ses_1ea7511b8ffePZMquGmcQRB95U": "appended",
+    "ses_1ea74debcffeIuuggkXD65As8Q": "appended",
+    "ses_1ea7420c0ffe1N3ucdZw3uhJDs": "appended",
+    "ses_1ea65bcccffeAAoS9YM0ptkpG5": "appended",
+    "ses_1ea6362fcfferaI3anJhzT1G9C": "appended",
+    "ses_1ea633917ffebmw9VwiWYs3yJD": "appended",
+    "ses_1ea62f1b4ffetg5LL9DR8KbBz8": "appended",
+    "ses_1ea626b03ffeojHcdtnC9Y4v7r": "appended",
+    "ses_1ea539f76ffeHFJFG1tpp6cIXF": "appended",
+    "ses_1ea5350bdffecwqFt6cqWKpPAH": "appended",
+    "ses_1ea4d0515ffeDhS3rANFTgTiDe": "appended",
+    "ses_1ea4cd7acffe5GCbkpYCvP5DpD": "appended",
+    "ses_1ea4c99deffekosz9GC7JSy9Hz": "appended",
+    "ses_1ea3e8324ffewJmWuJ5ig9RJTr": "appended",
+    "ses_1ea3e387fffeumLUaAsw1hUEmJ": "appended"
   },
-  "plan_name": "home-chart-view",
+  "plan_name": "web-ota-update",
   "agent": "atlas",
   "task_sessions": {
     "todo:1": {
       "task_key": "todo:1",
       "task_label": "1",
-      "task_title": "环形缓冲数据采集模块 `power_history`",
-      "session_id": "ses_1ffb7541effemzBPjDYTgBQ7aV",
+      "task_title": "编译期常量 + lib_deps + build_src_filter",
+      "session_id": "ses_1ea6362fcfferaI3anJhzT1G9C",
       "agent": "Sisyphus-Junior",
-      "category": "quick",
-      "updated_at": "2026-05-07T02:33:43.245Z"
+      "category": "deep",
+      "updated_at": "2026-05-11T06:04:27.971Z"
+    },
+    "todo:7": {
+      "task_key": "todo:7",
+      "task_label": "7",
+      "task_title": "WiFi STA 模式 + 状态机",
+      "session_id": "ses_1ea3e387fffeumLUaAsw1hUEmJ",
+      "agent": "Sisyphus-Junior",
+      "category": "deep",
+      "updated_at": "2026-05-11T07:06:31.468Z"
     }
   }
 }

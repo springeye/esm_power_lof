@@ -1,6 +1,8 @@
 #include "settings_ui.h"
 
+#include "../app/app_state.h"
 #include "../app/config_manager.h"
+#include "../wifi/wifi_manager.h"
 #include "theme_manager.h"
 #include "screen_manager.h"
 
@@ -32,6 +34,7 @@ enum SettingsPage : uint8_t {
     PAGE_DISPLAY,
     PAGE_POWER,
     PAGE_SENSOR,
+    PAGE_SYSTEM,
     PAGE_COUNT
 };
 
@@ -39,6 +42,7 @@ enum class SettingsItemType : uint8_t {
     FLOAT,
     UINT8,
     UINT16,
+    BOOL,
 };
 
 using FloatGetter = float (*)();
@@ -47,6 +51,8 @@ using UInt8Getter = uint8_t (*)();
 using UInt8Setter = void (*)(uint8_t);
 using UInt16Getter = uint16_t (*)();
 using UInt16Setter = void (*)(uint16_t);
+using BoolGetter = bool (*)();
+using BoolSetter = void (*)(bool);
 
 struct SettingsItem {
     const char* label;
@@ -61,6 +67,8 @@ struct SettingsItem {
     UInt8Setter set_u8;
     UInt16Getter get_u16;
     UInt16Setter set_u16;
+    bool (*get_bool)();
+    void (*set_bool)(bool);
     const uint16_t* preset_values;
     size_t preset_count;
 };
@@ -86,68 +94,76 @@ constexpr uint16_t POWER_PRESETS[] = {350u, 450u, 550u, 750u};
 const SettingsItem FAN_ITEMS[] = {
     {"低温阈值", "°C", SettingsItemType::FLOAT, 20.0f, 50.0f, 1.0f,
      config_manager::get_fan_temp_low, config_manager::set_fan_temp_low,
-     nullptr, nullptr, nullptr, nullptr, nullptr, 0},
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0},
     {"中温阈值", "°C", SettingsItemType::FLOAT, 30.0f, 60.0f, 1.0f,
      config_manager::get_fan_temp_mid, config_manager::set_fan_temp_mid,
-     nullptr, nullptr, nullptr, nullptr, nullptr, 0},
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0},
     {"高温阈值", "°C", SettingsItemType::FLOAT, 40.0f, 70.0f, 1.0f,
      config_manager::get_fan_temp_high, config_manager::set_fan_temp_high,
-     nullptr, nullptr, nullptr, nullptr, nullptr, 0},
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0},
     {"强制阈值", "°C", SettingsItemType::FLOAT, 50.0f, 80.0f, 1.0f,
      config_manager::get_fan_temp_force, config_manager::set_fan_temp_force,
-     nullptr, nullptr, nullptr, nullptr, nullptr, 0},
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0},
     {"最低转速%", "%", SettingsItemType::UINT8, 0.0f, 100.0f, 5.0f,
      nullptr, nullptr,
      config_manager::get_fan_pwm_min_percent, config_manager::set_fan_pwm_min_percent,
-     nullptr, nullptr, nullptr, 0},
+     nullptr, nullptr, nullptr, nullptr, nullptr, 0},
     {"中间转速%", "%", SettingsItemType::UINT8, 0.0f, 100.0f, 5.0f,
      nullptr, nullptr,
      config_manager::get_fan_pwm_mid_percent, config_manager::set_fan_pwm_mid_percent,
-     nullptr, nullptr, nullptr, 0},
+     nullptr, nullptr, nullptr, nullptr, nullptr, 0},
     {"滞回温度", "°C", SettingsItemType::FLOAT, 0.5f, 5.0f, 0.5f,
      config_manager::get_fan_hysteresis, config_manager::set_fan_hysteresis,
-     nullptr, nullptr, nullptr, nullptr, nullptr, 0},
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0},
 };
 
 const SettingsItem TEMP_ITEMS[] = {
     {"警告阈值", "°C", SettingsItemType::FLOAT, 50.0f, 80.0f, 1.0f,
      config_manager::get_temp_warning_threshold, config_manager::set_temp_warning_threshold,
-     nullptr, nullptr, nullptr, nullptr, nullptr, 0},
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0},
     {"关机阈值", "°C", SettingsItemType::FLOAT, 60.0f, 90.0f, 1.0f,
      config_manager::get_temp_shutdown_threshold, config_manager::set_temp_shutdown_threshold,
-     nullptr, nullptr, nullptr, nullptr, nullptr, 0},
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0},
 };
 
 const SettingsItem DISPLAY_ITEMS[] = {
     {"亮度%", "%", SettingsItemType::UINT8, 10.0f, 100.0f, 5.0f,
      nullptr, nullptr,
      config_manager::get_brightness_percent, config_manager::set_brightness_percent,
-     nullptr, nullptr, nullptr, 0},
+     nullptr, nullptr, nullptr, nullptr, nullptr, 0},
     {"主题模式", "", SettingsItemType::UINT8, 0.0f, 1.0f, 1.0f,
      nullptr, nullptr,
      config_manager::get_theme_mode, config_manager::set_theme_mode,
-     nullptr, nullptr, nullptr, 0},
+     nullptr, nullptr, nullptr, nullptr, nullptr, 0},
     {"Y轴模式", "", SettingsItemType::UINT8, 0.0f, 1.0f, 1.0f,
      nullptr, nullptr,
      config_manager::get_chart_yaxis_mode, config_manager::set_chart_yaxis_mode,
-     nullptr, nullptr, nullptr, 0},
+     nullptr, nullptr, nullptr, nullptr, nullptr, 0},
     {"启动视图", "", SettingsItemType::UINT8, 0.0f, 3.0f, 1.0f,
      nullptr, nullptr,
      config_manager::get_default_view, config_manager::set_default_view,
-     nullptr, nullptr, nullptr, 0},
+     nullptr, nullptr, nullptr, nullptr, nullptr, 0},
 };
 
 const SettingsItem POWER_ITEMS[] = {
     {"设计功率W", "W", SettingsItemType::UINT16, 350.0f, 750.0f, 100.0f,
      nullptr, nullptr, nullptr, nullptr,
      config_manager::get_design_power_w, config_manager::set_design_power_w,
+     nullptr, nullptr,
      POWER_PRESETS, sizeof(POWER_PRESETS) / sizeof(POWER_PRESETS[0])},
 };
 
 const SettingsItem SENSOR_ITEMS[] = {
     {"温度偏移°C", "°C", SettingsItemType::FLOAT, -5.0f, 5.0f, 0.1f,
      config_manager::get_ntc_temp_offset, config_manager::set_ntc_temp_offset,
-     nullptr, nullptr, nullptr, nullptr, nullptr, 0},
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0},
+};
+
+const SettingsItem SYSTEM_ITEMS[] = {
+    {"Web 管理", "", SettingsItemType::BOOL, 0.0f, 1.0f, 1.0f,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     config_manager::get_web_mgmt_enabled, config_manager::set_web_mgmt_enabled,
+     nullptr, 0},
 };
 
 const SettingsPageDef PAGES[] = {
@@ -156,6 +172,7 @@ const SettingsPageDef PAGES[] = {
     {"显示设置", DISPLAY_ITEMS, sizeof(DISPLAY_ITEMS) / sizeof(DISPLAY_ITEMS[0])},
     {"功率配置", POWER_ITEMS, sizeof(POWER_ITEMS) / sizeof(POWER_ITEMS[0])},
     {"传感器校准", SENSOR_ITEMS, sizeof(SENSOR_ITEMS) / sizeof(SENSOR_ITEMS[0])},
+    {"系统管理", SYSTEM_ITEMS, sizeof(SYSTEM_ITEMS) / sizeof(SYSTEM_ITEMS[0])},
 };
 
 lv_obj_t* g_screen = nullptr;
@@ -171,6 +188,7 @@ float g_edit_value = 0.0f;
 lv_timer_t* g_blink_timer = nullptr;
 std::atomic_bool g_active {false};
 bool g_initialized = false;
+lv_obj_t* g_system_pwd_label = nullptr;
 
 void rebuild_page();
 
@@ -249,6 +267,8 @@ float read_item_value(const SettingsItem& item) {
             return item.get_u8 ? static_cast<float>(item.get_u8()) : 0.0f;
         case SettingsItemType::UINT16:
             return item.get_u16 ? static_cast<float>(item.get_u16()) : 0.0f;
+        case SettingsItemType::BOOL:
+            return item.get_bool ? (item.get_bool() ? 1.0f : 0.0f) : 0.0f;
         default:
             return 0.0f;
     }
@@ -272,6 +292,21 @@ void write_item_value(const SettingsItem& item, float value) {
                 item.set_u16(static_cast<uint16_t>(std::lround(clamped)));
             }
             break;
+        case SettingsItemType::BOOL: {
+            const bool new_val = (std::lround(clamped) != 0);
+            if (item.set_bool) {
+                item.set_bool(new_val);
+            }
+            // 联动 WiFi AP 开关
+            if (item.get_bool == config_manager::get_web_mgmt_enabled) {
+                if (new_val) {
+                    wifi_mgr::start_ap();
+                } else {
+                    wifi_mgr::stop();
+                }
+            }
+            break;
+        }
         default:
             break;
     }
@@ -304,6 +339,9 @@ void format_item_value(const SettingsItem& item, float value, char* buffer, size
         case SettingsItemType::UINT8:
         case SettingsItemType::UINT16:
             std::snprintf(buffer, size, "%d%s", static_cast<int>(std::lround(value)), item.unit ? item.unit : "");
+            break;
+        case SettingsItemType::BOOL:
+            std::snprintf(buffer, size, "%s", (std::lround(value) != 0) ? "开" : "关");
             break;
         default:
             std::snprintf(buffer, size, "--");
@@ -454,6 +492,24 @@ void rebuild_page() {
 
     update_header();
     refresh_all_values();
+
+    // SYSTEM 页：底部显示 AP 密码
+    if (g_current_page == PAGE_SYSTEM) {
+        g_system_pwd_label = lv_label_create(g_content_area);
+        lv_obj_set_style_text_font(g_system_pwd_label, hos_14, 0);
+        lv_obj_align(g_system_pwd_label, LV_ALIGN_BOTTOM_MID, 0, -10);
+        const char* pwd = app_state::wifi_ap_password;
+        if (pwd[0] != '\0') {
+            char buf[32];
+            snprintf(buf, sizeof(buf), "密码: %s", pwd);
+            lv_label_set_text(g_system_pwd_label, buf);
+            lv_obj_clear_flag(g_system_pwd_label, LV_OBJ_FLAG_HIDDEN);
+        } else {
+            lv_obj_add_flag(g_system_pwd_label, LV_OBJ_FLAG_HIDDEN);
+        }
+    } else {
+        g_system_pwd_label = nullptr;
+    }
 }
 
 void set_focus(uint8_t new_index) {
@@ -528,8 +584,30 @@ void enter_edit_mode() {
         return;
     }
 
+    const SettingsItem& item = current_item();
+    if (item.type == SettingsItemType::BOOL) {
+        const float current = read_item_value(item);
+        write_item_value(item, current > 0.5f ? 0.0f : 1.0f);
+        config_manager::save_to_nvs();
+        update_row_value(g_focus_index);
+        refresh_row_visual(g_focus_index);
+
+        if (g_system_pwd_label != nullptr) {
+            const char* pwd = app_state::wifi_ap_password;
+            if (pwd[0] != '\0') {
+                char buf[32];
+                snprintf(buf, sizeof(buf), "密码: %s", pwd);
+                lv_label_set_text(g_system_pwd_label, buf);
+                lv_obj_clear_flag(g_system_pwd_label, LV_OBJ_FLAG_HIDDEN);
+            } else {
+                lv_obj_add_flag(g_system_pwd_label, LV_OBJ_FLAG_HIDDEN);
+            }
+        }
+        return;
+    }
+
     g_editing = true;
-    g_edit_value = read_item_value(current_item());
+    g_edit_value = read_item_value(item);
     update_row_value(g_focus_index);
     refresh_row_visual(g_focus_index);
     stop_blink();

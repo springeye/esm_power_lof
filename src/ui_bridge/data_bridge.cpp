@@ -158,6 +158,26 @@ void refresh_cb(lv_timer_t*) {
     // ── 风扇转速 RPM ──
     std::snprintf(buf, sizeof(buf), "%lu RPM", (unsigned long)rpm);
     lv_subject_copy_string(&fan_rpm_txt, buf);
+
+    // ── OTA 进度覆盖显示 ──
+    {
+        static lv_obj_t* s_ota_label = nullptr;
+        int8_t ota_prog = app_state::get_ota_progress();
+        if (ota_prog > 0) {
+            if (s_ota_label == nullptr) {
+                s_ota_label = lv_label_create(lv_layer_top());
+                lv_obj_set_style_text_color(s_ota_label, lv_color_hex(0xFFFFFF), 0);
+                lv_obj_set_style_text_font(s_ota_label, hos_bold_big, 0);
+                lv_obj_center(s_ota_label);
+            }
+            char buf[32];
+            std::snprintf(buf, sizeof(buf), "OTA %d%%", (int)ota_prog);
+            lv_label_set_text(s_ota_label, buf);
+        } else if (s_ota_label != nullptr) {
+            lv_obj_delete(s_ota_label);
+            s_ota_label = nullptr;
+        }
+    }
 }
 
 } // namespace

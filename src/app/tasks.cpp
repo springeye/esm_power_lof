@@ -31,6 +31,9 @@
 extern "C" {
 #include "../../ui/lof_power_system.h"
 }
+#include "../wifi/wifi_manager.h"
+#include "../web/web_server.h"
+#include "config_manager.h"
 #include "app_config.h"
 #include "pins.h"
 #include <Arduino.h>
@@ -176,13 +179,51 @@ void power_task(void* /*param*/) {
     }
 }
 
+// ── webTask ──────────────────────────────────────────────────────────────────
+void web_task(void* /*param*/) {
+    esp_task_wdt_add(nullptr);
+
+    // 启动时恢复上次 Web 管理状态
+    if (config_manager::get_web_mgmt_enabled()) {
+        wifi_mgr::start_ap();
+        web_server::start();
+    }
+
+    for (;;) {
+        bool web_enabled = config_manager::get_web_mgmt_enabled();
+        wifi_mgr::WifiState wifi_st = wifi_mgr::get_state();
+
+        // 同步开关状态与 WiFi/Web 服务器状态
+        if (web_enabled && wifi_st == wifi_mgr::WifiState::OFF) {
+            wifi_mgr::start_ap();
+            web_server::start();
+        } else if (!web_enabled && wifi_st != wifi_mgr::WifiState::OFF) {
+            web_server::stop();
+            wifi_mgr::stop();
+        }
+
+        // OTA 完成后延时 3 秒重启
+        int8_t ota_prog = app_state::get_ota_progress();
+        if (ota_prog == 100) {
+            vTaskDelay(pdMS_TO_TICKS(3000));
+            ESP.restart();
+        }
+
+        esp_task_wdt_reset();
+        vTaskDelay(pdMS_TO_TICKS(WEB_TASK_PERIOD_MS));
+    }
+}
+
 // ── start_all ────────────────────────────────────────────────────────────────
 void start_all() {
+    wifi_mgr::init();
+
     xTaskCreatePinnedToCore(lvgl_task,   "lvgl",   TASK_STACK_LVGL,   nullptr, 5, nullptr, 1);
     xTaskCreatePinnedToCore(sensor_task, "sensor", TASK_STACK_SENSOR, nullptr, 3, nullptr, 0);
     xTaskCreatePinnedToCore(ctrl_task,   "ctrl",   TASK_STACK_CTRL,   nullptr, 3, nullptr, 0);
     xTaskCreatePinnedToCore(input_task,  "input",  TASK_STACK_INPUT,  nullptr, 4, nullptr, 0);
     xTaskCreatePinnedToCore(power_task,  "power",  TASK_STACK_POWER,  nullptr, 6, nullptr, 0);
+    xTaskCreatePinnedToCore(web_task,    "web",    WEB_TASK_STACK,    nullptr, 2, nullptr, 0);
 }
 
 } // namespace tasks

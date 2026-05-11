@@ -1,7 +1,7 @@
 #pragma once
 /**
  * @file tasks.h
- * @brief FreeRTOS 任务声明 — 5 个应用任务
+ * @brief FreeRTOS 任务声明 — 6 个应用任务
  *
  * 任务列表：
  *  - lvglTask   : LVGL 渲染 + tick（Core 1，优先级 5，栈 8192）
@@ -9,6 +9,7 @@
  *  - ctrlTask   : 温控曲线 + 风扇 PWM（Core 0，优先级 3，栈 4096）
  *  - inputTask  : 按键去抖 + 事件路由（Core 0，优先级 4，栈 3072）
  *  - powerTask  : PSU 状态机 + 故障保护（Core 0，优先级 6，栈 3072）
+ *  - webTask    : Web 服务器 + WiFi 管理（Core 0，优先级 2，栈 5120）
  *
  * 约束：
  *  - 仅在 esp32dev env 编译
@@ -33,5 +34,6 @@ void sensor_task(void* param);
 void ctrl_task(void* param);
 void input_task(void* param);
 void power_task(void* param);
+void web_task(void* param);
 
 } // namespace tasks
