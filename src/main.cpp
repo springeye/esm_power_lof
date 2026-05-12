@@ -5,6 +5,7 @@
 #include "hal/spi_bus.h"
 #include "display/tft_driver.h"
 #include "display/tft_demo.h"
+#include "display/screen_rotation.h"
 #include "sensors/ina226/ina226.h"
 #include "fan/fan_pwm.h"
 #include "fan/fan_tach.h"
@@ -44,6 +45,9 @@ void setup() {
 
     // Runtime config (loads NVS defaults)
     config_manager::init();
+
+    // Screen rotation (loads from NVS)
+    screen_rotation::init();
 
     // Watchdog
     watchdog::init(TASK_WDT_TIMEOUT_S);

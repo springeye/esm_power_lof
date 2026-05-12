@@ -35,6 +35,7 @@ constexpr char kKeyBrightness[] = "cfg_brightness";
 constexpr char kKeyThemeMode[] = "cfg_theme_mode";
 constexpr char kKeyChartYaxis[] = "cfg_chart_yaxis";
 constexpr char kKeyDefaultView[] = "cfg_default_view";
+constexpr char kKeyScreenRotation[] = "cfg_scr_rot";
 constexpr char kKeyDesignPower[] = "cfg_design_power";
 constexpr char kKeyNtcOffset[]   = "cfg_ntc_offset";
 constexpr char kKeyWifiSsid[]    = "cfg_wifi_ssid";
@@ -116,6 +117,7 @@ void set_defaults_locked() {
     s_config.display.chart_yaxis_mode = 0u;
     //TODO "启动视图"（0=默认,1=CH1图,2=CH2图,3=CH3图）
     s_config.display.default_view = 0u;
+    s_config.display.screen_rotation = 0u;
     s_config.power.design_power_w = 750u;
     s_config.sensor.ntc_temp_offset = 0.0f;
 }
@@ -150,6 +152,7 @@ void save_to_nvs_locked() {
     prefs.putUChar(kKeyThemeMode, s_config.display.theme_mode);
     prefs.putUChar(kKeyChartYaxis, s_config.display.chart_yaxis_mode);
     prefs.putUChar(kKeyDefaultView, s_config.display.default_view);
+    prefs.putUChar(kKeyScreenRotation, s_config.display.screen_rotation);
     prefs.putUShort(kKeyDesignPower, s_config.power.design_power_w);
     prefs.putFloat(kKeyNtcOffset, s_config.sensor.ntc_temp_offset);
     prefs.putString(kKeyWifiSsid, s_config.wifi.ssid);
@@ -202,6 +205,8 @@ void load_from_nvs_locked() {
         prefs.getUChar(kKeyChartYaxis, s_config.display.chart_yaxis_mode), 0u, 1u);
     s_config.display.default_view = clamp_u8(
         prefs.getUChar(kKeyDefaultView, s_config.display.default_view), 0u, 3u);
+    s_config.display.screen_rotation = clamp_u8(
+        prefs.getUChar(kKeyScreenRotation, s_config.display.screen_rotation), 0u, 3u);
 
     const uint16_t design_power = prefs.getUShort(kKeyDesignPower, s_config.power.design_power_w);
     if (is_valid_design_power(design_power)) {
@@ -465,6 +470,19 @@ void set_default_view(uint8_t v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.display.default_view = clamp_u8(v, 0u, 3u);
+    save_to_nvs_locked();
+}
+
+uint8_t get_screen_rotation() {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    return s_config.display.screen_rotation;
+}
+
+void set_screen_rotation(uint8_t v) {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    s_config.display.screen_rotation = clamp_u8(v, 0u, 3u);
     save_to_nvs_locked();
 }
 

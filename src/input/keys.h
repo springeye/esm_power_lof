@@ -8,19 +8,22 @@
 typedef enum {
     KEY_IDLE = 0,   // 空闲状态，没有按键事件
     KEY_SHORT,      // 短按事件
-    KEY_LONG        // 长按事件
+    KEY_LONG,       // 长按事件
+    KEY_DOUBLE_CLICK // 双击事件
 } KeyEvent;
 
 /**
  * 按键去抖状态。
  * 字段：
- *   stable       - 确认后的按键状态：true=按下
- *   raw          - 最近一次原始 GPIO 读数
- *   event        - 当前按键事件（KEY_IDLE/KEY_SHORT/KEY_LONG）
- *   press_time   - 按键被确认按下时的时间戳（ms）
- *   consec_count - 连续同电平采样计数（去抖用，每实例独立）
- *   last_raw     - 上次原始电平（去抖用，每实例独立）
- *   long_fired   - 本次按下是否已触发 KEY_LONG（防止重复发射）
+ *   stable           - 确认后的按键状态：true=按下
+ *   raw              - 最近一次原始 GPIO 读数
+ *   event            - 当前按键事件（KEY_IDLE/KEY_SHORT/KEY_LONG/KEY_DOUBLE_CLICK）
+ *   press_time       - 按键被确认按下时的时间戳（ms）
+ *   consec_count     - 连续同电平采样计数（去抖用，每实例独立）
+ *   last_raw         - 上次原始电平（去抖用，每实例独立）
+ *   long_fired       - 本次按下是否已触发 KEY_LONG（防止重复发射）
+ *   last_release_time - 上次释放时间戳（双击检测用）
+ *   click_count      - 短按计数（双击检测用）
  */
 typedef struct {
     bool     stable;
@@ -30,6 +33,8 @@ typedef struct {
     uint8_t  consec_count;
     bool     last_raw;
     bool     long_fired;
+    uint32_t last_release_time;
+    uint8_t  click_count;
 } KeyState;
 
 /**

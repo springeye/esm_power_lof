@@ -3,6 +3,7 @@
 #include "settings_ui.h"
 #include "view_manager.h"
 #include "chart_view.h"
+#include "display/screen_rotation.h"
 #include <lvgl.h>
 
 namespace {
@@ -11,6 +12,7 @@ namespace {
     struct InputEvent {
         lv_obj_t* home;
         uint8_t key_id;
+        bool is_double_click;
     };
 
     void do_key_event(void* user_data) {
@@ -21,14 +23,22 @@ namespace {
             return;
         }
 
-        if (ev->key_id == 0) {
-            view_manager::view_manager_cycle(-1);
-        } else if (ev->key_id == 2) {
-            view_manager::view_manager_cycle(+1);
-        } else if (ev->key_id == 1) {
-            HomeView cur = view_manager::view_manager_get_current();
-            if (cur != VIEW_DEFAULT) {
-                chart_view::chart_view_cycle_window();
+        if (ev->is_double_click) {
+            if (ev->key_id == 0) {
+                screen_rotation::rotate_cw();
+            } else if (ev->key_id == 2) {
+                screen_rotation::rotate_ccw();
+            }
+        } else {
+            if (ev->key_id == 0) {
+                view_manager::view_manager_cycle(-1);
+            } else if (ev->key_id == 2) {
+                view_manager::view_manager_cycle(+1);
+            } else if (ev->key_id == 1) {
+                HomeView cur = view_manager::view_manager_get_current();
+                if (cur != VIEW_DEFAULT) {
+                    chart_view::chart_view_cycle_window();
+                }
             }
         }
 
@@ -52,10 +62,18 @@ namespace ui_bridge {
             return;
         }
 
+        if (state.event == KEY_DOUBLE_CLICK) {
+            if (key_id == 0 || key_id == 2) {
+                auto* ev = new InputEvent{g_home, key_id, true};
+                lv_async_call(do_key_event, ev);
+            }
+            return;
+        }
+
         if (state.event != KEY_SHORT) return;
         if (!g_home) return;
 
-        auto* ev = new InputEvent{g_home, key_id};
+        auto* ev = new InputEvent{g_home, key_id, false};
         lv_async_call(do_key_event, ev);
     }
 }

@@ -27,7 +27,15 @@ void key_debounce_update(KeyState *st, bool raw_val, uint32_t now_ms) {
                 if (was_stable) {
                     uint32_t duration = now_ms - st->press_time;
                     if (duration < KEYS_LONGPRESS_MS) {
-                        st->event = KEY_SHORT;
+                        // Check for double-click: two short presses within KEYS_DOUBLECLICK_MS
+                        if (st->click_count > 0 && (now_ms - st->last_release_time) <= KEYS_DOUBLECLICK_MS) {
+                            st->event = KEY_DOUBLE_CLICK;
+                            st->click_count = 0;
+                        } else {
+                            st->event = KEY_SHORT;
+                            st->click_count = 1;
+                            st->last_release_time = now_ms;
+                        }
                     }
                 }
                 st->long_fired = false;
@@ -39,6 +47,7 @@ void key_debounce_update(KeyState *st, bool raw_val, uint32_t now_ms) {
             if (held >= KEYS_LONGPRESS_MS && !st->long_fired) {
                 st->event = KEY_LONG;
                 st->long_fired = true;
+                st->click_count = 0; // Reset click count on long press
             }
         }
     }
