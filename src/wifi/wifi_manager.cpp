@@ -46,6 +46,8 @@ void start_ap() {
     // 3. 生成密码：MAC 后 3 字节（大写 hex），写入全局状态
     snprintf(app_state::wifi_ap_password, sizeof(app_state::wifi_ap_password),
              "%02X%02X%02X", mac[3], mac[4], mac[5]);
+    // 标记密码就绪，供跨任务读取
+    app_state::wifi_ap_password_ready.store(true);
 
     // 4. 启动 AP 模式
     WiFi.mode(WIFI_AP);
@@ -60,6 +62,9 @@ void start_ap() {
 }
 
 void stop() {
+    // 先标记密码无效，防止跨任务读到半清空的数据
+    app_state::wifi_ap_password_ready.store(false);
+
     // 清空密码
     std::memset(app_state::wifi_ap_password, 0, sizeof(app_state::wifi_ap_password));
 
@@ -113,7 +118,10 @@ WifiState get_state() {
 }
 
 const char* get_current_password() {
-    return app_state::wifi_ap_password;
+    if (app_state::wifi_ap_password_ready.load()) {
+        return app_state::wifi_ap_password;
+    }
+    return "";
 }
 
 } // namespace wifi_mgr

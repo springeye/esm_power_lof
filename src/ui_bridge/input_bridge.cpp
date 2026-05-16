@@ -4,6 +4,8 @@
 #include "view_manager.h"
 #include "chart_view.h"
 #include "display/screen_rotation.h"
+#include "../app/app_state.h"
+#include "../power/psu_fsm.h"
 #include <lvgl.h>
 
 namespace {
@@ -52,16 +54,29 @@ namespace ui_bridge {
     }
 
     void input_handle_key(uint8_t key_id, const KeyState& state) {
+        // ─ 设置页面处理 ─
         if (settings_ui::is_active()) {
             settings_ui::handle_key(key_id, state);
             return;
         }
 
-        if (state.event == KEY_LONG && key_id == 1) {
-            settings_ui::show();
-            return;
+        // ─ PSU 电源按键（KEY_K2 = id 1）─
+        if (key_id == 1) {
+            // 长按 → 关机
+            if (state.event == KEY_LONG) {
+                app_state::psu_event_request.store(
+                    static_cast<uint8_t>(EVT_KEY_LONG));
+                return;
+            }
+            // 短按 → 开机
+            if (state.event == KEY_SHORT) {
+                app_state::psu_event_request.store(
+                    static_cast<uint8_t>(EVT_KEY_SHORT));
+                return;
+            }
         }
 
+        // ─ 双击：K1/K3 旋转屏幕 ─
         if (state.event == KEY_DOUBLE_CLICK) {
             if (key_id == 0 || key_id == 2) {
                 auto* ev = new InputEvent{g_home, key_id, true};
@@ -70,6 +85,7 @@ namespace ui_bridge {
             return;
         }
 
+        // ─ 短按：导航 ─
         if (state.event != KEY_SHORT) return;
         if (!g_home) return;
 

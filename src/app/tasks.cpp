@@ -40,6 +40,7 @@ extern "C" {
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <esp_task_wdt.h>
+#include <algorithm>
 
 namespace tasks {
 
@@ -70,10 +71,18 @@ void lvgl_task(void* /*param*/) {
 void sensor_task(void* /*param*/) {
     esp_task_wdt_add(nullptr);
     for (;;) {
-        // NTC 温度采样（直接读 ADC）
-        uint16_t adc_raw = static_cast<uint16_t>(analogRead(NTC_ADC_CH));
-        float temp = ntc_adc_to_temp(adc_raw);
-        app_state::set_temp_c(temp);
+        // NTC 温度采样 — 中值滤波
+        {
+            uint16_t samples[NTC_SAMPLES];
+            for (uint8_t i = 0; i < NTC_SAMPLES; ++i) {
+                samples[i] = static_cast<uint16_t>(analogRead(NTC_ADC_CH));
+                vTaskDelay(pdMS_TO_TICKS(1));
+            }
+            std::sort(samples, samples + NTC_SAMPLES);
+            uint16_t adc_median = samples[NTC_SAMPLES / 2];
+            float temp = ntc_adc_to_temp(adc_median);
+            app_state::set_temp_c(temp);
+        }
 
         // INA226 三路电流/电压采样（轮询，每路 250ms）
         Ina226Data d;
@@ -100,9 +109,15 @@ void sensor_task(void* /*param*/) {
 // ── ctrlTask ─────────────────────────────────────────────────────────────────
 void ctrl_task(void* /*param*/) {
     esp_task_wdt_add(nullptr);
-    static float prev_temp = 25.0f;
+    static float prev_temp = 0.0f;
+    static bool  prev_valid = false;
     for (;;) {
         float temp = app_state::get_temp_c();
+        // 首次迭代直接初始化为实际温度，避免热启动时 25°C 默认值偏差
+        if (!prev_valid) {
+            prev_temp = temp;
+            prev_valid = true;
+        }
         // 对温度应用滞回，再转 PWM
         float eff_temp = hysteresis_apply(prev_temp, temp, FAN_HYSTERESIS);
         prev_temp = eff_temp;
@@ -119,7 +134,7 @@ void ctrl_task(void* /*param*/) {
         fault_guard::check_temperature(temp);
         // 堵转检测
         fault_guard::check_stall(duty, rpm);
-        // 过流检测
+        // 过流检测（三路独立）
         fault_guard::check_overcurrent(app_state::get_ch1_a() * 1000.0f,
                                        app_state::get_ch2_a() * 1000.0f,
                                        app_state::get_ch3_a() * 1000.0f);
@@ -156,19 +171,55 @@ void power_task(void* /*param*/) {
     PsuState psu_st = psu_fsm_transition(PSU_OFF, EVT_BOOT);
     app_state::set_psu_state(static_cast<uint8_t>(psu_st));
 
+    // 启动超时计时器
+    uint32_t starting_enter_ms = 0;
+    bool starting_armed = false;
+
     for (;;) {
-        // PWOK 信号检测
+        uint32_t now = millis();
+
+        // ─ 跨任务 PSU 事件处理 ─
+        uint8_t req = app_state::psu_event_request.exchange(0);
+        if (req != 0) {
+            PsuFsmEvent evt = static_cast<PsuFsmEvent>(req);
+            psu_st = psu_fsm_transition(psu_st, evt);
+
+            // 执行状态进入/退出操作
+            if (evt == EVT_KEY_SHORT && psu_st == PSU_STARTING) {
+                ps_on_assert();
+                starting_enter_ms = now;
+                starting_armed = true;
+            } else if (evt == EVT_KEY_LONG) {
+                ps_on_deassert();
+            }
+        }
+
+        // ─ 启动超时：PSU_STARTING 超过 1s 触发 EVT_TIMEOUT_1S ─
+        if (starting_armed && psu_st == PSU_STARTING) {
+            if (now - starting_enter_ms >= 1000) {
+                psu_st = psu_fsm_transition(psu_st, EVT_TIMEOUT_1S);
+                starting_armed = false;
+            }
+        } else if (psu_st != PSU_STARTING) {
+            starting_armed = false;
+        }
+
+        // ─ PWOK 信号检测 ─
         bool pwok = ps_on_pwok_read();
         if (pwok && psu_st == PSU_STARTING) {
             psu_st = psu_fsm_transition(psu_st, EVT_PWOK_HIGH);
+            starting_armed = false;
         } else if (!pwok && psu_st == PSU_ON) {
             psu_st = psu_fsm_transition(psu_st, EVT_PWOK_LOW);
         }
 
-        // 故障检测 → 触发 FAULT_RESET 并关闭电源
+        // ─ 故障检测 → 仅在状态首次转移时关闭电源，避免每 10ms 重复写 GPIO ─
         if (app_state::is_fault()) {
-            psu_st = psu_fsm_transition(psu_st, EVT_FAULT_RESET);
-            ps_on_deassert();
+            PsuState new_st = psu_fsm_transition(psu_st, EVT_FAULT_RESET);
+            if (new_st != psu_st) {
+                psu_st = new_st;
+                ps_on_deassert();
+            }
         }
 
         // 更新 PSU 状态到 app_state

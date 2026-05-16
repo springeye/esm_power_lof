@@ -2,13 +2,15 @@
 #include <mutex>
 #include <algorithm>
 #include <cmath>
+#include <esp_heap_caps.h>
 
 namespace {
 
 static constexpr uint32_t BUFFER_SIZE = 3000;
 static constexpr uint8_t CHANNEL_COUNT = 3;
 
-static PowerHistorySample s_buffer[CHANNEL_COUNT][BUFFER_SIZE];
+// 使用 PSRAM 分配，减少内部 DRAM 压力 (72KB → 外部)
+static PowerHistorySample* s_buffer[CHANNEL_COUNT] = {nullptr};
 static uint32_t s_head[CHANNEL_COUNT] = {0};
 static uint32_t s_count[CHANNEL_COUNT] = {0};
 static std::mutex s_history_mutex;
@@ -18,13 +20,24 @@ static std::mutex s_history_mutex;
 void power_history_init() {
     std::lock_guard<std::mutex> lock(s_history_mutex);
     for (int i = 0; i < CHANNEL_COUNT; ++i) {
+        if (s_buffer[i] == nullptr) {
+            s_buffer[i] = static_cast<PowerHistorySample*>(
+                heap_caps_malloc(
+                    BUFFER_SIZE * sizeof(PowerHistorySample),
+                    MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
+            // 降级到内部 RAM
+            if (s_buffer[i] == nullptr) {
+                s_buffer[i] = static_cast<PowerHistorySample*>(
+                    malloc(BUFFER_SIZE * sizeof(PowerHistorySample)));
+            }
+        }
         s_head[i] = 0;
         s_count[i] = 0;
     }
 }
 
 void power_history_push(uint8_t ch, uint32_t ts, float w) {
-    if (ch >= CHANNEL_COUNT) return;
+    if (ch >= CHANNEL_COUNT || s_buffer[ch] == nullptr) return;
 
     std::lock_guard<std::mutex> lock(s_history_mutex);
 
@@ -44,7 +57,8 @@ uint32_t power_history_sample_window(
     PowerHistorySample* out_points,
     uint16_t out_capacity) {
 
-    if (ch >= CHANNEL_COUNT || max_points == 0 || out_capacity == 0 || out_points == nullptr) {
+    if (ch >= CHANNEL_COUNT || max_points == 0 || out_capacity == 0
+        || out_points == nullptr || s_buffer[ch] == nullptr) {
         return 0;
     }
 

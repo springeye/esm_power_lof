@@ -4,6 +4,7 @@
 #include "../app/config_manager.h"
 #include "../ota/ota_handler.h"
 #include <ESPAsyncWebServer.h>
+#include <ArduinoJson.h>
 
 namespace web_server {
 namespace {
@@ -33,20 +34,21 @@ void start() {
         },
         nullptr,
         [](AsyncWebServerRequest* req, uint8_t* data, size_t len, size_t index, size_t total) {
-            // onBody 回调：手动解析 JSON body
-            String body((char*)data, len);
-            int ssid_start = body.indexOf("\"ssid\":\"") + 8;
-            int ssid_end   = body.indexOf("\"", ssid_start);
-            String ssid = body.substring(ssid_start, ssid_end);
+            // 使用 ArduinoJson 解析 POST body
+            JsonDocument doc;
+            DeserializationError err = deserializeJson(doc, data, len);
+            if (err) {
+                req->send(400, "application/json", "{\"ok\":false,\"error\":\"invalid json\"}");
+                return;
+            }
 
-            int pwd_start = body.indexOf("\"password\":\"") + 12;
-            int pwd_end   = body.indexOf("\"", pwd_start);
-            String password = body.substring(pwd_start, pwd_end);
+            const char* ssid = doc["ssid"];
+            const char* password = doc["password"];
 
-            if (ssid.length() > 0 && ssid.length() <= 32
-                && password.length() <= 64) {
-                config_manager::set_wifi_ssid(ssid.c_str());
-                config_manager::set_wifi_password(password.c_str());
+            if (ssid && strlen(ssid) > 0 && strlen(ssid) <= 32
+                && password && strlen(password) <= 64) {
+                config_manager::set_wifi_ssid(ssid);
+                config_manager::set_wifi_password(password);
                 config_manager::save_to_nvs();
             }
         }

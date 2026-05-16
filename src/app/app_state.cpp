@@ -17,8 +17,10 @@ std::atomic<uint16_t> ch1_mv       {0};
 std::atomic<uint16_t> ch2_mv       {0};
 std::atomic<uint16_t> ch3_mv       {0};
 std::atomic<uint8_t>  psu_state_id {0};     // PSU_OFF = 0
-std::atomic<bool>      fault_active {false};
+std::atomic<bool>     fault_active {false};
 std::atomic<int8_t>   ota_progress  {-1};
-char                   wifi_ap_password[7] = {'\0'};
+char                  wifi_ap_password[7] = {'\0'};
+std::atomic<bool>     wifi_ap_password_ready {false};
+std::atomic<uint8_t>  psu_event_request {0};
 
 } // namespace app_state

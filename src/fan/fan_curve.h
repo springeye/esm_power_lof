@@ -19,12 +19,13 @@ uint16_t fan_temp_to_pwm(float temp_c);
 /**
  * @brief 对温度读数应用滞回处理。
  *
- * 如果当前值处于 [target-band, target+band] 之间，则返回 target。
- * 否则返回 current（继续跟随实际温度）。
+ * 如果新值 (target) 与旧有效值 (current) 的差异在 band 范围内，
+ * 保持旧值（过滤温度抖动）。
+ * 如果差异超出 band 范围，则跟随新值（响应真实温度变化）。
  *
- * @param current  当前温度读数
- * @param target   目标/参考温度
- * @param band     滞回带宽（±）
+ * @param current  上一次输出的有效温度（滞回参考点）
+ * @param target   当前原始温度读数
+ * @param band     滞回带宽（±），值在此范围内视为抖动
  * @return 滞回处理后的有效温度
  */
 float hysteresis_apply(float current, float target, float band);

@@ -16,7 +16,7 @@ static constexpr uint32_t WINDOW_5MIN_MS = 300000;
 static constexpr uint32_t WINDOW_10MIN_MS = 600000;
 static constexpr uint32_t WINDOWS[] = {WINDOW_1MIN_MS, WINDOW_5MIN_MS, WINDOW_10MIN_MS};
 static constexpr uint8_t WINDOW_COUNT = 3;
-static constexpr uint16_t CHART_POINT_COUNT = 300;
+static constexpr uint16_t CHART_POINT_COUNT = 240;
 
 static const lv_color_t CH_COLORS[3] = {
     lv_color_hex(0x00e68a),
@@ -84,7 +84,7 @@ void create_chart_ui(uint8_t ch) {
     lv_obj_set_style_flex_grow(g_charts[ch].chart, 1, 0);
     lv_chart_set_type(g_charts[ch].chart, LV_CHART_TYPE_LINE);
     lv_chart_set_update_mode(g_charts[ch].chart, LV_CHART_UPDATE_MODE_SHIFT);
-    lv_chart_set_point_count(g_charts[ch].chart, 300);
+    lv_chart_set_point_count(g_charts[ch].chart, CHART_POINT_COUNT);
     lv_chart_set_div_line_count(g_charts[ch].chart, 3, 4);
     lv_obj_set_style_bg_color(g_charts[ch].chart, lv_color_hex(0x111820), 0);
     lv_obj_set_style_bg_opa(g_charts[ch].chart, 255, 0);
@@ -175,7 +175,7 @@ namespace chart_view {
 void chart_view_update(uint8_t ch) {
     if (ch >= 3) return;
 
-    // 懒创建：首次访问时才建 chart，一次只建一个，不阻塞
+    // 懒创建：首次访问时才建 chart，一次只建一个
     if (g_charts[ch].chart == nullptr) {
         lv_obj_t* container = view_manager::view_manager_get_chart_container(ch);
         if (!container) return;
@@ -186,8 +186,6 @@ void chart_view_update(uint8_t ch) {
     update_chart_data(ch);
 }
 
-// chart_view_init 已废弃 — chart 在首次 chart_view_update 或
-// chart_view_set_window 时懒创建
 void chart_view_init() {
     if (g_initialized) return;
     g_window_index = 0;
@@ -199,17 +197,13 @@ void chart_view_set_window(uint8_t ch, uint32_t window_ms) {
     for (uint8_t i = 0; i < WINDOW_COUNT; ++i) {
         if (WINDOWS[i] == window_ms) {
             g_window_index = i;
-            return;
+            break;
         }
     }
 }
 
 void chart_view_cycle_window() {
     g_window_index = (g_window_index + 1) % WINDOW_COUNT;
-}
-
-uint32_t chart_view_get_window_ms() {
-    return WINDOWS[g_window_index];
 }
 
 } // namespace chart_view

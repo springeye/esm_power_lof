@@ -6,13 +6,20 @@
 #include "watchdog.h"
 #include "app_config.h"
 #include <esp_task_wdt.h>
+#include <esp_idf_version.h>
 
 namespace watchdog {
 
 void init(uint32_t timeout_s) {
-    // ESP-IDF v4 API (arduino-esp32 3.x uses IDF v5 but older boards use v4 API)
-    // Use esp_task_wdt_init for compatibility
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+    esp_task_wdt_config_t cfg = {};
+    cfg.timeout_ms = timeout_s * 1000;
+    cfg.idle_core_mask = 0;
+    cfg.trigger_panic = true;
+    esp_task_wdt_init(&cfg);
+#else
     esp_task_wdt_init(timeout_s, true);
+#endif
 }
 
 void feed() {

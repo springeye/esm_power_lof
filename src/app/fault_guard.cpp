@@ -4,7 +4,7 @@
  *
  * 过温阈值：由 config_manager 提供关机阈值
  * 堵转阈值：由 config_manager 提供 duty/rpm/timeout 参数
- * 过流阈值：负载 > 40A（INA226_MAX_CURRENT_A）
+ * 过流阈值：三路独立检测，任一路 > INA226_MAX_CURRENT_A 触发故障
  */
 
 #include "fault_guard.h"
@@ -39,9 +39,9 @@ void check_stall(uint16_t duty, uint32_t rpm) {
     }
 }
 
-void check_overcurrent(int32_t load_ma, int32_t /*v12_ma*/, int32_t /*v5_ma*/) {
-    // 负载电流超过 INA226_MAX_CURRENT_A（40A = 40000mA）
-    if (load_ma > static_cast<int32_t>(INA226_MAX_CURRENT_A * 1000.0f)) {
+void check_overcurrent(int32_t ch1_ma, int32_t ch2_ma, int32_t ch3_ma) {
+    const int32_t threshold = static_cast<int32_t>(INA226_MAX_CURRENT_A * 1000.0f);
+    if (ch1_ma > threshold || ch2_ma > threshold || ch3_ma > threshold) {
         app_state::set_fault(true);
     }
 }
