@@ -34,7 +34,8 @@ from pathlib import Path
 
 
 # 与 partitions/secure_8MB.csv 保持一致（布局同 default_8MB，app0/app1 带 encrypted 标志）
-FLASH_SIZE_MB = 8
+# PCB 为 N16R8，flash 头声明 16MB 以匹配真实硬件，固件仅占用前 8MB
+FLASH_SIZE_MB = 16
 BOOTLOADER_OFFSET = 0x0000      # ESP32-S3 bootloader 偏移 = 0x0
 PARTITIONS_OFFSET = 0x8000
 APP_OFFSET = 0x10000

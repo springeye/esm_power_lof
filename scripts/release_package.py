@@ -18,8 +18,9 @@ import datetime
 from pathlib import Path
 
 
-# 与 partitions/default_8MB.csv 保持一致
-FLASH_SIZE_MB = 8
+# 分区布局与 partitions/default_8MB.csv 一致（偏移不变）；PCB 为 N16R8，
+# flash 头声明 16MB 以匹配真实硬件，固件仅占用前 8MB
+FLASH_SIZE_MB = 16
 BOOTLOADER_OFFSET = 0x0000
 PARTITIONS_OFFSET = 0x8000
 APP_OFFSET = 0x10000

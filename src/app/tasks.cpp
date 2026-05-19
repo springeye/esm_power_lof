@@ -111,6 +111,7 @@ void ctrl_task(void* /*param*/) {
     esp_task_wdt_add(nullptr);
     static float prev_temp = 0.0f;
     static bool  prev_valid = false;
+    static uint32_t last_log_ms = 0;
     for (;;) {
         float temp = app_state::get_temp_c();
         // 首次迭代直接初始化为实际温度，避免热启动时 25°C 默认值偏差
@@ -138,6 +139,32 @@ void ctrl_task(void* /*param*/) {
         fault_guard::check_overcurrent(app_state::get_ch1_a() * 1000.0f,
                                        app_state::get_ch2_a() * 1000.0f,
                                        app_state::get_ch3_a() * 1000.0f);
+
+        // ─ 1s 心跳日志（节流，便于串口监控运行状态）─
+        uint32_t now_ms = millis();
+        if (now_ms - last_log_ms >= 1000u) {
+            last_log_ms = now_ms;
+            float v1 = app_state::get_ch1_mv() / 1000.0f;
+            float v2 = app_state::get_ch2_mv() / 1000.0f;
+            float v3 = app_state::get_ch3_mv() / 1000.0f;
+            float a1 = app_state::get_ch1_a();
+            float a2 = app_state::get_ch2_a();
+            float a3 = app_state::get_ch3_a();
+            Serial.printf(
+                "[HB] up=%lus T=%.1fC fan=%lurpm duty=%u(%u%%) "
+                "CH1=%.2fV/%.2fA/%.1fW CH2=%.2fV/%.2fA/%.1fW "
+                "CH3=%.2fV/%.2fA/%.1fW psu=%u fault=%u\n",
+                static_cast<unsigned long>(now_ms / 1000u),
+                temp,
+                static_cast<unsigned long>(rpm),
+                static_cast<unsigned>(duty),
+                static_cast<unsigned>(static_cast<uint32_t>(duty) * 100u / FAN_PWM_MAX),
+                v1, a1, v1 * a1,
+                v2, a2, v2 * a2,
+                v3, a3, v3 * a3,
+                static_cast<unsigned>(app_state::psu_state_id.load()),
+                static_cast<unsigned>(app_state::is_fault() ? 1u : 0u));
+        }
 
         esp_task_wdt_reset();
         vTaskDelay(pdMS_TO_TICKS(500));
