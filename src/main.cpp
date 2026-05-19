@@ -5,7 +5,6 @@
 #include "hal/spi_bus.h"
 #include "display/tft_driver.h"
 #include "display/tft_demo.h"
-#include "display/screen_rotation.h"
 #include "sensors/ina226/ina226.h"
 #include "fan/fan_pwm.h"
 #include "fan/fan_tach.h"
@@ -64,10 +63,6 @@ void setup() {
                           config_manager::get_ina_offset(ch));
     }
     Serial.println("[boot] 10 ina-cal-push"); Serial.flush();
-
-    // Screen rotation (loads from NVS)
-    screen_rotation::init();
-    Serial.println("[boot] 11 screen-rot"); Serial.flush();
 
     // Watchdog
     watchdog::init(TASK_WDT_TIMEOUT_S);

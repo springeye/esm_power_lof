@@ -28,7 +28,6 @@ struct DisplayConfig {
     uint8_t theme_mode;
     uint8_t chart_yaxis_mode;
     uint8_t default_view;
-    uint8_t screen_rotation;
 };
 
 struct PowerConfig {
@@ -98,9 +97,6 @@ void set_chart_yaxis_mode(uint8_t v);
 
 uint8_t get_default_view();
 void set_default_view(uint8_t v);
-
-uint8_t get_screen_rotation();
-void set_screen_rotation(uint8_t v);
 
 uint16_t get_design_power_w();
 void set_design_power_w(uint16_t v);
