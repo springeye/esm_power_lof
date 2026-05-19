@@ -32,13 +32,16 @@ pio run -e esp32s3 -t size
 
 # Release 构建（含自动打包脚本）
 pio run -e release
+
+# Secure 构建（Flash Encryption dev-mode 加密打包，需先生成 secure_keys/flash_encryption_key.bin）
+pio run -e secure
 ```
 
 ## Project Structure
 
 ```
 esm_power_lof/
-├── platformio.ini            # 主构建配置（3 环境：esp32s3 / test / release）
+├── platformio.ini            # 主构建配置（4 环境：esp32s3 / test / release / secure）
 ├── include/                  # 全局头文件
 │   ├── pins.h                # 引脚单点定义（ESP32-S3 N8R8）
 │   ├── app_config.h          # 编译期常量（NTC/风扇/INA226/任务栈）
@@ -65,7 +68,7 @@ esm_power_lof/
 │   └── lof_power_system_gen.c/h  # 生成代码（勿手改）
 ├── test/                     # 单元测试（Unity 框架）
 ├── partitions/               # ESP32 分区表（default_8MB.csv）
-├── scripts/                  # 辅助脚本（auto_src_filter.py, release_package.py）
+├── scripts/                  # 辅助脚本（auto_src_filter.py, release_package.py, secure_package.py, provision_efuse.py）
 ├── openspec/                 # OpenSpec 规范驱动变更管理
 └── release/                  # 固件 bin 发布产物
 ```
@@ -76,7 +79,8 @@ esm_power_lof/
 |------|------|------|
 | `esp32s3` | 开发/调试固件 | 默认环境，含 WiFi/Web/OTA，启用调试 |
 | `test` | 单元测试 | 排除 main.cpp/web/ota，运行 Unity 测试 |
-| `release` | 发布固件 | 关闭 LVGL 调试，含 post-build 打包脚本 |
+| `release` | 发布固件 | 关闭 LVGL 调试，含 post-build 打包脚本（明文全量固件）|
+| `secure` | 加密发布固件 | 克隆 `release`，Flash Encryption (dev-mode) 主机侧预加密打包，防 dump；详见 `docs/flash-encryption-guide.md` |
 
 ## Coding Conventions
 
