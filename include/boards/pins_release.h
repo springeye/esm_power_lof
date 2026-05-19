@@ -22,8 +22,8 @@
 #define NTC2_ADC_PIN  17
 #define NTC_ADC_CH    NTC1_ADC_PIN
 
-#define PSON_PIN      20
-#define PWOK_PIN      14
+#define PSON_PIN      14
+#define PWOK_PIN      21
 
 #define KEY_K1        1
 #define KEY_K2        2
