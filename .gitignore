@@ -13,3 +13,4 @@ secure_keys/
 *.pem
 *.key
 !secure_boot_pubkey.pem
+.deepseek/

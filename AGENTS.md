@@ -1,219 +1,127 @@
-# PROJECT KNOWLEDGE BASE
+# Project Instructions
 
-**Generated:** 2026-05-08
-**Commit:** abf0203
-**Branch:** master
+This file provides context for AI assistants working on this project.
 
-## OVERVIEW
-ESP32 ESM_POWER_SYSTEM固件。C++/Arduino 框架 + PlatformIO 构建，对偶 LVGL Editor 导出的 UI 子工程（C/CMake + Emscripten 预览）。
+## Project Type
 
-## STRUCTURE
-```
-esm_power_lof/
-├── platformio.ini          # 主构建配置（env: esp32s3）
-├── include/                # 全局头文件与配置
-│   ├── pins.h              # 引脚单点定义（ESP32-S3）
-│   ├── app_config.h        # 全局常量（NTC/风扇/INA226/任务栈）
-│   ├── lv_conf.h           # LVGL 9.x 配置
-│   └── lvgl_v8_shim.h      # LVGL v8 兼容层头文件
-├── src/                    # 主固件源码（61 文件）
-│   ├── main.cpp            # ESP32 固件入口（Arduino setup/loop）
-│   ├── app/                # 应用层（tasks, app_state, watchdog, fault_guard, config_manager）
-│   ├── hal/                # 硬件抽象（I2C, SPI）
-│   ├── display/            # 显示驱动（TFT_eSPI + LVGL port）
-│   ├── sensors/            # 传感器（ntc/, ina226/）
-│   ├── fan/                # 风扇控制（fan_curve, fan_pwm, fan_tach）
-│   ├── power/              # 电源管理（PSU FSM, PS_ON）
-│   ├── input/              # 按键输入（keys debounce）
-│   ├── ui_bridge/          # UI 胶水层（screen_manager, data_bridge, input_bridge, splash_anim, settings_ui, view_manager, chart_view, power_history, theme_manager）
-│   ├── net/                # 网络层（wifi_manager, web_server, ota_handler）
-│   ├── compat/             # LVGL 兼容层（v8 shim + v9.5 compat）
-│   ├── test_main.cpp       # 单元测试入口（Unity 框架）
-│   └── ui/_legacy/         # 旧版 UI（已排除构建，保留参考）
-├── ui/                     # LVGL Editor 导出 UI（已有 AGENTS.md）
-│   ├── screens/            # 屏幕 XML + 生成 *_gen.c/h（home, splash, settings）
-│   ├── fonts/              # 字体数据（C 数组，.ttf 源文件）
-│   ├── lof_power_system.c  # 手写 UI 扩展入口
-│   ├── lof_power_system_gen.c/h  # LVGL Editor 生成代码（勿手改）
-│   ├── globals.xml         # 全局变量与字体 symbol 定义
-│   ├── CMakeLists.txt      # 预览构建入口（Emscripten）
-│   ├── preview-build/      # 生成：CMake 中间产物
-│   └── preview-bin/        # 生成：预览 runtime.js/wasm
-├── partitions/             # 固件分区表（8MB Flash CSV）
-├── scripts/                # 辅助脚本
-└── openspec/               # 规范驱动变更提案（proposal/design/spec/tasks）
-```
+ESP32-S3 嵌入式固件 — 基于 Arduino + FreeRTOS 框架，PlatformIO 构建系统，LVGL 9.x 图形界面，ST7789 240×280 显示屏。
 
-## WHERE TO LOOK
-
-| Task | Location | Notes |
-|------|----------|-------|
-| 固件入口 | `src/main.cpp` | `setup()` 初始化外设，`loop()` 空转——所有逻辑在 FreeRTOS 任务中 |
-| 构建/环境选择 | `platformio.ini` | `build_src_filter` 控制哪些源参与编译，`build_flags` 设置编译宏 |
-| 修改配置常量 | `include/app_config.h` | NTC参数、风扇阈值、任务栈、`USE_DISPLAY_DEMO` 开关 |
-| 修改引脚 | `include/pins.h` | 与 `platformio.ini` build_flags 中的 TFT 引脚保持一致 |
-| 修改默认字体 | `include/lv_conf.h` | `LV_FONT_DEFAULT` = `&lv_font_montserrat_14`（仅作后备，UI 中不使用） |
-| 可用字体 | `ui/fonts/` | `hos_14`, `hos_regular`, `hos_bold_big`, `hos_bold_splash`, `hos_medium`, `hos_bold`, `hos_black`, `hos_light`, `hos_thin`, `font_medium`, `font_awesome_14`, `font_awesome_48` |
-| UI 生成代码（勿手改） | `ui/screens/*_gen.c/h` + `ui/lof_power_system_gen.*` | 修改对应 XML 后重新生成 |
-| UI 手写扩展 | `ui/lof_power_system.c` | `lof_power_system_init()` 桥接生成逻辑 |
-| 屏幕定义（可编辑） | `ui/screens/*.xml` | 修改后重新生成 `*_gen.c/h`；现有 home.xml、splash.xml、settings.xml |
-| 启动动画 | `src/ui_bridge/splash_anim.cpp` | splash 屏幕动画与定时切换逻辑 |
-| 状态机实现 | `src/power/psu_fsm.cpp` | `psu_fsm_transition()` |
-| 风扇曲线 | `src/fan/fan_curve.cpp` | `fan_temp_to_pwm()`, `hysteresis_apply()` |
-| 任务划分 | `src/app/tasks.cpp` | `tasks::start_all()` 启动 5 个 FreeRTOS 任务 |
-| 故障检测 | `src/app/fault_guard.cpp` | 过温/堵转/过流/PWOK 失稳保护 |
-| 运行时配置 | `src/app/config_manager.{h,cpp}` | 风扇曲线、温度阈值、亮度、功率、传感器校准 |
-| 设置页面UI | `src/ui_bridge/settings_ui.{h,cpp}` | 5个分类页面、3按键导航、编辑模式 |
-| 功率历史记录 | `src/ui_bridge/power_history.{h,cpp}` | 环形缓冲区，3000 点/通道，10 分钟窗口 |
-| 视图管理 | `src/ui_bridge/view_manager.{h,cpp}` | 多视图循环切换（默认/CH1/CH2/CH3 图表） |
-| 图表视图 | `src/ui_bridge/chart_view.{h,cpp}` | LVGL 图表控件，功率历史曲线渲染 |
-| 主题管理 | `src/ui_bridge/theme_manager.{h,cpp}` | UI 主题与样式管理 |
-| WiFi 管理 | `src/net/wifi_manager.{h,cpp}` | WiFi 连接与管理 |
-| Web 服务器 | `src/net/web_server.{h,cpp}` | 内置 Web 管理界面 |
-| OTA 升级 | `src/net/ota_handler.{h,cpp}` | 固件空中升级 |
-| 需求与设计 | `openspec/changes/*/design.md` | 硬件约束、引脚决策、模块拆分 |
-| 分区表 | `partitions/default_8MB.csv` | nvs, otadata, app0/1(OTA), spiffs, coredump |
-
-## CODE MAP
-
-| Symbol | Type | Location | Role |
-|--------|------|----------|------|
-| `setup()` | function | `src/main.cpp` | 固件启动入口，初始化所有外设 |
-| `loop()` | function | `src/main.cpp` | 空转，所有工作由 FreeRTOS 任务执行 |
-| `tasks::start_all()` | function | `src/app/tasks.cpp` | 启动 5 个 FreeRTOS 任务（lvgl/sensor/ctrl/input/power） |
-| `psu_fsm_transition()` | function | `src/power/psu_fsm.cpp` | 电源状态机核心转换 |
-| `fan_temp_to_pwm()` | function | `src/fan/fan_curve.cpp` | 温控曲线：温度→PWM 占空比 |
-| `hysteresis_apply()` | function | `src/fan/fan_curve.cpp` | 滞回逻辑，减少频繁抖动 |
-| `ntc_adc_to_temp()` | function | `src/sensors/ntc/ntc.cpp` | NTC β 公式温度换算 |
-| `ina226_read()` | function | `src/sensors/ina226/ina226.cpp` | INA226 电流/电压读取 |
-| `key_debounce_update()` | function | `src/input/keys.cpp` | 按键去抖与事件生成 |
-| `tft_driver::init()` | function | `src/display/tft_driver.cpp` | TFT 初始化 + 背光 LEDC |
-| `lvgl_port::init()` | function | `src/display/lvgl_port.cpp` | LVGL 移植层：display, flush_cb, tick |
-| `config_manager::init()` | function | `src/app/config_manager.cpp` | 初始化配置（从NVS加载或使用默认值） |
-| `settings_ui::init()` | function | `src/ui_bridge/settings_ui.cpp` | 初始化设置页面UI |
-| `settings_ui::handle_key()` | function | `src/ui_bridge/settings_ui.cpp` | 处理设置页面按键事件 |
-| `lof_power_system_init()` | function | `ui/lof_power_system.c` | 手写 UI 入口，调用 `*_init_gen()` |
-| `splash_anim_start()` | function | `src/ui_bridge/splash_anim.cpp` | 启动 splash 屏幕动画，n 秒后自动切换到 home |
-| `PsuState` | enum | `src/power/psu_fsm.h` | 电源状态（Off/Standby/Starting/On/Stopping/Fault） |
-| `app_state` | namespace | `src/app/app_state.cpp` | 全局应用状态（温度/PWM/RPM/PSU），原子变量；含 `fan_rpm`、`fan_duty`、`psu_state_id` |
-| `USE_DISPLAY_DEMO` | flag | `include/app_config.h` | true=仅 TFT 测试图案，false=正常 UI |
-
-## CONVENTIONS
-
-- **C++ 标准**：`-std=c++17`
-- **静态检查**：cppcheck `--enable=warning,style,performance --inconclusive`（见 `platformio.ini`）
-- **编辑器配置**：`.editorconfig` — UTF-8, LF 换行, 缩进 2 空格；C/C++ 文件使用 4 空格
-- **生成文件**：`*_gen.c` / `*_gen.h` 由工具生成，**不应手改**；修改在源 XML 或生成流程中进行（包括 `lof_power_system_gen.c/h`）
-- **构建产物**：`preview-build/` 与 `preview-bin/` 为生成目录，不应直接编辑其内容
-- **编译期配置**：几乎所有配置通过 `app_config.h`（`static constexpr`）和 `platformio.ini`（`-D` flags）控制，无运行时配置文件
-- **跨线程数据**：所有多任务共享字段使用 `std::atomic`（见 `src/app/app_state.h`）
-- **Main 入口**：固件入口位于 `src/main.cpp`
-- **Include 风格**：项目内部头文件使用 `"..."` 和相对路径（如 `"../sensors/ntc/ntc.h"`），系统/库头文件使用 `<>`
-- **字体显式指定**：所有 `lv_label` 等文本控件必须通过 `style_text_font` 手动指定字体。可用字体：`hos_14`(14px)、`hos_regular`(16px)、`hos_medium`、`hos_bold`、`hos_bold_big`(44px)、`hos_bold_splash`、`hos_black`、`hos_light`、`hos_thin`、`font_medium`、`font_awesome_14`、`font_awesome_48`。不得依赖 `LV_FONT_DEFAULT`。`lv_conf.h` 中 `LV_FONT_DEFAULT` 保持为 `&lv_font_montserrat_14`（仅作后备，UI 中不使用）。
-
-### 命名约定
-- 宏/预处理常量：`UPPER_SNAKE`（`TFT_MOSI`, `INA_CH1_ADDR`, `KEY_K1`）
-- 类型（struct/enum/typedef）：`PascalCase`（`Ina226Data`, `PsuState`）
-- 函数与变量：`snake_case`（`get_temp_c`, `fan_pwm_set_duty`）
-- 枚举值：`UPPER_SNAKE`（`PSU_OFF`, `EVT_BOOT`）
-- 生成函数：`*_create()` 用于屏幕创建，`*_init_gen()` 用于初始化
-
-### 测试约定
-- 框架：Unity（`<unity.h>`）
-- 位置：`src/test_main.cpp`
-- 运行：`pio test -e esp32s3`
-- 每个测试文件实现 `setUp()`/`tearDown()`（即使为空），用 `RUN_TEST()` 注册用例
-- Mock 策略：通过 `platformio.ini` 的 `build_src_filter` 排除硬件实现，替换为测试替身（`*_mock.cpp`）
-
-## ANTI-PATTERNS（本仓库）
-
-- **直接手改任何 LVGL Editor 生成文件**：包括 `*_gen.c` / `*_gen.h`、`lof_power_system_gen.c/h`，以及字体数据文件 `ui/fonts/*_data.c`。这些文件由 LVGL Editor 重新导出时**自动覆盖**，手改内容会丢失。要修改 UI，改源 XML 文件后由用户在 LVGL Editor 重新导出；要修改字体，改 `ui/globals.xml` 的 symbols 属性后由用户重新导出——不得直接手改 `_data.c`。
-- 绕过 XML 在 `*_gen.c` 中直接粘贴修改控件代码（同上，会被覆盖）
-- 手改 `preview-build/**` 中的 `.o/.d/.make/.rsp/link.txt`（构建中间产物）
-- 将 `preview-bin/lved-runtime.js` 当作业务源码维护（Emscripten 生成物）
-- 在全局宏中定义 `TFT_BL`——会导致 TFT_eSPI 的 `pinMode(-1)` 错误（背光由 `tft_driver.cpp` 自管）
-- 假设本目录存在 npm/ts 测试与构建入口（没有）
-
-## UI 修改规则（LVGL Editor 工作流）
-
-> **核心原则：只改 XML，不碰生成文件。生成文件由用户在 LVGL Editor 重新导出产生。**
-
-### 可修改的文件（源文件）
-| 文件 | 用途 | 修改后操作 |
-|------|------|-----------|
-| `ui/screens/*.xml` | 屏幕布局、控件属性、文本内容 | 用户在 LVGL Editor 重新导出 |
-| `ui/globals.xml` | 全局变量、字体字符集（symbols） | 用户在 LVGL Editor 重新导出（重新生成字体 `_data.c`） |
-| `ui/lof_power_system.c` | 手写 UI 扩展入口 | 无需导出（直接编译使用） |
-| `src/ui_bridge/*.cpp` | 运行时逻辑（屏幕切换、数据绑定、按键转发） | 无需导出（直接编译使用） |
-| `src/ui_bridge/settings_ui.{h,cpp}` | 设置页面运行时交互逻辑 | 无需导出（直接编译使用） |
-
-### 禁止修改的文件（生成文件，会被覆盖）
-| 文件 | 说明 |
-|------|------|
-| `ui/screens/*_gen.c` / `*_gen.h` | 由对应 `*.xml` 生成 |
-| `ui/lof_power_system_gen.c` / `lof_power_system_gen.h` | 由 LVGL Editor 项目整体生成 |
-| `ui/fonts/*_data.c` | 由 `globals.xml` 的字体 symbols 生成 |
-| `ui/preview-build/**` | CMake 构建中间产物 |
-| `ui/preview-bin/**` | Emscripten 最终产物 |
-
-### 字体修改正确流程
-1. 修改 `ui/globals.xml` 中对应字体的 `symbols` 属性，追加所需字符
-2. 用户在 LVGL Editor 中重新导出项目
-3. LVGL Editor 自动重新生成 `ui/fonts/{font}_data.c`（含新字符的位图数据）
-4. 编译验证：`pio run -e esp32s3`
-
-## UNIQUE STYLES
-
-- 生成文件采用 `*_gen` 命名，手写入口不带 `_gen`
-- 生成屏幕函数以 `*_create()` 暴露，初始化函数以 `*_init_gen()` 命名
-- 样式对象常见 `static ... + style_inited` 的一次性初始化模式
-- UI 源码不在 `src/` 下——由 `platformio.ini` 显式引入
-- 引脚定义双重维护：`include/pins.h`（C++ 宏）+ `platformio.ini` build_flags（`-D` 宏），两处必须一致
-- 文档和 UI 生成产物均遵循电报风格（`TELEGRAPHIC_STYLE_GUIDE`）
-
-## COMMANDS
+## Build & Test Commands
 
 ```bash
-# 固件构建（默认目标 esp32s3）
+# 编译固件（默认 esp32s3 环境）
+pio run
+
+# 编译指定环境（esp32s3 / test / release）
 pio run -e esp32s3
 
-# 静态分析
-pio check -e esp32s3 --skip-packages
-
-# 查看固件大小
-pio run -e esp32s3 -t size
-
-# 烧录
+# 编译并上传到 ESP32-S3
 pio run -e esp32s3 -t upload
 
-# 串口监视
+# 串口监视（含 ESP32 异常解码）
 pio device monitor -e esp32s3
 
-# UI 预览构建（需 emsdk/cmake 环境）
-cmake --build ui/preview-build
+# 运行测试（Unity 框架，使用 test 环境）
+pio test -e test
 
-# 源文件自动发现（PlatformIO extra_script）
-python scripts/auto_src_filter.py
+# 静态分析（cppcheck）
+pio check -e esp32s3 --skip-packages
 
-# 打包发布
-python scripts/release_package.py
+# 查看固件分区占用
+pio run -e esp32s3 -t size
+
+# Release 构建（含自动打包脚本）
+pio run -e release
 ```
 
-## ANTI-PATTERNS（本仓库）
+## Project Structure
 
-- **看门狗重启风险**：FreeRTOS 任务有 5s 看门狗超时（`app_config.h: TASK_WDT_TIMEOUT_S`）。任何在任务循环中执行的耗时操作（如大量 LVGL 控件创建、长循环、阻塞 I/O）都必须分片执行或使用 `vTaskDelay` 让出 CPU。**已知教训**：设置页面曾因一次性创建大量预览 item 导致 LVGL 任务阻塞超过 5s 触发看门狗重启。解决方案：延迟创建（lazy init）、分批构建 UI、或在长操作中插入 `vTaskDelay(pdMS_TO_TICKS(1))` 喂狗。
-- **LVGL 任务阻塞**：`lvgl_task`（Core 1, 优先级 5）每 5ms 调用一次 `lvgl_port::task_handler()`。任何在此任务中同步执行的耗时操作都会阻塞 LVGL 渲染和看门狗喂狗。新建 UI 控件应使用 `lv_async_call` 或在 `data_bridge` 定时器中分批完成。
-- 直接手改任何 LVGL Editor 生成文件（`*_gen.c/h`、`lof_power_system_gen.c/h`、字体 `_data.c`）
-- 绕过 XML 在 `*_gen.c` 中直接粘贴修改控件代码
-- 手改 `preview-build/**` 中的构建中间产物
-- 在全局宏中定义 `TFT_BL`（会导致 TFT_eSPI 的 `pinMode(-1)` 错误）
-- 假设本目录存在 npm/ts 测试与构建入口
+```
+esm_power_lof/
+├── platformio.ini            # 主构建配置（3 环境：esp32s3 / test / release）
+├── include/                  # 全局头文件
+│   ├── pins.h                # 引脚单点定义（ESP32-S3 N8R8）
+│   ├── app_config.h          # 编译期常量（NTC/风扇/INA226/任务栈）
+│   └── lv_conf.h             # LVGL 9.x 配置
+├── src/                      # 主固件源码（C++17）
+│   ├── main.cpp              # 固件入口（Arduino setup/loop）
+│   ├── app/                  # 应用层：tasks, app_state, config_manager, watchdog, fault_guard
+│   ├── hal/                  # 硬件抽象层：i2c_bus, spi_bus
+│   ├── display/              # 显示驱动：tft_driver, lvgl_port, tft_demo
+│   ├── sensors/              # 传感器：ntc（温度）, ina226（电流/电压）
+│   ├── fan/                  # 风扇控制：fan_curve, fan_pwm, fan_tach
+│   ├── power/                # 电源管理：psu_fsm, ps_on
+│   ├── input/                # 按键输入：keys（去抖 + 短按/长按）
+│   ├── wifi/                 # WiFi 管理
+│   ├── web/                  # 内置 Web 管理界面
+│   ├── ota/                  # 固件 OTA 升级
+│   ├── ui_bridge/            # UI 胶水层：screen_manager, data_bridge, input_bridge, settings_ui 等
+│   ├── compat/               # LVGL v8 兼容层
+│   └── ui/_legacy/           # 旧版 UI（已排除构建，仅保留参考）
+├── ui/                       # LVGL Editor 导出 UI
+│   ├── screens/              # 屏幕定义（*.xml + *_gen.c/h 生成代码）
+│   ├── fonts/                # 字体 C 数组
+│   ├── lof_power_system.c/h  # 手写 UI 扩展入口
+│   └── lof_power_system_gen.c/h  # 生成代码（勿手改）
+├── test/                     # 单元测试（Unity 框架）
+├── partitions/               # ESP32 分区表（default_8MB.csv）
+├── scripts/                  # 辅助脚本（auto_src_filter.py, release_package.py）
+├── openspec/                 # OpenSpec 规范驱动变更管理
+└── release/                  # 固件 bin 发布产物
+```
 
-## NOTES
+## Environments
 
-- 本固件仅经编译验证，**未经实际硬件测试**；烧录前确认引脚连接
-- 支持 WiFi/Web/OTA（`src/net/`），但需在 `platformio.ini` 中启用相关环境
-- 无 CI/CD 配置——建议添加 GitHub Actions 工作流（`pio run` + `pio check`）
-- 无 Docker 配置——可通过 PlatformIO 官方镜像容器化构建
-- LSP 支持：clangd（需安装），支持 `.c/.cpp/.h/.hpp`
-- 分区表：8MB Flash，双 OTA 分区（app0/app1）+ spiffs + coredump
+| 环境 | 目标 | 说明 |
+|------|------|------|
+| `esp32s3` | 开发/调试固件 | 默认环境，含 WiFi/Web/OTA，启用调试 |
+| `test` | 单元测试 | 排除 main.cpp/web/ota，运行 Unity 测试 |
+| `release` | 发布固件 | 关闭 LVGL 调试，含 post-build 打包脚本 |
+
+## Coding Conventions
+
+- **语言标准**：C++17（`-std=c++17`），UI 层使用 C
+- **命名约定**：
+  - 宏/枚举值：`UPPER_SNAKE`（`PSU_OFF`, `EVT_BOOT`）
+  - 类型（struct/enum/class）：`PascalCase`（`Ina226Data`, `KeyState`）
+  - 函数/变量：`snake_case`（`get_temp_c`, `fan_pwm_set_duty`）
+- **缩进**：C/C++ 文件用 4 空格，其他文件用 2 空格（见 `.editorconfig`）
+- **行尾**：LF（Unix 风格）
+- **编码**：UTF-8
+- **Include 风格**：项目内部用 `"../module/header.h"` 相对路径，系统/库用 `<>`
+- **跨线程数据**：所有多任务共享字段使用 `std::atomic`（定义在 `app/app_state.h`）
+- **编译期配置**：常量通过 `include/app_config.h` 的 `static constexpr` 和 `platformio.ini` 的 `-D` 宏控制
+- **模块边界**：每个 `.h` 只暴露模块公共 API，`.cpp` 隐藏实现细节
+- **HAL 层**：所有硬件访问经 `hal/` 抽象，上层不直接操作寄存器
+- **文件尾**：所有文件以换行结尾
+
+## Important Notes
+
+1. **引脚双重维护**：`include/pins.h`（C++ 宏）与 `platformio.ini` 的 `build_flags`（`-D` 宏）必须保持一致。修改引脚时两处都要更新。
+
+2. **TFT_BL 陷阱**：绝对不要在全局宏中定义 `TFT_BL`。TFT_eSPI 的 `ST7789_Init.h` 使用 `#ifdef TFT_BL` 而非 `#if TFT_BL>=0`，一旦定义就会执行 `pinMode(-1)` 触发 GPIO 错误。背光由 `src/display/tft_driver.cpp` 通过 LEDC ch1 自行管理 GPIO21。
+
+3. **Octal PSRAM 引脚**：N8R8 模组的 GPIO 33-37 被 Octal PSRAM 占用，**不可使用**。所有外设已避开此区域。
+
+4. **生成文件勿手改**：`ui/screens/*_gen.c/h`、`ui/lof_power_system_gen.c/h`、`ui/preview-build/`、`ui/preview-bin/` 为生成产物。修改应通过上游 XML 或 LVGL Editor 工具完成。
+
+5. **build_src_filter**：PlatformIO 使用 `build_src_filter` 按环境选择编译源文件。`src/ui/_legacy/` 已被排除（`-<ui/_legacy/>`），仅保留参考。新增源文件时需确认 `platformio.ini` 中各环境的过滤规则。
+
+6. **UI 源码分属两处**：`src/ui_bridge/` 包含胶水层（桥接固件状态到 LVGL 控件），`ui/` 包含 LVGL Editor 导出的屏幕/字体/组件。
+
+7. **测试框架**：Unity（`<unity.h>`）。测试入口在 `src/test_main.cpp`，测试用例在 `test/` 目录。通过 `pio test -e test` 运行。
+
+8. **FreeRTOS 任务**：5 个任务（lvgl/sensor/ctrl/input/power），每个任务在循环开始调用 `watchdog::feed()`。任务栈大小在 `app_config.h` 配置。
+
+9. **无 CI/CD**：项目当前无 CI/CD 配置，也无 WiFi/BLE/OTA 之外的无线功能。固件未经实际硬件验证。
+
+## OpenSpec Workflow
+
+本项目使用 OpenSpec 进行规范驱动变更管理。变更提案位于 `openspec/changes/`，包含 proposal.md、design.md、specs/ 和 tasks.md。
+
+```bash
+# 发起新变更 → 使用 openspec-propose skill
+# 探索/讨论需求 → 使用 openspec-explore skill
+# 实施变更 → 使用 openspec-apply-change skill
+# 归档已完成变更 → 使用 openspec-archive-change skill
+```
