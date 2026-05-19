@@ -167,6 +167,29 @@ $BIN = (Get-ChildItem release\esm_power_firmware_secure_*.bin | Sort-Object Last
 > 也可用 Web 刷机（https://espressif.github.io/esptool-js/）或 Flash Download Tool：
 > 芯片选 ESP32-S3，地址 `0x0`，选上面那个 `.bin`，**不要**勾任何加密选项。
 
+### 📌 为什么这里不能加 `--encrypt`？什么时候才用它？
+
+`--encrypt`（GUI 工具里的 **Encrypt** 勾选框）= **"我发的是明文，芯片你用 eFuse 里的密钥边写边加密"**。
+让密文进 flash 有两条路，本项目走第一条：
+
+| 路径 | 谁加密 | 线上数据 | 主机要密钥吗 | 刷写方式 |
+|------|--------|---------|-------------|---------|
+| **主机预加密**（本项目 secure 方案）| 打包时 `espsecure` | 已是**密文** | 要 | 普通 `write_flash`，**不加** `--encrypt` |
+| 设备侧加密 `--encrypt` | **芯片自己** | **明文** | 不要 | `write_flash --encrypt` |
+
+- **本步镜像已是密文**：再 `--encrypt` → 芯片二次加密 → 读取只解密一次 → 仍是乱码 → **无法启动**。
+  这就是"双重加密"陷阱，所以这里**绝不加** `--encrypt`、GUI **不勾** Encrypt（有 `DoNotChgBin` 则勾上）。
+- **`--encrypt` 何时有用**：dev-mode 下**联调快速迭代**——跳过打包，直接把
+  `.pio\build\secure\firmware.bin`（**明文**）用 `--encrypt` 刷到 `0x10000`，芯片自动加密：
+
+  ```powershell
+  & $PY -m esptool --chip esp32s3 --port COM7 write_flash --encrypt 0x10000 .pio\build\secure\firmware.bin
+  ```
+
+  前提：设备已 provisioned 且处于 dev-mode（没烧 `DIS_DOWNLOAD_MANUAL_ENCRYPT`）。
+  好处：刷机机**无需持有密钥**。这条快速通道正是我们选 dev-mode 而非 release-mode 的原因之一
+  （release-mode 会烧掉 `--encrypt` 能力）。
+
 ---
 
 ## ✅ 步骤 5：上电验证
