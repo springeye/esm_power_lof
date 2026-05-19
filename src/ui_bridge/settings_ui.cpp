@@ -2,6 +2,8 @@
 
 #include "../app/app_state.h"
 #include "../app/config_manager.h"
+#include "app_config.h"
+#include "../sensors/ina226/ina226.h"
 #include "../wifi/wifi_manager.h"
 #include "theme_manager.h"
 #include "screen_manager.h"
@@ -34,6 +36,7 @@ enum SettingsPage : uint8_t {
     PAGE_DISPLAY,
     PAGE_POWER,
     PAGE_SENSOR,
+    PAGE_INA_CAL,
     PAGE_SYSTEM,
     PAGE_COUNT
 };
@@ -90,6 +93,90 @@ struct KeyDispatch {
 };
 
 constexpr uint16_t POWER_PRESETS[] = {350u, 450u, 550u, 750u};
+
+// ── INA226 双点线性校准辅助 ──────────────────────────────────────────
+// 模型：修正电流 = 原始电流 × 增益 + 偏移。
+// 每路两采集点（Lo/Hi）：选中行显示该路实时(已校正)电流；进入编辑把数值调
+// 到外部标准表读数，确认时记录「当前未校准原始电流 + 输入基准」。两点齐备
+// 后按 增益 = (基准Hi-基准Lo)/(原始Hi-原始Lo)、偏移 = 基准Lo - 原始Lo×增益
+// 解算，校验通过即持久化并即时生效。
+float cal_live(uint8_t ch) {
+    switch (ch) {
+        case 0:  return app_state::get_ch1_a();
+        case 1:  return app_state::get_ch2_a();
+        default: return app_state::get_ch3_a();
+    }
+}
+
+float g_cal_ref[3][2] = {};  // 各路两点输入基准（A）
+float g_cal_raw[3][2] = {};  // 各路两点确认时的未校准原始电流（A）
+bool  g_cal_set[3][2] = {};  // 各点是否已采集
+
+void cal_try_compute(uint8_t ch) {
+    if (!g_cal_set[ch][0] || !g_cal_set[ch][1]) {
+        return;
+    }
+    const float ra = g_cal_raw[ch][0];
+    const float rb = g_cal_raw[ch][1];
+    const float fa = g_cal_ref[ch][0];
+    const float fb = g_cal_ref[ch][1];
+    float span = rb - ra;
+    if (span < 0.0f) {
+        span = -span;
+    }
+    if (span < INA226_CAL_MIN_SPAN_A) {
+        return;  // 两点原始电流跨度过小，拒绝解算（噪声会被放大）
+    }
+    const float gain = (fb - fa) / (rb - ra);
+    const float offset = fa - ra * gain;
+    if (gain < INA226_CAL_GAIN_MIN || gain > INA226_CAL_GAIN_MAX) {
+        return;  // 增益越界，疑似接错/采点错误，丢弃
+    }
+    if (offset < -INA226_CAL_OFFSET_MAX || offset > INA226_CAL_OFFSET_MAX) {
+        return;
+    }
+    config_manager::set_ina_gain(ch, gain);
+    config_manager::set_ina_offset(ch, offset);
+    ina226_set_gain(static_cast<Ina226Rail>(ch), config_manager::get_ina_gain(ch));
+    ina226_set_offset(static_cast<Ina226Rail>(ch), config_manager::get_ina_offset(ch));
+}
+
+void cal_capture(uint8_t ch, uint8_t pt, float ref) {
+    g_cal_ref[ch][pt] = ref;
+    g_cal_raw[ch][pt] = ina226_get_raw_current(static_cast<Ina226Rail>(ch));
+    g_cal_set[ch][pt] = true;
+    cal_try_compute(ch);
+}
+
+float cg0l() { return cal_live(0); }
+float cg0h() { return cal_live(0); }
+float cg1l() { return cal_live(1); }
+float cg1h() { return cal_live(1); }
+float cg2l() { return cal_live(2); }
+float cg2h() { return cal_live(2); }
+
+void cs0l(float r) { cal_capture(0, 0, r); }
+void cs0h(float r) { cal_capture(0, 1, r); }
+void cs1l(float r) { cal_capture(1, 0, r); }
+void cs1h(float r) { cal_capture(1, 1, r); }
+void cs2l(float r) { cal_capture(2, 0, r); }
+void cs2h(float r) { cal_capture(2, 1, r); }
+
+bool cal_reset_get() { return false; }
+
+void cal_reset_set(bool on) {
+    if (!on) {
+        return;
+    }
+    for (uint8_t ch = 0; ch < 3u; ++ch) {
+        config_manager::set_ina_gain(ch, INA226_CAL_GAIN_DEFAULT);
+        config_manager::set_ina_offset(ch, INA226_CAL_OFFSET_DEFAULT);
+        ina226_set_gain(static_cast<Ina226Rail>(ch), INA226_CAL_GAIN_DEFAULT);
+        ina226_set_offset(static_cast<Ina226Rail>(ch), INA226_CAL_OFFSET_DEFAULT);
+        g_cal_set[ch][0] = false;
+        g_cal_set[ch][1] = false;
+    }
+}
 
 const SettingsItem FAN_ITEMS[] = {
     {"低温阈值", "°C", SettingsItemType::FLOAT, 20.0f, 50.0f, 1.0f,
@@ -159,6 +246,24 @@ const SettingsItem SENSOR_ITEMS[] = {
      nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0},
 };
 
+const SettingsItem INA_CAL_ITEMS[] = {
+    {"CH1 Lo", "A", SettingsItemType::FLOAT, 0.0f, INA226_MAX_CURRENT_A, 0.05f,
+     cg0l, cs0l, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0},
+    {"CH1 Hi", "A", SettingsItemType::FLOAT, 0.0f, INA226_MAX_CURRENT_A, 0.05f,
+     cg0h, cs0h, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0},
+    {"CH2 Lo", "A", SettingsItemType::FLOAT, 0.0f, INA226_MAX_CURRENT_A, 0.05f,
+     cg1l, cs1l, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0},
+    {"CH2 Hi", "A", SettingsItemType::FLOAT, 0.0f, INA226_MAX_CURRENT_A, 0.05f,
+     cg1h, cs1h, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0},
+    {"CH3 Lo", "A", SettingsItemType::FLOAT, 0.0f, INA226_MAX_CURRENT_A, 0.05f,
+     cg2l, cs2l, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0},
+    {"CH3 Hi", "A", SettingsItemType::FLOAT, 0.0f, INA226_MAX_CURRENT_A, 0.05f,
+     cg2h, cs2h, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, 0},
+    {"CAL Reset", "", SettingsItemType::BOOL, 0.0f, 1.0f, 1.0f,
+     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+     cal_reset_get, cal_reset_set, nullptr, 0},
+};
+
 const SettingsItem SYSTEM_ITEMS[] = {
     {"Web 管理", "", SettingsItemType::BOOL, 0.0f, 1.0f, 1.0f,
      nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
@@ -172,6 +277,7 @@ const SettingsPageDef PAGES[] = {
     {"显示设置", DISPLAY_ITEMS, sizeof(DISPLAY_ITEMS) / sizeof(DISPLAY_ITEMS[0])},
     {"功率配置", POWER_ITEMS, sizeof(POWER_ITEMS) / sizeof(POWER_ITEMS[0])},
     {"传感器校准", SENSOR_ITEMS, sizeof(SENSOR_ITEMS) / sizeof(SENSOR_ITEMS[0])},
+    {"电流校准", INA_CAL_ITEMS, sizeof(INA_CAL_ITEMS) / sizeof(INA_CAL_ITEMS[0])},
     {"系统管理", SYSTEM_ITEMS, sizeof(SYSTEM_ITEMS) / sizeof(SYSTEM_ITEMS[0])},
 };
 
@@ -189,6 +295,7 @@ lv_timer_t* g_blink_timer = nullptr;
 std::atomic_bool g_active {false};
 bool g_initialized = false;
 lv_obj_t* g_system_pwd_label = nullptr;
+lv_timer_t* g_cal_timer = nullptr;
 
 void rebuild_page();
 
@@ -313,6 +420,18 @@ void write_item_value(const SettingsItem& item, float value) {
 }
 
 void format_item_value(const SettingsItem& item, float value, char* buffer, size_t size) {
+    if (item.get_float == cg0l || item.get_float == cg0h ||
+        item.get_float == cg1l || item.get_float == cg1h ||
+        item.get_float == cg2l || item.get_float == cg2h) {
+        std::snprintf(buffer, size, "%.2f%s", value, item.unit ? item.unit : "");
+        return;
+    }
+
+    if (item.get_bool == cal_reset_get) {
+        std::snprintf(buffer, size, "%s", "[OK]");
+        return;
+    }
+
     if (item.get_u8 == config_manager::get_theme_mode) {
         const int v = static_cast<int>(std::lround(value));
         std::snprintf(buffer, size, "%s", v == 0 ? "日间" : "夜间");
@@ -442,14 +561,37 @@ void refresh_all_values() {
     }
 }
 
+void stop_cal_timer() {
+    if (g_cal_timer != nullptr) {
+        lv_timer_delete(g_cal_timer);
+        g_cal_timer = nullptr;
+    }
+}
+
+void cal_timer_cb(lv_timer_t* timer) {
+    LV_UNUSED(timer);
+    if (!g_active.load() || g_current_page != PAGE_INA_CAL) {
+        return;
+    }
+    // 实时刷新各路(已校正)实测值，便于校准后即时核对收敛
+    for (size_t i = 0; i < g_row_count; ++i) {
+        if (g_editing && i == g_focus_index) {
+            continue;
+        }
+        update_row_value(i);
+    }
+}
+
 void rebuild_page() {
     if (g_content_area == nullptr) {
         return;
     }
 
     stop_blink();
+    stop_cal_timer();
     g_editing = false;
     lv_obj_clean(g_content_area);
+    g_system_pwd_label = nullptr;
     g_row_count = current_page().item_count;
 
     for (size_t i = 0; i < g_row_count; ++i) {
@@ -507,8 +649,9 @@ void rebuild_page() {
         } else {
             lv_obj_add_flag(g_system_pwd_label, LV_OBJ_FLAG_HIDDEN);
         }
-    } else {
-        g_system_pwd_label = nullptr;
+    } else if (g_current_page == PAGE_INA_CAL) {
+        // 电流校准页：启动实时刷新定时器（行值随负载/校准结果更新）
+        g_cal_timer = lv_timer_create(cal_timer_cb, 300, nullptr);
     }
 }
 
@@ -670,6 +813,7 @@ void show_impl() {
 
 void hide_impl() {
     cancel_edit_mode();
+    stop_cal_timer();
     g_active.store(false);
 
     lv_obj_t* home = ui_bridge::screen_manager_get_home();

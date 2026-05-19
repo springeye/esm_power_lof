@@ -38,3 +38,51 @@ void ina226_init_all(void);
  * @return 读取成功返回 true，I2C 出错返回 false
  */
 bool ina226_read(Ina226Rail rail, Ina226Data *out);
+
+/**
+ * @brief 设置某路的线性校准增益。
+ *
+ * 修正后电流 = 原始电流 × gain + offset。增益由调用方（config_manager）clamp
+ * 后传入，默认 1.0。线程安全：仅写单个 atomic，传感器任务读取无需加锁。
+ *
+ * @param rail 通道索引（INA_CH1/CH2/CH3）
+ * @param gain 校准增益系数
+ */
+void ina226_set_gain(Ina226Rail rail, float gain);
+
+/**
+ * @brief 读取某路当前生效的校准增益。
+ *
+ * @param rail 通道索引（INA_CH1/CH2/CH3）
+ * @return 当前增益，rail 越界返回 1.0
+ */
+float ina226_get_gain(Ina226Rail rail);
+
+/**
+ * @brief 设置某路的线性校准偏移（A）。
+ *
+ * 修正后电流 = 原始电流 × gain + offset。偏移由调用方 clamp 后传入，默认 0.0。
+ *
+ * @param rail   通道索引（INA_CH1/CH2/CH3）
+ * @param offset 校准偏移（A）
+ */
+void ina226_set_offset(Ina226Rail rail, float offset);
+
+/**
+ * @brief 读取某路当前生效的校准偏移（A）。
+ *
+ * @param rail 通道索引（INA_CH1/CH2/CH3）
+ * @return 当前偏移，rail 越界返回 0.0
+ */
+float ina226_get_offset(Ina226Rail rail);
+
+/**
+ * @brief 读取某路最近一次采样的未校准原始电流（A）。
+ *
+ * 由 ina226_read() 在每次成功采样时缓存（应用增益/偏移之前的值）。
+ * 双点校准采集校准点时使用，避免把已校准值再次代入解算。
+ *
+ * @param rail 通道索引（INA_CH1/CH2/CH3）
+ * @return 最近一次原始电流，rail 越界或尚无采样返回 0.0
+ */
+float ina226_get_raw_current(Ina226Rail rail);

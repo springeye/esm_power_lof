@@ -35,6 +35,13 @@ static constexpr uint8_t  INA226_ADDR_CH[3]  = {0x40, 0x41, 0x44};
 static constexpr float    INA226_SHUNT_OHMS     = 0.002f; // 分流电阻阻值（2mΩ），用于电流计算
 static constexpr float    INA226_MAX_CURRENT_A  = 40.0f;  // 单路最大电流（40A），用于量程配置
 static constexpr uint32_t INA226_POLL_PERIOD_MS = 750;    // 三路总轮询周期（3 × 250ms），用于采样调度
+// 线性双点校准：修正电流 = 原始电流 × 增益 + 偏移
+static constexpr float    INA226_CAL_GAIN_DEFAULT   = 1.0f;  // 默认增益（未校准），用于出厂初值
+static constexpr float    INA226_CAL_GAIN_MIN       = 0.5f;  // 增益下限，用于过滤异常校准（防接错负载）
+static constexpr float    INA226_CAL_GAIN_MAX       = 2.0f;  // 增益上限，用于过滤异常校准
+static constexpr float    INA226_CAL_OFFSET_DEFAULT = 0.0f;  // 默认偏移（A），用于出厂初值
+static constexpr float    INA226_CAL_OFFSET_MAX     = 5.0f;  // 偏移绝对值上限（A），用于过滤异常校准
+static constexpr float    INA226_CAL_MIN_SPAN_A     = 1.0f;  // 两采样点原始电流最小跨度（A），过小则拒绝解算以免放大噪声
 
 // ── 按键（specs/user-input, design.md D8） ──
 static constexpr uint32_t KEYS_DEBOUNCE_MS     = 5;    // 按键去抖采样间隔（5ms），用于稳定按键状态

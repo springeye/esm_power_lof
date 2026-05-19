@@ -3,6 +3,7 @@
 #include "pins.h"
 #include "hal/i2c_bus.h"
 #include <Wire.h>
+#include <atomic>
 
 // INA226 register addresses
 static const uint8_t REG_CONFIG      = 0x00;
@@ -27,6 +28,23 @@ static const uint8_t s_addrs[3] = {
     INA226_ADDR_CH[1],  // 0x41 CH2
     INA226_ADDR_CH[2]   // 0x44 CH3
 };
+
+// 单点校准增益（跨任务：校准 UI 写、传感器任务读）
+static std::atomic<float> s_gain[3] = {
+    {INA226_CAL_GAIN_DEFAULT},
+    {INA226_CAL_GAIN_DEFAULT},
+    {INA226_CAL_GAIN_DEFAULT}
+};
+
+// 线性校准偏移 A（跨任务）
+static std::atomic<float> s_offset[3] = {
+    {INA226_CAL_OFFSET_DEFAULT},
+    {INA226_CAL_OFFSET_DEFAULT},
+    {INA226_CAL_OFFSET_DEFAULT}
+};
+
+// 最近一次未校准原始电流 A（双点校准采点用）
+static std::atomic<float> s_raw_current[3] = {{0.0f}, {0.0f}, {0.0f}};
 
 static bool ina226_write_reg(uint8_t addr, uint8_t reg, uint16_t val) {
     if (!i2c_bus_take(100)) return false;
@@ -76,9 +94,48 @@ bool ina226_read(Ina226Rail rail, Ina226Data *out) {
     }
 
     // Bus voltage LSB = 1.25mV
+    const uint8_t ch = static_cast<uint8_t>(rail);
+    const float raw_current_a = static_cast<float>(raw_cur) * CURRENT_LSB_A;
+    s_raw_current[ch].store(raw_current_a);
+
     out->voltage_v = static_cast<float>(raw_bus) * 0.00125f;
-    out->current_a = static_cast<float>(raw_cur) * CURRENT_LSB_A;
+    out->current_a = raw_current_a * s_gain[ch].load() + s_offset[ch].load();
     out->power_w   = out->voltage_v * out->current_a;
     out->valid     = true;
     return true;
+}
+
+void ina226_set_gain(Ina226Rail rail, float gain) {
+    if (rail > INA_CH3 || gain <= 0.0f) {
+        return;
+    }
+    s_gain[static_cast<uint8_t>(rail)].store(gain);
+}
+
+float ina226_get_gain(Ina226Rail rail) {
+    if (rail > INA_CH3) {
+        return INA226_CAL_GAIN_DEFAULT;
+    }
+    return s_gain[static_cast<uint8_t>(rail)].load();
+}
+
+void ina226_set_offset(Ina226Rail rail, float offset) {
+    if (rail > INA_CH3) {
+        return;
+    }
+    s_offset[static_cast<uint8_t>(rail)].store(offset);
+}
+
+float ina226_get_offset(Ina226Rail rail) {
+    if (rail > INA_CH3) {
+        return INA226_CAL_OFFSET_DEFAULT;
+    }
+    return s_offset[static_cast<uint8_t>(rail)].load();
+}
+
+float ina226_get_raw_current(Ina226Rail rail) {
+    if (rail > INA_CH3) {
+        return 0.0f;
+    }
+    return s_raw_current[static_cast<uint8_t>(rail)].load();
 }

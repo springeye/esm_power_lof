@@ -37,6 +37,8 @@ struct PowerConfig {
 
 struct SensorConfig {
     float ntc_temp_offset;
+    float ina_gain_ch[3];    // INA226 三路电流线性校准增益（默认 1.0）
+    float ina_offset_ch[3];  // INA226 三路电流线性校准偏移 A（默认 0.0）
 };
 
 struct WifiConfig {
@@ -105,6 +107,12 @@ void set_design_power_w(uint16_t v);
 
 float get_ntc_temp_offset();
 void set_ntc_temp_offset(float v);
+
+float get_ina_gain(uint8_t ch);
+void set_ina_gain(uint8_t ch, float v);
+
+float get_ina_offset(uint8_t ch);
+void set_ina_offset(uint8_t ch, float v);
 
 bool get_web_mgmt_enabled();
 void set_web_mgmt_enabled(bool v);

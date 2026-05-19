@@ -46,6 +46,14 @@ void setup() {
     // Runtime config (loads NVS defaults)
     config_manager::init();
 
+    // 把已保存的 INA226 校准增益/偏移下发到传感器驱动
+    for (uint8_t ch = 0; ch < 3u; ++ch) {
+        ina226_set_gain(static_cast<Ina226Rail>(ch),
+                        config_manager::get_ina_gain(ch));
+        ina226_set_offset(static_cast<Ina226Rail>(ch),
+                          config_manager::get_ina_offset(ch));
+    }
+
     // Screen rotation (loads from NVS)
     screen_rotation::init();
 

@@ -211,6 +211,68 @@ void test_config_save_to_nvs_callable_after_setters(void) {
     TEST_ASSERT_EQUAL_UINT8(50, config_manager::get_brightness_percent());
 }
 
+void test_config_ina_gain_default(void) {
+    config_manager::init();
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 1.0f, config_manager::get_ina_gain(0));
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 1.0f, config_manager::get_ina_gain(1));
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 1.0f, config_manager::get_ina_gain(2));
+}
+
+void test_config_ina_gain_set_get(void) {
+    config_manager::init();
+    config_manager::set_ina_gain(0, 1.05f);
+    config_manager::set_ina_gain(1, 0.93f);
+    config_manager::set_ina_gain(2, 1.20f);
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 1.05f, config_manager::get_ina_gain(0));
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.93f, config_manager::get_ina_gain(1));
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 1.20f, config_manager::get_ina_gain(2));
+}
+
+void test_config_ina_gain_clamp(void) {
+    config_manager::init();
+    config_manager::set_ina_gain(0, 5.0f);
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 2.0f, config_manager::get_ina_gain(0));
+    config_manager::set_ina_gain(0, 0.01f);
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.5f, config_manager::get_ina_gain(0));
+}
+
+void test_config_ina_gain_bad_channel(void) {
+    config_manager::init();
+    config_manager::set_ina_gain(7, 1.5f);  // 越界写入应被忽略
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 1.0f, config_manager::get_ina_gain(7));
+}
+
+void test_config_ina_offset_default(void) {
+    config_manager::init();
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0f, config_manager::get_ina_offset(0));
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0f, config_manager::get_ina_offset(1));
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0f, config_manager::get_ina_offset(2));
+}
+
+void test_config_ina_offset_set_get(void) {
+    config_manager::init();
+    config_manager::set_ina_offset(0, 0.35f);
+    config_manager::set_ina_offset(1, -0.80f);
+    config_manager::set_ina_offset(2, 1.50f);
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.35f, config_manager::get_ina_offset(0));
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, -0.80f, config_manager::get_ina_offset(1));
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 1.50f, config_manager::get_ina_offset(2));
+}
+
+void test_config_ina_offset_clamp(void) {
+    config_manager::init();
+    config_manager::set_ina_offset(0, 99.0f);
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 5.0f, config_manager::get_ina_offset(0));
+    config_manager::set_ina_offset(0, -99.0f);
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, -5.0f, config_manager::get_ina_offset(0));
+}
+
+void test_config_ina_offset_bad_channel(void) {
+    config_manager::init();
+    config_manager::set_ina_offset(9, 2.0f);  // 越界写入应被忽略
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0f, config_manager::get_ina_offset(9));
+}
+
 void test_view_manager_cycle_forward(void) {
     TEST_ASSERT_EQUAL(VIEW_DEFAULT, view_manager::view_manager_get_current());
     view_manager::view_manager_cycle(1);
@@ -263,6 +325,14 @@ void setup() {
     RUN_TEST(test_config_theme_mode_set_get_without_autosave);
     RUN_TEST(test_config_design_power_set_get_without_autosave);
     RUN_TEST(test_config_save_to_nvs_callable_after_setters);
+    RUN_TEST(test_config_ina_gain_default);
+    RUN_TEST(test_config_ina_gain_set_get);
+    RUN_TEST(test_config_ina_gain_clamp);
+    RUN_TEST(test_config_ina_gain_bad_channel);
+    RUN_TEST(test_config_ina_offset_default);
+    RUN_TEST(test_config_ina_offset_set_get);
+    RUN_TEST(test_config_ina_offset_clamp);
+    RUN_TEST(test_config_ina_offset_bad_channel);
     RUN_TEST(test_view_manager_cycle_forward);
     RUN_TEST(test_view_manager_cycle_backward);
     RUN_TEST(test_view_manager_switch_to);

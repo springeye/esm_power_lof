@@ -38,6 +38,12 @@ constexpr char kKeyDefaultView[] = "cfg_default_view";
 constexpr char kKeyScreenRotation[] = "cfg_scr_rot";
 constexpr char kKeyDesignPower[] = "cfg_design_power";
 constexpr char kKeyNtcOffset[]   = "cfg_ntc_offset";
+constexpr char kKeyInaGain0[]    = "cfg_ina_g0";
+constexpr char kKeyInaGain1[]    = "cfg_ina_g1";
+constexpr char kKeyInaGain2[]    = "cfg_ina_g2";
+constexpr char kKeyInaOff0[]     = "cfg_ina_o0";
+constexpr char kKeyInaOff1[]     = "cfg_ina_o1";
+constexpr char kKeyInaOff2[]     = "cfg_ina_o2";
 constexpr char kKeyWifiSsid[]    = "cfg_wifi_ssid";
 constexpr char kKeyWifiPass[]    = "cfg_wifi_pass";
 constexpr char kKeyWebMgmt[]     = "cfg_web_mgmt";
@@ -120,6 +126,12 @@ void set_defaults_locked() {
     s_config.display.screen_rotation = 0u;
     s_config.power.design_power_w = 750u;
     s_config.sensor.ntc_temp_offset = 0.0f;
+    s_config.sensor.ina_gain_ch[0] = INA226_CAL_GAIN_DEFAULT;
+    s_config.sensor.ina_gain_ch[1] = INA226_CAL_GAIN_DEFAULT;
+    s_config.sensor.ina_gain_ch[2] = INA226_CAL_GAIN_DEFAULT;
+    s_config.sensor.ina_offset_ch[0] = INA226_CAL_OFFSET_DEFAULT;
+    s_config.sensor.ina_offset_ch[1] = INA226_CAL_OFFSET_DEFAULT;
+    s_config.sensor.ina_offset_ch[2] = INA226_CAL_OFFSET_DEFAULT;
 }
 
 void ensure_initialized_locked() {
@@ -155,6 +167,12 @@ void save_to_nvs_locked() {
     prefs.putUChar(kKeyScreenRotation, s_config.display.screen_rotation);
     prefs.putUShort(kKeyDesignPower, s_config.power.design_power_w);
     prefs.putFloat(kKeyNtcOffset, s_config.sensor.ntc_temp_offset);
+    prefs.putFloat(kKeyInaGain0, s_config.sensor.ina_gain_ch[0]);
+    prefs.putFloat(kKeyInaGain1, s_config.sensor.ina_gain_ch[1]);
+    prefs.putFloat(kKeyInaGain2, s_config.sensor.ina_gain_ch[2]);
+    prefs.putFloat(kKeyInaOff0, s_config.sensor.ina_offset_ch[0]);
+    prefs.putFloat(kKeyInaOff1, s_config.sensor.ina_offset_ch[1]);
+    prefs.putFloat(kKeyInaOff2, s_config.sensor.ina_offset_ch[2]);
     prefs.putString(kKeyWifiSsid, s_config.wifi.ssid);
     prefs.putString(kKeyWifiPass, s_config.wifi.password);
     prefs.putBool(kKeyWebMgmt, s_config.wifi.web_mgmt_enabled);
@@ -215,6 +233,24 @@ void load_from_nvs_locked() {
 
     s_config.sensor.ntc_temp_offset = clamp_float(
         prefs.getFloat(kKeyNtcOffset, s_config.sensor.ntc_temp_offset), -10.0f, 10.0f);
+    s_config.sensor.ina_gain_ch[0] = clamp_float(
+        prefs.getFloat(kKeyInaGain0, s_config.sensor.ina_gain_ch[0]),
+        INA226_CAL_GAIN_MIN, INA226_CAL_GAIN_MAX);
+    s_config.sensor.ina_gain_ch[1] = clamp_float(
+        prefs.getFloat(kKeyInaGain1, s_config.sensor.ina_gain_ch[1]),
+        INA226_CAL_GAIN_MIN, INA226_CAL_GAIN_MAX);
+    s_config.sensor.ina_gain_ch[2] = clamp_float(
+        prefs.getFloat(kKeyInaGain2, s_config.sensor.ina_gain_ch[2]),
+        INA226_CAL_GAIN_MIN, INA226_CAL_GAIN_MAX);
+    s_config.sensor.ina_offset_ch[0] = clamp_float(
+        prefs.getFloat(kKeyInaOff0, s_config.sensor.ina_offset_ch[0]),
+        -INA226_CAL_OFFSET_MAX, INA226_CAL_OFFSET_MAX);
+    s_config.sensor.ina_offset_ch[1] = clamp_float(
+        prefs.getFloat(kKeyInaOff1, s_config.sensor.ina_offset_ch[1]),
+        -INA226_CAL_OFFSET_MAX, INA226_CAL_OFFSET_MAX);
+    s_config.sensor.ina_offset_ch[2] = clamp_float(
+        prefs.getFloat(kKeyInaOff2, s_config.sensor.ina_offset_ch[2]),
+        -INA226_CAL_OFFSET_MAX, INA226_CAL_OFFSET_MAX);
     prefs.getString(kKeyWifiSsid, s_config.wifi.ssid, sizeof(s_config.wifi.ssid));
     prefs.getString(kKeyWifiPass, s_config.wifi.password, sizeof(s_config.wifi.password));
     s_config.wifi.web_mgmt_enabled = prefs.getBool(kKeyWebMgmt, false);
@@ -511,6 +547,46 @@ void set_ntc_temp_offset(float v) {
     std::lock_guard<std::mutex> lock(s_config_mutex);
     ensure_initialized_locked();
     s_config.sensor.ntc_temp_offset = clamp_float(v, -10.0f, 10.0f);
+    save_to_nvs_locked();
+}
+
+float get_ina_gain(uint8_t ch) {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    if (ch >= 3u) {
+        return INA226_CAL_GAIN_DEFAULT;
+    }
+    return s_config.sensor.ina_gain_ch[ch];
+}
+
+void set_ina_gain(uint8_t ch, float v) {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    if (ch >= 3u) {
+        return;
+    }
+    s_config.sensor.ina_gain_ch[ch] =
+        clamp_float(v, INA226_CAL_GAIN_MIN, INA226_CAL_GAIN_MAX);
+    save_to_nvs_locked();
+}
+
+float get_ina_offset(uint8_t ch) {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    if (ch >= 3u) {
+        return INA226_CAL_OFFSET_DEFAULT;
+    }
+    return s_config.sensor.ina_offset_ch[ch];
+}
+
+void set_ina_offset(uint8_t ch, float v) {
+    std::lock_guard<std::mutex> lock(s_config_mutex);
+    ensure_initialized_locked();
+    if (ch >= 3u) {
+        return;
+    }
+    s_config.sensor.ina_offset_ch[ch] =
+        clamp_float(v, -INA226_CAL_OFFSET_MAX, INA226_CAL_OFFSET_MAX);
     save_to_nvs_locked();
 }
 
